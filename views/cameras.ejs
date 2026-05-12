@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Câmeras</title>
+
+    <link rel="stylesheet" href="/css/cameras.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="topo">
+        <h1>Minhas Câmeras</h1>
+    </div>
+
+    <form action="/cameras" method="POST" class="form-camera">
+
+        <input
+            type="text"
+            name="nome"
+            placeholder="Nome da câmera"
+            required
+        >
+
+        <input
+            type="text"
+            name="rtsp_url"
+            placeholder="URL RTSP da câmera"
+            required
+        >
+
+        <button type="submit">
+            Cadastrar câmera
+        </button>
+
+    </form>
+
+    <% if (cameras.length === 0) { %>
+
+        <div class="vazio">
+            <h2>Nenhuma câmera cadastrada</h2>
+
+            <p>
+                Cadastre sua primeira câmera para iniciar o monitoramento.
+            </p>
+        </div>
+
+    <% } else { %>
+
+        <div class="lista-cameras">
+
+            <% cameras.forEach(camera => { %>
+
+                <div class="card-camera">
+
+                    <div class="camera-preview">
+
+                        <img
+                            src="http://127.0.0.1:5002/video_feed/<%= camera.id %>"
+                            alt="Câmera <%= camera.nome %>"
+                            class="camera-img"
+                        >
+
+                    </div>
+
+                    <div class="card-content">
+
+                        <h2>
+                            <%= camera.nome %>
+                        </h2>
+
+                        <p>
+                            <strong>Status:</strong>
+
+                            <span class="
+                                status
+                                <%= camera.status_camera === 'online'
+                                    ? 'online'
+                                    : 'offline'
+                                %>
+                            ">
+                                <%= camera.status_camera %>
+                            </span>
+                        </p>
+
+                        <br>
+
+                        <p>
+                            <strong>RTSP:</strong>
+                        </p>
+
+                        <p style="word-break: break-all;">
+                            <%= camera.rtsp_url %>
+                        </p>
+
+                    </div>
+
+                </div>
+
+            <% }) %>
+
+        </div>
+
+    <% } %>
+
+</div>
+
+</body>
+</html>

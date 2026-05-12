@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webcam | AI Health</title>
+  <link rel="stylesheet" href="/css/camerapc.css">
+</head>
+<body>
+
+<header class="topo">
+  <div>
+    <h1>Relatório da Câmera</h1>
+
+    <% if (usuario) { %>
+      <p>Olá, <%= usuario.nome %></p>
+    <% } else { %>
+      <p>Olá, visitante</p>
+    <% } %>
+  </div>
+
+  <nav class="nav">
+    <a href="/">Início</a>
+    <a href="/apresentpj">Projeto</a>
+    <a href="/cameraseg">Segurança</a>
+
+    <% if (usuario) { %>
+      <a href="/logout" class="btn-sair">Sair</a>
+    <% } else { %>
+      <a href="/login" class="btn-sair">Entrar</a>
+    <% } %>
+  </nav>
+</header>
+
+<main class="container">
+  <section class="video-box">
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="canvas"></canvas>
+  </section>
+
+  <section class="painel">
+    <div class="botoes">
+      <button id="startBtn">Iniciar sessão</button>
+      <button id="stopBtn" disabled>Encerrar sessão</button>
+      <button id="speakBtn" disabled>Responder por voz</button>
+    </div>
+
+    <div class="status-box card">
+      <h2>Status</h2>
+      <p><strong>Sessão:</strong> <span id="sessaoStatus">Não iniciada</span></p>
+      <p><strong>Emoção atual:</strong> <span id="emocaoAtual">---</span></p>
+      <p><strong>Confiança:</strong> <span id="confiancaAtual">---</span></p>
+    </div>
+
+    <div class="pergunta-box card">
+      <h2>Pergunta atual</h2>
+      <p id="perguntaAtual">Nenhuma pergunta ainda.</p>
+    </div>
+
+    <div class="fala-box card">
+      <h2>Resposta falada</h2>
+      <p id="textoFalado">Nenhuma fala capturada.</p>
+    </div>
+
+    <div class="relatorio-box card">
+      <h2>Relatório resumido</h2>
+      <pre id="relatorioFinal">O relatório aparecerá aqui ao encerrar a sessão.</pre>
+    </div>
+  </section>
+</main>
+
+<script src="/js/camerapc.js"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #edf2fb, #d7e3fc);
+    min-height: 100vh;
+    color: #222;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.topo {
+    margin-bottom: 35px;
+}
+
+.topo h1 {
+    font-size: 34px;
+}
+
+.lista-relatorios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 25px;
+}
+
+.card-relatorio {
+    background: rgba(255,255,255,0.92);
+
+    border-radius: 22px;
+    overflow: hidden;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+
+    transition: 0.3s;
+}
+
+.card-relatorio:hover {
+    transform: translateY(-5px);
+}
+
+.imagem-relatorio {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    background: #ddd;
+}
+
+.card-content {
+    padding: 22px;
+}
+
+.evento {
+    display: inline-block;
+    background: #ffccd5;
+    color: #c1121f;
+
+    padding: 8px 14px;
+    border-radius: 999px;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    margin-bottom: 15px;
+}
+
+.card-content h2 {
+    margin-bottom: 14px;
+}
+
+.info {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.data {
+    margin-top: 18px;
+    color: #666;
+    font-size: 14px;
+}
+
+.confianca {
+    margin-top: 12px;
+
+    background: #edf2fb;
+    padding: 10px 14px;
+    border-radius: 12px;
+
+    font-weight: bold;
+}
+
+.vazio {
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    text-align: center;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}

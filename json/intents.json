@@ -1,0 +1,488 @@
+{
+  "intents": [
+    {
+      "tag": "saudacao",
+      "patterns": [
+        "Oi",
+        "Olá",
+        "Bom dia",
+        "Boa tarde",
+        "Boa noite",
+        "Opa",
+        "Ei",
+        "Oi bot",
+        "Olá bot",
+        "Tudo bem",
+        "Oi tudo bem"
+      ],
+      "responses": [
+        "Olá. Sou um assistente voltado ao cuidado e bem-estar da pessoa idosa. Posso ajudar com medicamentos, sintomas, doenças, exercícios leves e orientações de saúde.",
+        "Olá. Estou aqui para ajudar com assuntos relacionados à saúde e rotina de idosos.",
+        "Oi. Posso ajudar com remédios, dores, memória, pressão, diabetes, mobilidade e cuidados no dia a dia."
+      ]
+    },
+    {
+      "tag": "despedida",
+      "patterns": [
+        "Tchau",
+        "Até logo",
+        "Até mais",
+        "Adeus",
+        "Vou sair",
+        "Até a próxima",
+        "Fui",
+        "Encerrar"
+      ],
+      "responses": [
+        "Até a próxima. Cuide-se bem.",
+        "Tchau. Qualquer dúvida sobre saúde e bem-estar, estarei aqui.",
+        "Até logo. Se precisar de orientação sobre medicamentos, dores ou cuidados diários, pode voltar."
+      ]
+    },
+    {
+      "tag": "agradecimento",
+      "patterns": [
+        "Obrigado",
+        "Obrigada",
+        "Valeu",
+        "Muito obrigado",
+        "Muito obrigada",
+        "Ajudou muito",
+        "Gratidão"
+      ],
+      "responses": [
+        "Por nada. Estou aqui para ajudar.",
+        "Fico feliz em ajudar.",
+        "Disponha. Conte comigo para orientações gerais de saúde e bem-estar."
+      ]
+    },
+    {
+      "tag": "capacidades",
+      "patterns": [
+        "O que você faz",
+        "Como você pode me ajudar",
+        "Quais suas funções",
+        "No que você ajuda",
+        "O que você sabe fazer",
+        "Você ajuda em que"
+      ],
+      "responses": [
+        "Posso ajudar com orientações gerais sobre medicamentos, sintomas comuns, doenças frequentes em idosos, exercícios leves, hidratação, alimentação, sono, memória e prevenção de quedas.",
+        "Sou um assistente focado em saúde e rotina da pessoa idosa. Posso explicar doenças de forma simples e sugerir cuidados gerais e seguros.",
+        "Meu foco é o bem-estar do idoso: remédios, dores, mobilidade, pressão, diabetes, memória e hábitos saudáveis."
+      ]
+    },
+    {
+      "tag": "medicamento_esquecido",
+      "patterns": [
+        "Esqueci meu remédio",
+        "Não lembro se tomei o remédio",
+        "Acho que esqueci a medicação",
+        "Não sei se já tomei a medicação",
+        "Esqueci de tomar o remédio",
+        "Perdi o horário do remédio",
+        "Tomei ou não tomei o remédio"
+      ],
+      "responses": [
+        "Se você não tem certeza se tomou o remédio, evite tomar dose dobrada sem orientação. O mais seguro é confirmar com um familiar, cuidador, farmacêutico ou médico.",
+        "Quando houver dúvida sobre dose tomada, o ideal é não repetir por conta própria. Uma caixa organizadora ou um caderno de controle pode ajudar bastante.",
+        "Para evitar esse problema, vale usar alarme, tabela na geladeira ou caixinha separada por dias da semana."
+      ]
+    },
+    {
+      "tag": "medicamento_horario",
+      "patterns": [
+        "Qual o horário do remédio",
+        "Quando tomo meu remédio",
+        "Hora do remédio",
+        "Preciso tomar o remédio agora",
+        "Minha próxima dose",
+        "Quando é a próxima dose"
+      ],
+      "responses": [
+        "O horário correto depende da receita médica. O ideal é seguir exatamente o que foi prescrito e anotar os horários em um papel ou alarme.",
+        "Para medicamentos, a orientação mais segura é sempre seguir a receita. Se houver dúvida, confirme com o médico ou farmacêutico.",
+        "Uma boa organização é deixar os horários anotados em local visível e usar despertador no celular."
+      ]
+    },
+    {
+      "tag": "efeito_colateral_remedio",
+      "patterns": [
+        "Esse remédio dá sono",
+        "Estou passando mal com o remédio",
+        "Remédio me deixou tonto",
+        "Senti reação ao remédio",
+        "Efeito colateral",
+        "O remédio me fez mal",
+        "Estou enjoado por causa do remédio"
+      ],
+      "responses": [
+        "Alguns medicamentos podem causar efeitos colaterais como tontura, enjoo ou sonolência. Não interrompa por conta própria sem orientação, mas procure seu médico ou farmacêutico.",
+        "Se a reação for forte, persistente ou vier com falta de ar, confusão, desmaio ou inchaço, procure atendimento rapidamente.",
+        "Vale anotar o nome do remédio, a hora em que tomou e o que sentiu, para relatar ao profissional de saúde."
+      ]
+    },
+    {
+      "tag": "explicacao_hipertensao",
+      "patterns": [
+        "O que é pressão alta",
+        "Explique hipertensão",
+        "O que é hipertensão",
+        "Pressão alta é o que",
+        "Me explique pressão alta"
+      ],
+      "responses": [
+        "Hipertensão é quando a pressão do sangue fica alta com frequência. Ela pode sobrecarregar o coração e aumentar o risco de derrame, infarto e problemas nos rins.",
+        "Pressão alta muitas vezes não dá sintomas, por isso acompanhar com consultas e medir regularmente é muito importante.",
+        "O controle da hipertensão costuma envolver remédios, menos sal, acompanhamento médico e hábitos saudáveis."
+      ]
+    },
+    {
+      "tag": "explicacao_diabetes",
+      "patterns": [
+        "O que é diabetes",
+        "Explique diabetes",
+        "Diabetes é o que",
+        "Me explique diabetes",
+        "O que significa diabetes"
+      ],
+      "responses": [
+        "Diabetes é uma condição em que a quantidade de açúcar no sangue fica alta. Isso acontece porque o corpo não usa bem a insulina ou não produz o suficiente.",
+        "Quando não controlada, a diabetes pode afetar olhos, rins, nervos, coração e circulação.",
+        "O tratamento costuma envolver alimentação orientada, atividade física, remédios e, em alguns casos, insulina."
+      ]
+    },
+    {
+      "tag": "explicacao_artrose",
+      "patterns": [
+        "O que é artrose",
+        "Explique artrose",
+        "Artrose é o que",
+        "Me explique artrose"
+      ],
+      "responses": [
+        "Artrose é um desgaste das articulações, muito comum com o envelhecimento. Pode causar dor, rigidez e dificuldade para se movimentar.",
+        "Ela costuma afetar joelhos, mãos, quadris e coluna, e pode piorar com esforço excessivo.",
+        "Alongamentos leves, fortalecimento orientado e acompanhamento médico ou fisioterapêutico costumam ajudar."
+      ]
+    },
+    {
+      "tag": "explicacao_osteoporose",
+      "patterns": [
+        "O que é osteoporose",
+        "Explique osteoporose",
+        "Osteoporose é o que",
+        "Me explique osteoporose"
+      ],
+      "responses": [
+        "Osteoporose é uma condição em que os ossos ficam mais frágeis, aumentando o risco de fraturas.",
+        "Ela é mais comum em idosos e muitas vezes só é descoberta depois de uma queda ou exame específico.",
+        "Prevenção de quedas, acompanhamento médico, alimentação adequada e tratamento correto são muito importantes."
+      ]
+    },
+    {
+      "tag": "dor_articulacao",
+      "patterns": [
+        "Dor no joelho",
+        "Dor nas juntas",
+        "Meu quadril dói",
+        "Dor no ombro",
+        "Dor na articulação",
+        "Articulação doendo",
+        "Estou travado",
+        "Dói para levantar"
+      ],
+      "responses": [
+        "Dores nas articulações podem melhorar com repouso relativo, compressa morna e movimentos leves, sem forçar demais.",
+        "Evite esforço brusco e use calçados firmes e confortáveis. Se a dor for forte, persistente ou vier com inchaço importante, procure avaliação médica.",
+        "Em muitos casos, fisioterapia e exercícios orientados ajudam bastante na mobilidade."
+      ]
+    },
+    {
+      "tag": "dor_coluna_costas",
+      "patterns": [
+        "Minhas costas doem",
+        "Dor nas costas",
+        "Dor na coluna",
+        "Coluna doendo",
+        "Estou com dor lombar",
+        "Dor na lombar"
+      ],
+      "responses": [
+        "Dor nas costas pode melhorar com descanso, postura adequada e movimentos leves. Evite carregar peso e evite ficar muito tempo na mesma posição.",
+        "Compressa morna pode ajudar no alívio. Se houver perda de força, dormência forte, queda ou dor intensa, procure atendimento médico.",
+        "Exercícios leves e alongamentos orientados costumam ajudar, mas devem respeitar seus limites."
+      ]
+    },
+    {
+      "tag": "dor_cabeca",
+      "patterns": [
+        "Dor de cabeça",
+        "Minha cabeça está doendo",
+        "Cefaleia",
+        "Estou com muita dor de cabeça"
+      ],
+      "responses": [
+        "Dor de cabeça pode ter várias causas, como tensão, desidratação ou pressão alterada. Vale descansar, beber água e observar se há outros sintomas.",
+        "Se a dor de cabeça for muito forte, repentina, ou vier com fraqueza, confusão, vômitos ou alteração na visão, procure atendimento rápido.",
+        "Se você tem pressão alta, vale conferir a pressão e seguir sua medicação corretamente."
+      ]
+    },
+    {
+      "tag": "tontura_mal_estar",
+      "patterns": [
+        "Estou com tontura",
+        "Estou passando mal",
+        "Estou tonto",
+        "Estou tonta",
+        "Mal estar",
+        "Me sinto fraco",
+        "Me sinto fraca"
+      ],
+      "responses": [
+        "Tontura e mal-estar merecem atenção. Sente-se ou deite-se em local seguro, beba água se puder e evite levantar rápido.",
+        "Se houver desmaio, falta de ar, dor no peito, fala enrolada, fraqueza em um lado do corpo ou piora importante, procure ajuda imediatamente.",
+        "Se os sintomas persistirem, avise um familiar ou cuidador e procure avaliação médica."
+      ]
+    },
+    {
+      "tag": "pressao_alta_baixa",
+      "patterns": [
+        "Minha pressão subiu",
+        "Minha pressão caiu",
+        "Pressão alta",
+        "Pressão baixa",
+        "A pressão alterou",
+        "Medi a pressão e deu ruim"
+      ],
+      "responses": [
+        "Alterações de pressão precisam de atenção. Se você estiver com mal-estar, dor no peito, falta de ar, dor de cabeça forte, visão turva ou fraqueza, procure atendimento.",
+        "Evite automedicação. Siga a prescrição do seu médico e faça o acompanhamento regular da pressão.",
+        "Vale sentar, descansar e, se possível, repetir a medida da pressão de forma correta após alguns minutos."
+      ]
+    },
+    {
+      "tag": "glicose_diabetes_controle",
+      "patterns": [
+        "Minha glicose subiu",
+        "Minha glicose baixou",
+        "Açúcar no sangue",
+        "Hipoglicemia",
+        "Hiperglicemia",
+        "Diabetes descontrolada",
+        "Medi a glicose"
+      ],
+      "responses": [
+        "Na diabetes, alterações de glicose merecem cuidado. É importante seguir a orientação médica e manter alimentação adequada e hidratação.",
+        "Se houver tremor, suor frio, confusão, sonolência excessiva ou mal-estar importante, procure ajuda.",
+        "Registrar a medição, o horário, a alimentação e os sintomas pode ajudar muito na consulta."
+      ]
+    },
+    {
+      "tag": "exercicio_dor_joelho",
+      "patterns": [
+        "Exercício para dor no joelho",
+        "Alongamento para joelho",
+        "O que fazer para melhorar o joelho",
+        "Como aliviar dor no joelho",
+        "Movimento para joelho"
+      ],
+      "responses": [
+        "Para dor no joelho, exercícios leves costumam ser mais seguros, como sentar e estender a perna devagar, sem forçar, e movimentos suaves de flexão e extensão dentro do conforto.",
+        "Fortalecimento leve da coxa e alongamentos suaves podem ajudar, mas a dor não deve piorar durante o movimento.",
+        "Se o joelho estiver muito inchado, muito quente ou se houver dificuldade importante para andar, procure avaliação médica ou fisioterapêutica."
+      ]
+    },
+    {
+      "tag": "exercicio_dor_coluna",
+      "patterns": [
+        "Exercício para coluna",
+        "Alongamento para costas",
+        "Alongamento para lombar",
+        "O que fazer para dor na coluna",
+        "Exercício para dor nas costas"
+      ],
+      "responses": [
+        "Para coluna, costumam ajudar alongamentos leves, postura correta e pequenas caminhadas, sempre sem forçar a dor.",
+        "Movimentos lentos, respiração calma e evitar permanecer muito tempo sentado ajudam bastante.",
+        "Se houver dor muito intensa, queda recente, perda de força ou dormência, procure avaliação antes de fazer exercícios."
+      ]
+    },
+    {
+      "tag": "exercicio_equilibrio",
+      "patterns": [
+        "Exercício para equilíbrio",
+        "Como melhorar o equilíbrio",
+        "Estou perdendo equilíbrio",
+        "Quero melhorar o equilíbrio",
+        "Tenho medo de cair"
+      ],
+      "responses": [
+        "Para equilíbrio, exercícios simples e seguros podem ajudar, como levantar e sentar devagar com apoio e ficar em pé segurando numa cadeira firme por alguns segundos.",
+        "O ideal é sempre fazer exercícios de equilíbrio perto de apoio seguro, como parede, corrimão ou cadeira firme.",
+        "Se você tem tontura frequente ou já caiu recentemente, o mais seguro é buscar orientação de um fisioterapeuta."
+      ]
+    },
+    {
+      "tag": "prevencao_quedas",
+      "patterns": [
+        "Como evitar quedas",
+        "Tenho medo de cair",
+        "Como prevenir queda",
+        "Estou com medo de escorregar",
+        "Quedas em idosos"
+      ],
+      "responses": [
+        "Para prevenir quedas, mantenha boa iluminação em casa, retire tapetes soltos, use calçado antiderrapante e evite piso molhado.",
+        "Barras de apoio no banheiro, corrimão e cadeira firme para apoio ajudam bastante na segurança.",
+        "Também é importante revisar visão, calçados e remédios que possam causar tontura."
+      ]
+    },
+    {
+      "tag": "memoria_esquecimento",
+      "patterns": [
+        "Estou esquecendo muito",
+        "Minha memória está ruim",
+        "Esqueci o que ia falar",
+        "Ando esquecendo as coisas",
+        "Minha memória falhou",
+        "Treinar a memória"
+      ],
+      "responses": [
+        "Esquecimentos leves podem acontecer, mas vale manter a mente ativa com leitura, conversa, jogos simples e rotina organizada.",
+        "Anotar tarefas, horários de remédios e compromissos ajuda bastante no dia a dia.",
+        "Se o esquecimento estiver piorando muito ou atrapalhando a rotina, o ideal é conversar com um médico."
+      ]
+    },
+    {
+      "tag": "sono_insonia",
+      "patterns": [
+        "Não consigo dormir",
+        "Estou com insônia",
+        "Dormi mal",
+        "Meu sono está ruim",
+        "Acordo muitas vezes à noite",
+        "Não durmo bem"
+      ],
+      "responses": [
+        "Para melhorar o sono, tente manter horário regular para dormir, reduzir cafeína à noite e evitar telas pouco antes de deitar.",
+        "Um ambiente silencioso, escuro e confortável ajuda bastante.",
+        "Se a insônia for frequente ou estiver ligada a tristeza, ansiedade, dor ou falta de ar, vale conversar com um profissional de saúde."
+      ]
+    },
+    {
+      "tag": "hidratacao",
+      "patterns": [
+        "Bebi pouca água",
+        "Estou com sede",
+        "Preciso beber água",
+        "Hidratação",
+        "Quase não tomo água",
+        "Me lembre de beber água"
+      ],
+      "responses": [
+        "A hidratação é muito importante, principalmente para idosos. Tente beber água ao longo do dia, mesmo sem sede intensa.",
+        "Deixar uma garrafinha por perto costuma ajudar bastante.",
+        "A falta de água pode piorar cansaço, tontura e confusão, então vale manter esse cuidado."
+      ]
+    },
+    {
+      "tag": "alimentacao_idoso",
+      "patterns": [
+        "O que comer melhor",
+        "Estou sem apetite",
+        "Comida leve",
+        "Alimentação saudável",
+        "O que é bom para idoso comer",
+        "Estou comendo mal"
+      ],
+      "responses": [
+        "Uma alimentação equilibrada costuma incluir água, frutas, legumes, verduras, feijão, proteínas e refeições regulares.",
+        "Se estiver sem apetite, às vezes ajuda fazer refeições menores e mais leves ao longo do dia.",
+        "Se a falta de apetite persistir, vale conversar com médico ou nutricionista."
+      ]
+    },
+    {
+      "tag": "ansiedade_emocional",
+      "patterns": [
+        "Estou ansioso",
+        "Estou ansiosa",
+        "Estou nervoso",
+        "Estou nervosa",
+        "Não consigo relaxar",
+        "Estou preocupado",
+        "Minha mente não para"
+      ],
+      "responses": [
+        "Respirar lentamente por alguns minutos pode ajudar. Tente inspirar devagar, segurar um pouco e soltar o ar com calma.",
+        "Ansiedade pode piorar muito quando a mente fica acelerada. Focar no presente e falar com alguém de confiança costuma ajudar.",
+        "Se isso estiver muito frequente ou intenso, vale buscar ajuda profissional."
+      ]
+    },
+    {
+      "tag": "solidao",
+      "patterns": [
+        "Estou me sentindo sozinho",
+        "Estou sozinho",
+        "Estou sozinha",
+        "Queria companhia",
+        "Não tenho ninguém para conversar",
+        "Me sinto abandonado"
+      ],
+      "responses": [
+        "Sinto muito que você esteja se sentindo assim. Podemos conversar agora mesmo.",
+        "A solidão pesa bastante. Às vezes ajuda ligar para alguém da família, um amigo ou vizinho de confiança.",
+        "Você não está sozinho nesta conversa. Podemos falar sobre sua saúde, sua rotina ou qualquer preocupação sua."
+      ]
+    },
+    {
+      "tag": "luto_tristeza",
+      "patterns": [
+        "Perdi alguém",
+        "Estou de luto",
+        "Minha esposa faleceu",
+        "Meu marido morreu",
+        "Sinto muita saudade",
+        "Estou chorando muito"
+      ],
+      "responses": [
+        "Sinto muito pela sua perda. O luto é doloroso e cada pessoa passa por ele de um jeito.",
+        "Você não precisa carregar isso sozinho. Conversar com alguém de confiança pode ajudar bastante.",
+        "Se quiser, você pode me contar um pouco sobre essa pessoa."
+      ]
+    },
+    {
+      "tag": "emergencia_sinais_graves",
+      "patterns": [
+        "Dor no peito",
+        "Falta de ar",
+        "Não consigo respirar",
+        "Fraqueza de um lado do corpo",
+        "Fala enrolada",
+        "Desmaiei",
+        "Caí e bati a cabeça",
+        "Estou muito confuso"
+      ],
+      "responses": [
+        "Isso pode ser sinal de urgência. Procure atendimento médico imediatamente ou peça ajuda a alguém próximo agora.",
+        "Esses sintomas não devem ser ignorados. Chame um familiar, cuidador ou serviço de emergência o quanto antes.",
+        "Se você estiver sozinho, tente ligar para alguém de confiança imediatamente."
+      ]
+    },
+    {
+      "tag": "fora_do_escopo",
+      "patterns": [
+        "Me fale de futebol",
+        "Conte uma piada",
+        "Quem ganhou o jogo",
+        "Quero curiosidades",
+        "Vamos falar de novela"
+      ],
+      "responses": [
+        "Eu fui configurado para focar em saúde, bem-estar e cuidados da pessoa idosa. Posso ajudar com remédios, dores, doenças, exercícios leves, memória, pressão e diabetes.",
+        "Meu foco é apoio ao idoso. Se quiser, faça uma pergunta sobre saúde, rotina, mobilidade, medicamentos ou prevenção de quedas.",
+        "Prefiro me limitar a assuntos de cuidado e bem-estar do idoso. Pode me perguntar sobre sintomas, doenças comuns, remédios ou exercícios leves."
+      ]
+    }
+  ]
+}

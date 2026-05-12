@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Health | Página Inicial</title>
+
+  <link rel="stylesheet" href="/css/paginainicial.css">
+</head>
+<body>
+
+<header class="header">
+
+  <div class="logo">
+    AI Health
+  </div>
+
+  <nav class="nav">
+
+    <a href="/">Início</a>
+    <a href="/apresentpj">Projeto</a>
+
+    <% if (usuario) { %>
+
+      <a href="/cameras">Câmeras</a>
+      <a href="/relatorios">Relatórios</a>
+      <a href="/cameraseg">Segurança</a>
+
+      <span class="user-name">
+        Olá, <%= usuario.nome %>
+      </span>
+
+      <a href="/logout" class="btn-login">
+        Sair
+      </a>
+
+    <% } else { %>
+
+      <a href="/login" class="btn-login">
+        Entrar
+      </a>
+
+    <% } %>
+
+  </nav>
+
+</header>
+
+<main class="hero">
+
+  <section class="hero-text">
+
+    <span class="tag">
+      Tecnologia para cuidado familiar
+    </span>
+
+    <% if (usuario) { %>
+
+      <h1>
+        Bem-vindo, <%= usuario.nome %>!
+      </h1>
+
+    <% } else { %>
+
+      <h1>
+        Cuidado inteligente para idosos
+      </h1>
+
+    <% } %>
+
+    <p>
+      O AI Health auxilia familiares e cuidadores
+      no acompanhamento do bem-estar, segurança
+      e rotina de idosos, usando tecnologia simples
+      e acessível.
+    </p>
+
+    <div class="hero-buttons">
+
+      <% if (usuario) { %>
+
+        <a href="/cameras" class="btn-primary">
+          Minhas câmeras
+        </a>
+
+        <a href="/relatorios" class="btn-secondary">
+          Ver relatórios
+        </a>
+
+      <% } else { %>
+
+        <a href="/login" class="btn-primary">
+          Entrar agora
+        </a>
+
+        <a href="/apresentpj" class="btn-secondary">
+          Conhecer projeto
+        </a>
+
+      <% } %>
+
+    </div>
+
+  </section>
+
+  <section class="hero-card">
+
+    <h2>
+      Recursos principais
+    </h2>
+
+    <div class="feature">
+      <strong>Monitoramento</strong>
+
+      <p>
+        Acompanhe situações importantes por meio da câmera.
+      </p>
+    </div>
+
+    <div class="feature">
+      <strong>Assistente inteligente</strong>
+
+      <p>
+        Ajuda com dúvidas sobre saúde, rotina e cuidados.
+      </p>
+    </div>
+
+    <div class="feature">
+      <strong>Suporte familiar</strong>
+
+      <p>
+        Informações organizadas para responsáveis e cuidadores.
+      </p>
+    </div>
+
+  </section>
+
+</main>
+
+<section class="cards-section">
+
+  <div class="card">
+    <h3>Para idosos</h3>
+
+    <p>
+      Interface simples, com textos claros e visual confortável.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Para familiares</h3>
+
+    <p>
+      Mais segurança no acompanhamento diário.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Para cuidadores</h3>
+
+    <p>
+      Apoio na rotina, prevenção e atenção ao bem-estar.
+    </p>
+  </div>
+
+</section>
+
+<footer class="footer">
+  <p>
+    AI Health © 2026 - Projeto TCC
+  </p>
+</footer>
+
+<% if (usuario) { %>
+
+  <div class="chatbot-box" id="chatbotBox">
+
+    <div class="chatbot-header">
+
+      <span>
+        AI Health Chat
+      </span>
+
+      <button id="fecharChat">
+        ×
+      </button>
+
+    </div>
+
+    <div class="chatbot-messages" id="chatMessages">
+
+      <div class="bot-msg">
+        Olá, <%= usuario.nome %>! Como posso ajudar?
+      </div>
+
+    </div>
+
+    <form id="chatForm" class="chatbot-form">
+
+      <input
+        type="text"
+        id="mensagemInput"
+        placeholder="Digite sua mensagem..."
+        required
+      >
+
+      <button type="submit">
+        Enviar
+      </button>
+
+    </form>
+
+  </div>
+
+  <button class="chatbot-button" id="abrirChat">
+    💬
+  </button>
+
+  <script src="/js/chatbot.js"></script>
+
+<% } %>
+
+</body>
+</html>

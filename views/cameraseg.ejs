@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Segurança da Câmera | AI Health</title>
+  <link rel="stylesheet" href="/css/cameraseg.css">
+</head>
+<body>
+
+<header class="topo">
+  <div>
+    <h1>Segurança da Câmera</h1>
+
+    <% if (usuario) { %>
+      <p>Olá, <%= usuario.nome %></p>
+    <% } else { %>
+      <p>Olá, visitante</p>
+    <% } %>
+  </div>
+
+  <nav class="nav">
+    <a href="/">Início</a>
+    <a href="/apresentpj">Projeto</a>
+    <a href="/cameracp">Câmera</a>
+    <a href="/cameraseg">Segurança</a>
+
+    <% if (usuario) { %>
+      <a href="/logout" class="btn-sair">Sair</a>
+    <% } else { %>
+      <a href="/login" class="btn-sair">Entrar</a>
+    <% } %>
+  </nav>
+</header>
+
+<main class="container">
+
+  <section class="principal">
+    <span class="tag">Monitoramento responsável</span>
+
+    <h2>Cuidados, privacidade e segurança</h2>
+
+    <p>
+      A câmera deve ser usada como apoio ao cuidado familiar, respeitando a
+      privacidade do idoso e servindo como ferramenta de observação preventiva.
+    </p>
+  </section>
+
+  <section class="camera-security">
+    <div class="camera-header">
+      <div>
+        <h2>Imagem da câmera de segurança</h2>
+        <p>Transmissão exibida pela API Python com OpenCV.</p>
+      </div>
+
+      <span class="status-online">API Câmera</span>
+    </div>
+
+    <div class="camera-frame">
+      <img src="http://127.0.0.1:5002/video_feed" alt="Câmera de segurança">
+    </div>
+
+    <p class="camera-info">
+      Caso a imagem não apareça, confirme se a API da câmera está rodando em
+      <strong>http://127.0.0.1:5002/video_feed</strong>.
+    </p>
+  </section>
+
+  <section class="cards">
+    <div class="card">
+      <h3>Consentimento</h3>
+      <p>O idoso e a família devem estar cientes do uso da câmera.</p>
+    </div>
+
+    <div class="card">
+      <h3>Ambiente adequado</h3>
+      <p>Evite locais íntimos e posicione a câmera apenas em áreas permitidas.</p>
+    </div>
+
+    <div class="card">
+      <h3>Prevenção</h3>
+      <p>O sistema ajuda a observar riscos, como quedas ou longos períodos sem movimento.</p>
+    </div>
+
+    <div class="card">
+      <h3>Uso complementar</h3>
+      <p>A tecnologia não substitui o acompanhamento humano ou atendimento médico.</p>
+    </div>
+  </section>
+
+  <section class="orientacoes">
+    <h2>Orientações importantes</h2>
+
+    <ul>
+      <li>Use a câmera apenas em locais autorizados.</li>
+      <li>Não utilize o monitoramento para invadir privacidade.</li>
+      <li>Mantenha familiares e responsáveis informados.</li>
+      <li>Em caso de emergência, procure ajuda imediatamente.</li>
+    </ul>
+  </section>
+
+</main>
+
+</body>
+</html>

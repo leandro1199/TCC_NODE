@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios</title>
+
+    <link rel="stylesheet" href="/css/relatorios.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="topo">
+        <h1>Relatórios anteriores</h1>
+    </div>
+
+    <% if (relatorios.length === 0) { %>
+
+        <div class="vazio">
+            <h2>Nenhum relatório encontrado</h2>
+            <p>Os eventos detectados aparecerão aqui.</p>
+        </div>
+
+    <% } else { %>
+
+        <div class="lista-relatorios">
+
+            <% relatorios.forEach(relatorio => { %>
+
+                <div class="card-relatorio">
+
+                    <% if (relatorio.imagem_url) { %>
+
+                        <img
+                            src="<%= relatorio.imagem_url %>"
+                            alt="Imagem do relatório"
+                            class="imagem-relatorio"
+                        >
+
+                    <% } else { %>
+
+                        <div class="imagem-relatorio"></div>
+
+                    <% } %>
+
+                    <div class="card-content">
+
+                        <span class="evento">
+                            <%= relatorio.tipo_evento %>
+                        </span>
+
+                        <h2>
+                            <%= relatorio.nome_camera || "Câmera removida" %>
+                        </h2>
+
+                        <p class="info">
+                            <strong>Descrição:</strong>
+                            <%= relatorio.descricao %>
+                        </p>
+
+                        <div class="confianca">
+                            Confiança IA:
+                            <%= relatorio.confianca %>%
+                        </div>
+
+                        <p class="data">
+                            <strong>Data:</strong>
+                            <%= new Date(relatorio.criado_em)
+                                .toLocaleString("pt-BR") %>
+                        </p>
+
+                    </div>
+
+                </div>
+
+            <% }) %>
+
+        </div>
+
+    <% } %>
+
+</div>
+
+</body>
+</html>
