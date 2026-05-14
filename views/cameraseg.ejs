@@ -2,101 +2,329 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Segurança da Câmera | AI Health</title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Segurança Inteligente | AI Health</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
   <link rel="stylesheet" href="/css/cameraseg.css">
 </head>
 <body>
 
 <header class="topo">
-  <div>
-    <h1>Segurança da Câmera</h1>
+
+  <div class="logo-area">
+
+    <span class="mini-title">
+      AI HEALTH SECURITY
+    </span>
+
+    <h1>Central de Segurança</h1>
 
     <% if (usuario) { %>
-      <p>Olá, <%= usuario.nome %></p>
+      <p>
+        Bem-vindo(a),
+        <strong><%= usuario.nome %></strong>
+      </p>
     <% } else { %>
-      <p>Olá, visitante</p>
+      <p>Bem-vindo(a), visitante</p>
     <% } %>
+
   </div>
 
   <nav class="nav">
+
     <a href="/">Início</a>
+
     <a href="/apresentpj">Projeto</a>
-    <a href="/cameracp">Câmera</a>
-    <a href="/cameraseg">Segurança</a>
+
+    <a href="/cameracp">Câmera IA</a>
+
+    <a href="/cameras">Painel</a>
 
     <% if (usuario) { %>
-      <a href="/logout" class="btn-sair">Sair</a>
+      <a href="/logout" class="btn-nav">
+        Sair
+      </a>
     <% } else { %>
-      <a href="/login" class="btn-sair">Entrar</a>
+      <a href="/login" class="btn-nav">
+        Entrar
+      </a>
     <% } %>
+
   </nav>
+
 </header>
 
 <main class="container">
 
-  <section class="principal">
-    <span class="tag">Monitoramento responsável</span>
+  <section class="hero">
 
-    <h2>Cuidados, privacidade e segurança</h2>
+    <div class="hero-content">
 
-    <p>
-      A câmera deve ser usada como apoio ao cuidado familiar, respeitando a
-      privacidade do idoso e servindo como ferramenta de observação preventiva.
-    </p>
+      <span class="hero-tag">
+        Monitoramento responsável
+      </span>
+
+      <h2>
+        Segurança inteligente com
+        privacidade e cuidado
+      </h2>
+
+      <p>
+        O sistema AI Health utiliza tecnologia
+        para auxiliar no acompanhamento preventivo
+        de idosos, sempre respeitando privacidade,
+        ética e segurança familiar.
+      </p>
+
+      <div class="hero-buttons">
+
+        <a href="/cameras" class="btn-main">
+          Ver Painel
+        </a>
+
+        <a href="/cameracp" class="btn-light">
+          Abrir Webcam IA
+        </a>
+
+      </div>
+
+    </div>
+
+    <div class="hero-card">
+
+      <div class="hero-status">
+
+        <span class="status-dot"></span>
+
+        Sistema protegido
+
+      </div>
+
+      <div class="hero-info">
+
+        <div class="info-box">
+
+          <h3>24h</h3>
+
+          <p>monitoramento contínuo</p>
+
+        </div>
+
+        <div class="info-box">
+
+          <h3>IA</h3>
+
+          <p>análise inteligente</p>
+
+        </div>
+
+      </div>
+
+    </div>
+
   </section>
 
   <section class="camera-security">
+
     <div class="camera-header">
+
       <div>
-        <h2>Imagem da câmera de segurança</h2>
-        <p>Transmissão exibida pela API Python com OpenCV.</p>
+
+        <span class="mini-title">
+          TRANSMISSÃO
+        </span>
+
+        <h2>Câmera em Tempo Real</h2>
+
+        <p>
+          Imagem transmitida pela API Python
+          utilizando OpenCV e Inteligência Artificial.
+        </p>
+
       </div>
 
-      <span class="status-online">API Câmera</span>
+      <span class="status-online">
+
+        <span class="status-dot"></span>
+
+        API Online
+
+      </span>
+
     </div>
 
     <div class="camera-frame">
-      <img src="http://127.0.0.1:5002/video_feed" alt="Câmera de segurança">
+
+      <img
+        src="http://127.0.0.1:5002/video_feed"
+        alt="Câmera de segurança"
+      >
+
+      <div class="camera-overlay">
+
+        <div class="overlay-box">
+
+          <span>AI Health Monitoring</span>
+
+        </div>
+
+      </div>
+
     </div>
 
-    <p class="camera-info">
-      Caso a imagem não apareça, confirme se a API da câmera está rodando em
-      <strong>http://127.0.0.1:5002/video_feed</strong>.
-    </p>
+    <div class="camera-info">
+
+      <div class="camera-alert">
+
+        <strong>Observação:</strong>
+
+        Caso a imagem não apareça,
+        confirme se a API está rodando em:
+
+        <span>
+          http://127.0.0.1:5002/video_feed
+        </span>
+
+      </div>
+
+    </div>
+
   </section>
 
-  <section class="cards">
-    <div class="card">
-      <h3>Consentimento</h3>
-      <p>O idoso e a família devem estar cientes do uso da câmera.</p>
+  <section class="cards-section">
+
+    <div class="section-title">
+
+      <span class="mini-title">
+        BOAS PRÁTICAS
+      </span>
+
+      <h2>Diretrizes de Segurança</h2>
+
     </div>
 
-    <div class="card">
-      <h3>Ambiente adequado</h3>
-      <p>Evite locais íntimos e posicione a câmera apenas em áreas permitidas.</p>
+    <div class="cards">
+
+      <div class="card">
+
+        <div class="card-icon">
+          🔒
+        </div>
+
+        <h3>Consentimento</h3>
+
+        <p>
+          O uso das câmeras deve ser autorizado
+          pelos responsáveis e pelos idosos.
+        </p>
+
+      </div>
+
+      <div class="card">
+
+        <div class="card-icon">
+          🏠
+        </div>
+
+        <h3>Ambiente adequado</h3>
+
+        <p>
+          Utilize apenas em áreas permitidas,
+          evitando ambientes íntimos.
+        </p>
+
+      </div>
+
+      <div class="card">
+
+        <div class="card-icon">
+          ⚠️
+        </div>
+
+        <h3>Prevenção</h3>
+
+        <p>
+          O sistema auxilia na observação
+          de riscos e situações incomuns.
+        </p>
+
+      </div>
+
+      <div class="card">
+
+        <div class="card-icon">
+          ❤️
+        </div>
+
+        <h3>Uso complementar</h3>
+
+        <p>
+          A tecnologia auxilia os cuidados,
+          mas não substitui acompanhamento humano.
+        </p>
+
+      </div>
+
     </div>
 
-    <div class="card">
-      <h3>Prevenção</h3>
-      <p>O sistema ajuda a observar riscos, como quedas ou longos períodos sem movimento.</p>
-    </div>
-
-    <div class="card">
-      <h3>Uso complementar</h3>
-      <p>A tecnologia não substitui o acompanhamento humano ou atendimento médico.</p>
-    </div>
   </section>
 
   <section class="orientacoes">
-    <h2>Orientações importantes</h2>
 
-    <ul>
-      <li>Use a câmera apenas em locais autorizados.</li>
-      <li>Não utilize o monitoramento para invadir privacidade.</li>
-      <li>Mantenha familiares e responsáveis informados.</li>
-      <li>Em caso de emergência, procure ajuda imediatamente.</li>
-    </ul>
+    <div class="section-title">
+
+      <span class="mini-title">
+        ORIENTAÇÕES
+      </span>
+
+      <h2>Cuidados importantes</h2>
+
+    </div>
+
+    <div class="orientacoes-grid">
+
+      <div class="orientacao-item">
+        <span>✔</span>
+        <p>Use a câmera apenas em locais autorizados.</p>
+      </div>
+
+      <div class="orientacao-item">
+        <span>✔</span>
+        <p>Evite qualquer invasão de privacidade.</p>
+      </div>
+
+      <div class="orientacao-item">
+        <span>✔</span>
+        <p>Mantenha familiares informados.</p>
+      </div>
+
+      <div class="orientacao-item">
+        <span>✔</span>
+        <p>Busque ajuda imediata em emergências.</p>
+      </div>
+
+      <div class="orientacao-item">
+        <span>✔</span>
+        <p>Proteja dados e acessos do sistema.</p>
+      </div>
+
+      <div class="orientacao-item">
+        <span>✔</span>
+        <p>Utilize senhas fortes e monitoramento seguro.</p>
+      </div>
+
+    </div>
+
   </section>
 
 </main>

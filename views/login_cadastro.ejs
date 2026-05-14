@@ -1,81 +1,273 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Entrar | AI Health</title>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Login | AI Health</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+  >
+
   <link rel="stylesheet" href="/css/login_cadastro.css">
+
 </head>
 <body>
+
+  <div class="background-glow glow1"></div>
+  <div class="background-glow glow2"></div>
 
   <div class="container" id="container">
 
     <!-- CADASTRO -->
+
     <div class="form-container sign-up-container">
-      <form action="/cadastro" method="POST" autocomplete="off">
-        <h1>Criar Conta</h1>
+
+      <form
+        action="/cadastro"
+        method="POST"
+        autocomplete="off"
+      >
+
+        <span class="mini-title">
+          AI HEALTH
+        </span>
+
+        <h1>Criar conta</h1>
+
+        <p class="subtitle">
+          Cadastre-se para acompanhar
+          saúde, segurança e bem-estar.
+        </p>
 
         <div class="social-container">
-          <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-          <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+
+          <a href="#" class="social">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+
+          <a href="#" class="social">
+            <i class="fab fa-google-plus-g"></i>
+          </a>
+
+          <a href="#" class="social">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+
         </div>
 
-        <span>ou use seu e-mail para se cadastrar</span>
+        <span class="divider">
+          ou utilize seu e-mail
+        </span>
 
-        <input type="text" name="nome" placeholder="Nome completo" required>
-        <input type="email" name="email" placeholder="E-mail" required>
-        <input type="password" name="senha" placeholder="Senha" required minlength="8">
+        <div class="input-group">
 
-        <button type="submit">Cadastrar</button>
+          <i class="fas fa-user"></i>
+
+          <input
+            type="text"
+            name="nome"
+            placeholder="Nome completo"
+            required
+          >
+
+        </div>
+
+        <div class="input-group">
+
+          <i class="fas fa-envelope"></i>
+
+          <input
+            type="email"
+            name="email"
+            placeholder="E-mail"
+            required
+          >
+
+        </div>
+
+        <div class="input-group">
+
+          <i class="fas fa-lock"></i>
+
+          <input
+            type="password"
+            name="senha"
+            placeholder="Senha"
+            required
+            minlength="8"
+          >
+
+        </div>
+
+        <button type="submit">
+          Criar conta
+        </button>
+
       </form>
+
     </div>
 
     <!-- LOGIN -->
+
     <div class="form-container sign-in-container">
-      <form action="/login" method="POST" autocomplete="off">
-        <h1>Entrar</h1>
+
+      <form
+        action="/login"
+        method="POST"
+        autocomplete="off"
+      >
+
+        <span class="mini-title">
+          AI HEALTH
+        </span>
+
+        <h1>Bem-vindo</h1>
+
+        <p class="subtitle">
+          Entre na plataforma e continue
+          monitorando com segurança.
+        </p>
 
         <div class="social-container">
-          <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-          <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+
+          <a href="#" class="social">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+
+          <a href="#" class="social">
+            <i class="fab fa-google-plus-g"></i>
+          </a>
+
+          <a href="#" class="social">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+
         </div>
 
-        <span>ou use sua conta</span>
+        <span class="divider">
+          ou entre com sua conta
+        </span>
 
-        <input type="email" name="email" placeholder="E-mail" required>
-        <input type="password" name="senha" placeholder="Senha" required>
+        <div class="input-group">
 
-        <a href="#" class="forgot">Esqueceu sua senha?</a>
+          <i class="fas fa-envelope"></i>
 
-        <button type="submit">Entrar</button>
+          <input
+            type="email"
+            name="email"
+            placeholder="E-mail"
+            required
+          >
+
+        </div>
+
+        <div class="input-group">
+
+          <i class="fas fa-lock"></i>
+
+          <input
+            type="password"
+            name="senha"
+            placeholder="Senha"
+            required
+          >
+
+        </div>
+
+        <a href="#" class="forgot">
+          Esqueceu sua senha?
+        </a>
+
+        <button type="submit">
+          Entrar
+        </button>
+
       </form>
+
     </div>
 
-    <!-- PAINEL ANIMADO -->
+    <!-- OVERLAY -->
+
     <div class="overlay-container">
+
       <div class="overlay">
 
         <div class="overlay-panel overlay-left">
-          <h1>Bem-vindo de volta!</h1>
-          <p>Entre com sua conta para continuar usando o AI Health.</p>
-          <button class="ghost" type="button" id="signIn">Entrar</button>
+
+          <div class="overlay-content">
+
+            <span class="overlay-mini">
+              AI HEALTH PLATFORM
+            </span>
+
+            <h1>Que bom ver você novamente!</h1>
+
+            <p>
+              Faça login para continuar
+              acompanhando monitoramentos,
+              relatórios e análises inteligentes.
+            </p>
+
+            <button
+              class="ghost"
+              type="button"
+              id="signIn"
+            >
+              Entrar
+            </button>
+
+          </div>
+
         </div>
 
         <div class="overlay-panel overlay-right">
-          <h1>Olá!</h1>
-          <p>Crie sua conta para acompanhar cuidados, saúde e bem-estar.</p>
-          <button class="ghost" type="button" id="signUp">Cadastrar</button>
+
+          <div class="overlay-content">
+
+            <span class="overlay-mini">
+              AI HEALTH PLATFORM
+            </span>
+
+            <h1>Comece agora</h1>
+
+            <p>
+              Crie sua conta e tenha acesso
+              ao sistema de monitoramento
+              inteligente AI Health.
+            </p>
+
+            <button
+              class="ghost"
+              type="button"
+              id="signUp"
+            >
+              Criar conta
+            </button>
+
+          </div>
+
         </div>
 
       </div>
+
     </div>
 
   </div>
 
   <script src="/js/login_cadastro.js"></script>
+
 </body>
 </html>

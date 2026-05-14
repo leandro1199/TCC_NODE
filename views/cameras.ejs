@@ -1,111 +1,268 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Câmeras</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Painel de Câmeras | AI Health</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 
     <link rel="stylesheet" href="/css/cameras.css">
 </head>
 <body>
 
-<div class="container">
+<header class="header">
 
-    <div class="topo">
-        <h1>Minhas Câmeras</h1>
+    <div class="logo-area">
+
+        <span class="mini-title">
+            AI HEALTH SECURITY
+        </span>
+
+        <h1>Painel de Monitoramento</h1>
+
+        <p>
+            Gerencie suas câmeras de segurança
+            e acompanhe transmissões em tempo real.
+        </p>
+
     </div>
 
-    <form action="/cameras" method="POST" class="form-camera">
+    <div class="header-actions">
 
-        <input
-            type="text"
-            name="nome"
-            placeholder="Nome da câmera"
-            required
-        >
+        <a href="/" class="btn-light">
+            Início
+        </a>
 
-        <input
-            type="text"
-            name="rtsp_url"
-            placeholder="URL RTSP da câmera"
-            required
-        >
+        <a href="/apresentpj" class="btn-light">
+            Projeto
+        </a>
 
-        <button type="submit">
-            Cadastrar câmera
-        </button>
+        <a href="/camerapc" class="btn-main">
+            Webcam IA
+        </a>
 
-    </form>
+    </div>
+
+</header>
+
+<main class="container">
+
+    <section class="stats">
+
+        <div class="stat-card">
+
+            <h2>
+                <%= cameras.length %>
+            </h2>
+
+            <p>Câmeras cadastradas</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h2>
+                <%= cameras.filter(c => c.status_camera === 'online').length %>
+            </h2>
+
+            <p>Câmeras online</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h2>
+                <%= cameras.filter(c => c.status_camera !== 'online').length %>
+            </h2>
+
+            <p>Câmeras offline</p>
+
+        </div>
+
+    </section>
+
+    <section class="form-section">
+
+        <div class="section-header">
+
+            <div>
+                <span class="mini-title">
+                    NOVA CÂMERA
+                </span>
+
+                <h2>Adicionar Dispositivo</h2>
+            </div>
+
+        </div>
+
+        <form action="/cameras" method="POST" class="form-camera">
+
+            <div class="input-group">
+
+                <label>Nome da câmera</label>
+
+                <input
+                    type="text"
+                    name="nome"
+                    placeholder="Ex: Sala Principal"
+                    required
+                >
+
+            </div>
+
+            <div class="input-group">
+
+                <label>URL RTSP</label>
+
+                <input
+                    type="text"
+                    name="rtsp_url"
+                    placeholder="rtsp://usuario:senha@ip:porta"
+                    required
+                >
+
+            </div>
+
+            <button type="submit">
+                + Cadastrar câmera
+            </button>
+
+        </form>
+
+    </section>
 
     <% if (cameras.length === 0) { %>
 
-        <div class="vazio">
+        <section class="empty-state">
+
+            <div class="empty-icon">
+                📷
+            </div>
+
             <h2>Nenhuma câmera cadastrada</h2>
 
             <p>
-                Cadastre sua primeira câmera para iniciar o monitoramento.
+                Cadastre sua primeira câmera para começar
+                o monitoramento inteligente em tempo real.
             </p>
-        </div>
+
+        </section>
 
     <% } else { %>
 
-        <div class="lista-cameras">
+        <section class="cameras-section">
 
-            <% cameras.forEach(camera => { %>
+            <div class="section-header">
 
-                <div class="card-camera">
+                <div>
+                    <span class="mini-title">
+                        MONITORAMENTO
+                    </span>
 
-                    <div class="camera-preview">
-
-                        <img
-                            src="http://127.0.0.1:5002/video_feed/<%= camera.id %>"
-                            alt="Câmera <%= camera.nome %>"
-                            class="camera-img"
-                        >
-
-                    </div>
-
-                    <div class="card-content">
-
-                        <h2>
-                            <%= camera.nome %>
-                        </h2>
-
-                        <p>
-                            <strong>Status:</strong>
-
-                            <span class="
-                                status
-                                <%= camera.status_camera === 'online'
-                                    ? 'online'
-                                    : 'offline'
-                                %>
-                            ">
-                                <%= camera.status_camera %>
-                            </span>
-                        </p>
-
-                        <br>
-
-                        <p>
-                            <strong>RTSP:</strong>
-                        </p>
-
-                        <p style="word-break: break-all;">
-                            <%= camera.rtsp_url %>
-                        </p>
-
-                    </div>
-
+                    <h2>Câmeras Ativas</h2>
                 </div>
 
-            <% }) %>
+            </div>
 
-        </div>
+            <div class="lista-cameras">
+
+                <% cameras.forEach(camera => { %>
+
+                    <div class="card-camera">
+
+                        <div class="camera-preview">
+
+                            <img
+                                src="http://127.0.0.1:5002/video_feed/<%= camera.id %>"
+                                alt="Câmera <%= camera.nome %>"
+                                class="camera-img"
+                            >
+
+                            <div class="camera-overlay">
+
+                                <div class="camera-status
+                                    <%= camera.status_camera === 'online'
+                                    ? 'online-bg'
+                                    : 'offline-bg'
+                                    %>">
+
+                                    <span class="status-dot"></span>
+
+                                    <%= camera.status_camera %>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="card-content">
+
+                            <div class="camera-top">
+
+                                <div>
+                                    <h2>
+                                        <%= camera.nome %>
+                                    </h2>
+
+                                    <p class="camera-subtitle">
+                                        Sistema AI Health
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="camera-info">
+
+                                <div class="info-item">
+
+                                    <span>Status</span>
+
+                                    <strong class="
+                                        <%= camera.status_camera === 'online'
+                                        ? 'online-text'
+                                        : 'offline-text'
+                                        %>
+                                    ">
+                                        <%= camera.status_camera %>
+                                    </strong>
+
+                                </div>
+
+                                <div class="info-item rtsp-box">
+
+                                    <span>URL RTSP</span>
+
+                                    <p>
+                                        <%= camera.rtsp_url %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                <% }) %>
+
+            </div>
+
+        </section>
 
     <% } %>
 
-</div>
+</main>
 
 </body>
 </html>

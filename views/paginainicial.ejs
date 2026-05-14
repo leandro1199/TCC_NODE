@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>AI Health | Página Inicial</title>
 
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
   <link rel="stylesheet" href="/css/paginainicial.css">
+
 </head>
 <body>
 
@@ -18,16 +30,27 @@
   <nav class="nav">
 
     <a href="/">Início</a>
-    <a href="/apresentpj">Projeto</a>
+
+    <a href="/apresentpj">
+      Projeto
+    </a>
 
     <% if (usuario) { %>
 
-      <a href="/cameras">Câmeras</a>
-      <a href="/relatorios">Relatórios</a>
-      <a href="/cameraseg">Segurança</a>
+      <a href="/cameras">
+        Câmeras
+      </a>
+
+      <a href="/relatorios">
+        Relatórios
+      </a>
+
+      <a href="/cameraseg">
+        Segurança
+      </a>
 
       <span class="user-name">
-        Olá, <%= usuario.nome %>
+        👋 Olá, <%= usuario.nome %>
       </span>
 
       <a href="/logout" class="btn-login">
@@ -46,33 +69,39 @@
 
 </header>
 
+<!-- HERO -->
+
 <main class="hero">
+
+  <div class="hero-background"></div>
 
   <section class="hero-text">
 
     <span class="tag">
-      Tecnologia para cuidado familiar
+      Plataforma inteligente para cuidados
     </span>
 
     <% if (usuario) { %>
 
       <h1>
-        Bem-vindo, <%= usuario.nome %>!
+        Bem-vindo,<br>
+        <span><%= usuario.nome %></span>
       </h1>
 
     <% } else { %>
 
       <h1>
-        Cuidado inteligente para idosos
+        Monitoramento inteligente
+        para idosos
       </h1>
 
     <% } %>
 
     <p>
-      O AI Health auxilia familiares e cuidadores
-      no acompanhamento do bem-estar, segurança
-      e rotina de idosos, usando tecnologia simples
-      e acessível.
+      O AI Health utiliza tecnologia inteligente,
+      monitoramento e assistência virtual para
+      ajudar familiares e cuidadores no acompanhamento
+      da saúde, segurança e bem-estar de idosos.
     </p>
 
     <div class="hero-buttons">
@@ -80,7 +109,7 @@
       <% if (usuario) { %>
 
         <a href="/cameras" class="btn-primary">
-          Minhas câmeras
+          Acessar câmeras
         </a>
 
         <a href="/relatorios" class="btn-secondary">
@@ -90,7 +119,7 @@
       <% } else { %>
 
         <a href="/login" class="btn-primary">
-          Entrar agora
+          Começar agora
         </a>
 
         <a href="/apresentpj" class="btn-secondary">
@@ -101,122 +130,301 @@
 
     </div>
 
+    <div class="hero-stats">
+
+      <div class="stat-box">
+        <h3>24h</h3>
+        <p>Monitoramento</p>
+      </div>
+
+      <div class="stat-box">
+        <h3>IA</h3>
+        <p>Assistente inteligente</p>
+      </div>
+
+      <div class="stat-box">
+        <h3>100%</h3>
+        <p>Foco em acessibilidade</p>
+      </div>
+
+    </div>
+
   </section>
 
   <section class="hero-card">
+
+    <div class="card-top">
+
+      <span class="live-dot"></span>
+
+      Sistema ativo
+
+    </div>
 
     <h2>
       Recursos principais
     </h2>
 
     <div class="feature">
-      <strong>Monitoramento</strong>
 
-      <p>
-        Acompanhe situações importantes por meio da câmera.
-      </p>
+      <div class="feature-icon">
+        📹
+      </div>
+
+      <div>
+
+        <strong>
+          Monitoramento em tempo real
+        </strong>
+
+        <p>
+          Visualize câmeras e acompanhe
+          situações importantes rapidamente.
+        </p>
+
+      </div>
+
     </div>
 
     <div class="feature">
-      <strong>Assistente inteligente</strong>
 
-      <p>
-        Ajuda com dúvidas sobre saúde, rotina e cuidados.
-      </p>
+      <div class="feature-icon">
+        🤖
+      </div>
+
+      <div>
+
+        <strong>
+          Assistente virtual
+        </strong>
+
+        <p>
+          Tire dúvidas sobre cuidados,
+          rotina e segurança.
+        </p>
+
+      </div>
+
     </div>
 
     <div class="feature">
-      <strong>Suporte familiar</strong>
 
-      <p>
-        Informações organizadas para responsáveis e cuidadores.
-      </p>
+      <div class="feature-icon">
+        📊
+      </div>
+
+      <div>
+
+        <strong>
+          Relatórios inteligentes
+        </strong>
+
+        <p>
+          Informações organizadas para
+          familiares e cuidadores.
+        </p>
+
+      </div>
+
     </div>
 
   </section>
 
 </main>
 
+<!-- BENEFÍCIOS -->
+
 <section class="cards-section">
 
   <div class="card">
-    <h3>Para idosos</h3>
+
+    <div class="card-icon">
+      👴
+    </div>
+
+    <h3>
+      Para idosos
+    </h3>
 
     <p>
-      Interface simples, com textos claros e visual confortável.
+      Interface simples, intuitiva e
+      confortável para facilitar o uso diário.
     </p>
+
   </div>
 
   <div class="card">
-    <h3>Para familiares</h3>
+
+    <div class="card-icon">
+      👨‍👩‍👧
+    </div>
+
+    <h3>
+      Para familiares
+    </h3>
 
     <p>
-      Mais segurança no acompanhamento diário.
+      Mais tranquilidade e segurança no
+      acompanhamento da rotina.
     </p>
+
   </div>
 
   <div class="card">
-    <h3>Para cuidadores</h3>
+
+    <div class="card-icon">
+      🩺
+    </div>
+
+    <h3>
+      Para cuidadores
+    </h3>
 
     <p>
-      Apoio na rotina, prevenção e atenção ao bem-estar.
+      Apoio inteligente na prevenção,
+      observação e acompanhamento.
     </p>
+
+  </div>
+
+</section>
+
+<!-- INFORMAÇÕES -->
+
+<section class="info-section">
+
+  <div class="info-text">
+
+    <span class="mini-tag">
+      AI HEALTH
+    </span>
+
+    <h2>
+      Tecnologia que aproxima famílias
+    </h2>
+
+    <p>
+      Nossa plataforma foi criada para unir
+      monitoramento, cuidado e acessibilidade
+      em um único sistema moderno e intuitivo.
+    </p>
+
+    <ul>
+
+      <li>
+        ✔ Interface moderna e acessível
+      </li>
+
+      <li>
+        ✔ Monitoramento com inteligência artificial
+      </li>
+
+      <li>
+        ✔ Relatórios organizados e simples
+      </li>
+
+      <li>
+        ✔ Suporte para familiares e cuidadores
+      </li>
+
+    </ul>
+
+  </div>
+
+  <div class="info-card">
+
+    <div class="glass-card">
+
+      <h3>
+        AI Health
+      </h3>
+
+      <p>
+        Cuidado, segurança e tecnologia
+        trabalhando juntos para melhorar
+        a qualidade de vida.
+      </p>
+
+    </div>
+
   </div>
 
 </section>
 
 <footer class="footer">
+
   <p>
     AI Health © 2026 - Projeto TCC
   </p>
+
 </footer>
 
 <% if (usuario) { %>
 
-  <div class="chatbot-box" id="chatbotBox">
+<div class="chatbot-box" id="chatbotBox">
 
-    <div class="chatbot-header">
+  <div class="chatbot-header">
 
-      <span>
+    <div>
+
+      <strong>
         AI Health Chat
-      </span>
+      </strong>
 
-      <button id="fecharChat">
-        ×
-      </button>
-
-    </div>
-
-    <div class="chatbot-messages" id="chatMessages">
-
-      <div class="bot-msg">
-        Olá, <%= usuario.nome %>! Como posso ajudar?
-      </div>
+      <p>
+        Assistente inteligente
+      </p>
 
     </div>
 
-    <form id="chatForm" class="chatbot-form">
-
-      <input
-        type="text"
-        id="mensagemInput"
-        placeholder="Digite sua mensagem..."
-        required
-      >
-
-      <button type="submit">
-        Enviar
-      </button>
-
-    </form>
+    <button id="fecharChat">
+      ×
+    </button>
 
   </div>
 
-  <button class="chatbot-button" id="abrirChat">
-    💬
-  </button>
+  <div
+    class="chatbot-messages"
+    id="chatMessages"
+  >
 
-  <script src="/js/chatbot.js"></script>
+    <div class="bot-msg">
+
+      Olá, <%= usuario.nome %>!
+      Como posso ajudar hoje?
+
+    </div>
+
+  </div>
+
+  <form
+    id="chatForm"
+    class="chatbot-form"
+  >
+
+    <input
+      type="text"
+      id="mensagemInput"
+      placeholder="Digite sua mensagem..."
+      required
+    >
+
+    <button type="submit">
+      →
+    </button>
+
+  </form>
+
+</div>
+
+<button
+  class="chatbot-button"
+  id="abrirChat"
+>
+  💬
+</button>
+
+<script src="/js/chatbot.js"></script>
 
 <% } %>
 

@@ -3,19 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Webcam | AI Health</title>
+
+  <title>Monitoramento Inteligente | AI Health</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="/css/camerapc.css">
 </head>
 <body>
 
 <header class="topo">
-  <div>
-    <h1>Relatório da Câmera</h1>
+
+  <div class="logo-area">
+    <span class="mini-text">AI HEALTH MONITORING</span>
+
+    <h1>Monitoramento Inteligente</h1>
 
     <% if (usuario) { %>
-      <p>Olá, <%= usuario.nome %></p>
+      <p>Bem-vindo(a), <strong><%= usuario.nome %></strong></p>
     <% } else { %>
-      <p>Olá, visitante</p>
+      <p>Bem-vindo(a), visitante</p>
     <% } %>
   </div>
 
@@ -25,50 +32,131 @@
     <a href="/cameraseg">Segurança</a>
 
     <% if (usuario) { %>
-      <a href="/logout" class="btn-sair">Sair</a>
+      <a href="/logout" class="btn-nav">Sair</a>
     <% } else { %>
-      <a href="/login" class="btn-sair">Entrar</a>
+      <a href="/login" class="btn-nav">Entrar</a>
     <% } %>
   </nav>
+
 </header>
 
 <main class="container">
-  <section class="video-box">
-    <video id="video" autoplay playsinline muted></video>
-    <canvas id="canvas"></canvas>
+
+  <section class="video-section">
+
+    <div class="video-header">
+      <div>
+        <h2>Webcam em Tempo Real</h2>
+        <p>
+          Acompanhe expressões, emoções e respostas
+          em tempo real utilizando Inteligência Artificial.
+        </p>
+      </div>
+
+      <div class="status-live">
+        <span class="live-dot"></span>
+        AO VIVO
+      </div>
+    </div>
+
+    <div class="video-box">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="canvas"></canvas>
+    </div>
+
   </section>
 
   <section class="painel">
+
     <div class="botoes">
-      <button id="startBtn">Iniciar sessão</button>
-      <button id="stopBtn" disabled>Encerrar sessão</button>
-      <button id="speakBtn" disabled>Responder por voz</button>
+
+      <button id="startBtn" class="btn-primary">
+        ▶ Iniciar Sessão
+      </button>
+
+      <button id="stopBtn" class="btn-danger" disabled>
+        ■ Encerrar Sessão
+      </button>
+
+      <button id="speakBtn" class="btn-secondary" disabled>
+        🎤 Responder por Voz
+      </button>
+
     </div>
 
-    <div class="status-box card">
-      <h2>Status</h2>
-      <p><strong>Sessão:</strong> <span id="sessaoStatus">Não iniciada</span></p>
-      <p><strong>Emoção atual:</strong> <span id="emocaoAtual">---</span></p>
-      <p><strong>Confiança:</strong> <span id="confiancaAtual">---</span></p>
+    <div class="card status-box">
+
+      <div class="card-top">
+        <h2>Status da Sessão</h2>
+        <span class="badge">Atividade</span>
+      </div>
+
+      <div class="info-list">
+
+        <div class="info-item">
+          <span>Sessão</span>
+          <strong id="sessaoStatus">Não iniciada</strong>
+        </div>
+
+        <div class="info-item">
+          <span>Emoção Atual</span>
+          <strong id="emocaoAtual">---</strong>
+        </div>
+
+        <div class="info-item">
+          <span>Confiança</span>
+          <strong id="confiancaAtual">---</strong>
+        </div>
+
+      </div>
+
     </div>
 
-    <div class="pergunta-box card">
-      <h2>Pergunta atual</h2>
-      <p id="perguntaAtual">Nenhuma pergunta ainda.</p>
+    <div class="card">
+
+      <div class="card-top">
+        <h2>Pergunta Atual</h2>
+        <span class="emoji">💬</span>
+      </div>
+
+      <p id="perguntaAtual">
+        Nenhuma pergunta foi iniciada ainda.
+      </p>
+
     </div>
 
-    <div class="fala-box card">
-      <h2>Resposta falada</h2>
-      <p id="textoFalado">Nenhuma fala capturada.</p>
+    <div class="card">
+
+      <div class="card-top">
+        <h2>Resposta Falada</h2>
+        <span class="emoji">🎤</span>
+      </div>
+
+      <p id="textoFalado">
+        Nenhuma fala capturada até o momento.
+      </p>
+
     </div>
 
-    <div class="relatorio-box card">
-      <h2>Relatório resumido</h2>
-      <pre id="relatorioFinal">O relatório aparecerá aqui ao encerrar a sessão.</pre>
+    <div class="card relatorio-box">
+
+      <div class="card-top">
+        <h2>Relatório Inteligente</h2>
+        <span class="emoji">📄</span>
+      </div>
+
+      <pre id="relatorioFinal">
+O relatório da análise emocional aparecerá aqui
+após o encerramento da sessão.
+      </pre>
+
     </div>
+
   </section>
+
 </main>
 
 <script src="/js/camerapc.js"></script>
+
 </body>
 </html>

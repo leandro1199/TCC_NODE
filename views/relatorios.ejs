@@ -1,86 +1,245 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatórios</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Relatórios | AI Health</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
 
     <link rel="stylesheet" href="/css/relatorios.css">
+
 </head>
 <body>
 
-<div class="container">
+<header class="header">
 
-    <div class="topo">
-        <h1>Relatórios anteriores</h1>
+    <div class="logo">
+        AI Health
     </div>
+
+    <nav class="nav">
+
+        <a href="/">
+            Início
+        </a>
+
+        <a href="/cameras">
+            Câmeras
+        </a>
+
+        <a href="/relatorios" class="active">
+            Relatórios
+        </a>
+
+        <a href="/cameraseg">
+            Segurança
+        </a>
+
+    </nav>
+
+</header>
+
+<main class="container">
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <span class="tag">
+                Histórico inteligente
+            </span>
+
+            <h1>
+                Relatórios de monitoramento
+            </h1>
+
+            <p>
+                Visualize registros, eventos detectados
+                e informações importantes identificadas
+                pelo sistema de monitoramento AI Health.
+            </p>
+
+        </div>
+
+        <div class="hero-info">
+
+            <div class="info-card">
+
+                <h3>
+                    <%= relatorios.length %>
+                </h3>
+
+                <p>
+                    Relatórios registrados
+                </p>
+
+            </div>
+
+            <div class="info-card">
+
+                <h3>
+                    IA
+                </h3>
+
+                <p>
+                    Análise inteligente
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- LISTA -->
 
     <% if (relatorios.length === 0) { %>
 
-        <div class="vazio">
-            <h2>Nenhum relatório encontrado</h2>
-            <p>Os eventos detectados aparecerão aqui.</p>
-        </div>
+        <section class="vazio">
+
+            <div class="empty-icon">
+                📄
+            </div>
+
+            <h2>
+                Nenhum relatório encontrado
+            </h2>
+
+            <p>
+                Os eventos detectados pelo sistema
+                aparecerão aqui automaticamente.
+            </p>
+
+        </section>
 
     <% } else { %>
 
-        <div class="lista-relatorios">
+        <section class="lista-relatorios">
 
             <% relatorios.forEach(relatorio => { %>
 
-                <div class="card-relatorio">
+                <article class="card-relatorio">
 
-                    <% if (relatorio.imagem_url) { %>
+                    <div class="image-wrapper">
 
-                        <img
-                            src="<%= relatorio.imagem_url %>"
-                            alt="Imagem do relatório"
-                            class="imagem-relatorio"
-                        >
+                        <% if (relatorio.imagem_url) { %>
 
-                    <% } else { %>
+                            <img
+                                src="<%= relatorio.imagem_url %>"
+                                alt="Imagem do relatório"
+                                class="imagem-relatorio"
+                            >
 
-                        <div class="imagem-relatorio"></div>
+                        <% } else { %>
 
-                    <% } %>
+                            <div class="imagem-relatorio no-image">
+
+                                <span>
+                                    Sem imagem
+                                </span>
+
+                            </div>
+
+                        <% } %>
+
+                        <div class="image-overlay"></div>
+
+                    </div>
 
                     <div class="card-content">
 
-                        <span class="evento">
-                            <%= relatorio.tipo_evento %>
-                        </span>
+                        <div class="top-card">
+
+                            <span class="evento">
+                                <%= relatorio.tipo_evento %>
+                            </span>
+
+                            <span class="status">
+                                Detectado
+                            </span>
+
+                        </div>
 
                         <h2>
                             <%= relatorio.nome_camera || "Câmera removida" %>
                         </h2>
 
                         <p class="info">
-                            <strong>Descrição:</strong>
+
+                            <strong>
+                                Descrição:
+                            </strong>
+
                             <%= relatorio.descricao %>
+
                         </p>
 
-                        <div class="confianca">
-                            Confiança IA:
-                            <%= relatorio.confianca %>%
+                        <div class="confianca-box">
+
+                            <div class="confianca-top">
+
+                                <span>
+                                    Confiança IA
+                                </span>
+
+                                <strong>
+                                    <%= relatorio.confianca %>%
+                                </strong>
+
+                            </div>
+
+                            <div class="barra">
+                                <div 
+                                class="barra-fill"
+                                data-width="<%= relatorio.confianca %>">
+                                </div>
+                            </div>
+
                         </div>
 
-                        <p class="data">
-                            <strong>Data:</strong>
-                            <%= new Date(relatorio.criado_em)
-                                .toLocaleString("pt-BR") %>
-                        </p>
+                        <div class="footer-card">
+
+                            <span class="data">
+
+                                📅
+                                <%= new Date(relatorio.criado_em)
+                                    .toLocaleString("pt-BR") %>
+
+                            </span>
+
+                        </div>
 
                     </div>
 
-                </div>
+                </article>
 
             <% }) %>
 
-        </div>
+        </section>
 
     <% } %>
 
-</div>
+</main>
+
+<footer class="footer">
+
+    <p>
+        AI Health © 2026 - Sistema inteligente de monitoramento
+    </p>
+
+</footer>
 
 </body>
 </html>
