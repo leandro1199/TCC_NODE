@@ -17,6 +17,8 @@
     "ejs": "^5.0.2",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
+    "firebase": "^12.13.0",
+    "firebase-admin": "^13.10.0",
     "mysql2": "^3.22.2"
   }
 }

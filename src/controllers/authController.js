@@ -1,6 +1,12 @@
 const db = require('../config/db');
 const bcrypt = require('bcrypt');
 
+// 🔐 Firebase Admin
+const { admin } = require('../config/firebaseAdmin');
+
+/* =========================
+   LOGIN TRADICIONAL (MYSQL)
+========================= */
 const login = async (req, res) => {
   const { email, senha } = req.body;
 
@@ -36,6 +42,10 @@ const login = async (req, res) => {
   }
 };
 
+
+/* =========================
+   CADASTRO TRADICIONAL
+========================= */
 const cadastro = async (req, res) => {
   const { nome, email, senha } = req.body;
 
@@ -63,14 +73,84 @@ const cadastro = async (req, res) => {
   }
 };
 
+
+/* =========================
+   LOGOUT
+========================= */
 const logout = (req, res) => {
   req.session.destroy(() => {
     res.redirect('/');
   });
 };
 
+
+/* =========================
+   LOGIN GOOGLE (FIREBASE)
+========================= */
+const firebaseLogin = async (req, res) => {
+  try {
+    const { idToken } = req.body;
+
+    if (!idToken) {
+      return res.status(400).json({
+        sucesso: false,
+        erro: "Token ausente"
+      });
+    }
+
+    // 🔐 valida token Firebase
+    const decoded = await admin.auth().verifyIdToken(idToken);
+
+    const uid = decoded.uid;
+    const email = decoded.email;
+    const nome = decoded.name || "Usuário Google";
+
+    // 🧠 verifica se existe no MySQL
+    const [rows] = await db.execute(
+      'SELECT * FROM usuarios WHERE email = ?',
+      [email]
+    );
+
+    let userId;
+
+    if (rows.length === 0) {
+      const [result] = await db.execute(
+        'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)',
+        [nome, email, 'GOOGLE_AUTH']
+      );
+
+      userId = result.insertId;
+    } else {
+      userId = rows[0].id;
+    }
+
+    // 🍪 sessão unificada
+    req.session.usuario = {
+      id: userId,
+      nome,
+      email,
+      uidFirebase: uid
+    };
+
+    return res.json({ sucesso: true });
+
+  } catch (err) {
+    console.error('firebaseLogin error:', err);
+
+    return res.status(401).json({
+      sucesso: false,
+      erro: "Token inválido"
+    });
+  }
+};
+
+
+/* =========================
+   EXPORT
+========================= */
 module.exports = {
   login,
   cadastro,
-  logout
+  logout,
+  firebaseLogin
 };

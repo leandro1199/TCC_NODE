@@ -1,6 +1,23 @@
-venv/
-python/venv/
-node_modules/
-__pycache__/
+# Node
+node_modules
+
+# Python
+venv
+__pycache__
 *.pyc
+
+# Ambiente
 .env
+
+# Firebase
+serviceAccountKey.json
+
+# Logs
+*.log
+
+# VSCode
+.vscode
+
+# Sistema
+.DS_Store
+Thumbs.db

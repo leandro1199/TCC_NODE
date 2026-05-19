@@ -1,29 +1,19 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-
   <meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Login | AI Health</title>
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
-  >
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
-  >
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
 
   <link rel="stylesheet" href="/css/login_cadastro.css">
-
 </head>
+
 <body>
 
   <div class="background-glow glow1"></div>
@@ -32,24 +22,14 @@
   <div class="container" id="container">
 
     <!-- CADASTRO -->
-
     <div class="form-container sign-up-container">
+      <form action="/cadastro" method="POST" autocomplete="off">
 
-      <form
-        action="/cadastro"
-        method="POST"
-        autocomplete="off"
-      >
-
-        <span class="mini-title">
-          AI HEALTH
-        </span>
-
+        <span class="mini-title">AI HEALTH</span>
         <h1>Criar conta</h1>
 
         <p class="subtitle">
-          Cadastre-se para acompanhar
-          saúde, segurança e bem-estar.
+          Cadastre-se para acompanhar saúde, segurança e bem-estar.
         </p>
 
         <div class="social-container">
@@ -58,7 +38,8 @@
             <i class="fab fa-facebook-f"></i>
           </a>
 
-          <a href="#" class="social">
+          <!-- GOOGLE LOGIN (CORRIGIDO) -->
+          <a href="#" id="googleLoginBtn" class="social">
             <i class="fab fa-google-plus-g"></i>
           </a>
 
@@ -68,77 +49,36 @@
 
         </div>
 
-        <span class="divider">
-          ou utilize seu e-mail
-        </span>
+        <span class="divider">ou utilize seu e-mail</span>
 
         <div class="input-group">
-
           <i class="fas fa-user"></i>
-
-          <input
-            type="text"
-            name="nome"
-            placeholder="Nome completo"
-            required
-          >
-
+          <input type="text" name="nome" placeholder="Nome completo" required>
         </div>
 
         <div class="input-group">
-
           <i class="fas fa-envelope"></i>
-
-          <input
-            type="email"
-            name="email"
-            placeholder="E-mail"
-            required
-          >
-
+          <input type="email" name="email" placeholder="E-mail" required>
         </div>
 
         <div class="input-group">
-
           <i class="fas fa-lock"></i>
-
-          <input
-            type="password"
-            name="senha"
-            placeholder="Senha"
-            required
-            minlength="8"
-          >
-
+          <input type="password" name="senha" placeholder="Senha" required minlength="8">
         </div>
 
-        <button type="submit">
-          Criar conta
-        </button>
-
+        <button type="submit">Criar conta</button>
       </form>
-
     </div>
 
     <!-- LOGIN -->
-
     <div class="form-container sign-in-container">
+      <form action="/login" method="POST" autocomplete="off">
 
-      <form
-        action="/login"
-        method="POST"
-        autocomplete="off"
-      >
-
-        <span class="mini-title">
-          AI HEALTH
-        </span>
-
+        <span class="mini-title">AI HEALTH</span>
         <h1>Bem-vindo</h1>
 
         <p class="subtitle">
-          Entre na plataforma e continue
-          monitorando com segurança.
+          Entre na plataforma e continue monitorando com segurança.
         </p>
 
         <div class="social-container">
@@ -147,7 +87,8 @@
             <i class="fab fa-facebook-f"></i>
           </a>
 
-          <a href="#" class="social">
+          <!-- GOOGLE LOGIN (CORRIGIDO) -->
+          <a href="#" id="googleLoginBtn" class="social">
             <i class="fab fa-google-plus-g"></i>
           </a>
 
@@ -157,117 +98,58 @@
 
         </div>
 
-        <span class="divider">
-          ou entre com sua conta
-        </span>
+        <span class="divider">ou entre com sua conta</span>
 
         <div class="input-group">
-
           <i class="fas fa-envelope"></i>
-
-          <input
-            type="email"
-            name="email"
-            placeholder="E-mail"
-            required
-          >
-
+          <input type="email" name="email" placeholder="E-mail" required>
         </div>
 
         <div class="input-group">
-
           <i class="fas fa-lock"></i>
-
-          <input
-            type="password"
-            name="senha"
-            placeholder="Senha"
-            required
-          >
-
+          <input type="password" name="senha" placeholder="Senha" required>
         </div>
 
-        <a href="#" class="forgot">
-          Esqueceu sua senha?
-        </a>
+        <a href="#" class="forgot">Esqueceu sua senha?</a>
 
-        <button type="submit">
-          Entrar
-        </button>
-
+        <button type="submit">Entrar</button>
       </form>
-
     </div>
 
     <!-- OVERLAY -->
-
     <div class="overlay-container">
-
       <div class="overlay">
 
         <div class="overlay-panel overlay-left">
-
           <div class="overlay-content">
-
-            <span class="overlay-mini">
-              AI HEALTH PLATFORM
-            </span>
-
+            <span class="overlay-mini">AI HEALTH PLATFORM</span>
             <h1>Que bom ver você novamente!</h1>
+            <p>Faça login para continuar acompanhando monitoramentos.</p>
 
-            <p>
-              Faça login para continuar
-              acompanhando monitoramentos,
-              relatórios e análises inteligentes.
-            </p>
-
-            <button
-              class="ghost"
-              type="button"
-              id="signIn"
-            >
-              Entrar
-            </button>
-
+            <button class="ghost" type="button" id="signIn">Entrar</button>
           </div>
-
         </div>
 
         <div class="overlay-panel overlay-right">
-
           <div class="overlay-content">
-
-            <span class="overlay-mini">
-              AI HEALTH PLATFORM
-            </span>
-
+            <span class="overlay-mini">AI HEALTH PLATFORM</span>
             <h1>Comece agora</h1>
+            <p>Crie sua conta e tenha acesso ao sistema inteligente AI Health.</p>
 
-            <p>
-              Crie sua conta e tenha acesso
-              ao sistema de monitoramento
-              inteligente AI Health.
-            </p>
-
-            <button
-              class="ghost"
-              type="button"
-              id="signUp"
-            >
-              Criar conta
-            </button>
-
+            <button class="ghost" type="button" id="signUp">Criar conta</button>
           </div>
-
         </div>
 
       </div>
-
     </div>
 
   </div>
 
+  <!-- JS normal (UI) -->
   <script src="/js/login_cadastro.js"></script>
+
+  <!-- 🔥 FIREBASE LOGIN (IMPORTANTE) -->
+  <script type="module" src="/js/firebaseLogin.js"></script>
 
 </body>
 </html>

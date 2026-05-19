@@ -1,15 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const requireAuth = require('../middlewares/requireAuth');
 
-function verificarLogin(req, res, next) {
-  if (!req.session.usuario) {
-    return res.redirect('/login');
-  }
-
-  next();
-}
-
-// ===== PÁGINAS =====
+// ===== PÁGINAS PÚBLICAS =====
 router.get('/', (req, res) => {
   res.render('paginainicial');
 });
@@ -22,15 +15,16 @@ router.get('/login', (req, res) => {
   if (req.session.usuario) {
     return res.redirect('/');
   }
-
   res.render('login_cadastro');
 });
 
-router.get('/camerapc', verificarLogin, (req, res) => {
+
+// ===== PÁGINAS PRIVADAS (PROTEGIDAS) =====
+router.get('/camerapc', requireAuth, (req, res) => {
   res.render('camerapc');
 });
 
-router.get('/cameraseg', verificarLogin, (req, res) => {
+router.get('/cameraseg', requireAuth, (req, res) => {
   res.render('cameraseg');
 });
 

@@ -1,0 +1,27 @@
+// Importa Firebase base
+import { initializeApp } from "firebase/app";
+
+// 🔐 Importa Auth
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+
+// Config do projeto
+const firebaseConfig = {
+  apiKey: "AIzaSyAvFH-3kQDgFM_xhueEHALmHqv41zoriT4",
+  authDomain: "tccveio.firebaseapp.com",
+  projectId: "tccveio",
+  storageBucket: "tccveio.firebasestorage.app",
+  messagingSenderId: "1065848972952",
+  appId: "1:1065848972952:web:b6115a58f99546a04612ed",
+  measurementId: "G-FJJ2XF70E2"
+};
+
+// Inicializa Firebase
+const app = initializeApp(firebaseConfig);
+
+// Inicializa Auth
+const auth = getAuth(app);
+
+// Provider Google
+const googleProvider = new GoogleAuthProvider();
+
+export { app, auth, googleProvider };
