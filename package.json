@@ -1,7 +1,7 @@
 {
   "name": "tcc_dnv",
   "version": "1.0.0",
-  "main": "src/server.js",
+  "main": "api/index.js",
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js"
