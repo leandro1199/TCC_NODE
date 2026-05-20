@@ -5,12 +5,14 @@ exports.chat = async (req, res) => {
   const { mensagem } = req.body;
   const usuario = req.session.usuario;
 
+  // Usuário não autenticado
   if (!usuario) {
     return res.status(401).json({
       resposta: 'Usuário não autenticado.'
     });
   }
 
+  // Mensagem vazia
   if (!mensagem || !mensagem.trim()) {
     return res.status(400).json({
       resposta: 'Digite uma mensagem válida.'
@@ -18,6 +20,7 @@ exports.chat = async (req, res) => {
   }
 
   try {
+    // UID Firebase ou ID MySQL
     const usuarioId = usuario.uid || usuario.id;
 
     // Buscar último contexto no Firestore
@@ -32,34 +35,40 @@ exports.chat = async (req, res) => {
       ? null
       : snapshot.docs[0].data().intent_detectada;
 
-    // Chamar API Python
+    // URL da API Python
     const pythonUrl = process.env.PYTHON_API_URL?.replace(/\/$/, '');
 
-        if (!pythonUrl) {
-          return res.status(500).json({
-            resposta: 'API Python não configurada.'
-          });
-        }
+    if (!pythonUrl) {
+      return res.status(500).json({
+        resposta: 'API Python não configurada.'
+      });
+    }
 
-        const response = await axios.post(`${pythonUrl}/chat`, {
-          mensagem,
-          usuario_id: usuarioId,
-          contexto_anterior
-        }, {
-          timeout: 15000
-        });
+    // Chamada para API Python
+    const pythonResponse = await axios.post(
+      `${pythonUrl}/chat`,
+      {
+        mensagem,
+        usuario_id: usuarioId,
+        contexto_anterior
+      },
+      {
+        timeout: 15000
+      }
+    );
 
-    const response = await axios.post(`${pythonUrl}/chat`, {
-      mensagem,
-      usuario_id: usuarioId,
-      contexto_anterior
-    }, {
-      timeout: 15000
-    });
+    // Dados retornados pela IA
+    const resposta =
+      pythonResponse.data.resposta ||
+      'Não consegui responder agora.';
 
-    const resposta = response.data.resposta || 'Não consegui responder agora.';
-    const intent = response.data.contexto || response.data.intent || 'desconhecida';
-    const confianca = response.data.confianca || 0;
+    const intent =
+      pythonResponse.data.contexto ||
+      pythonResponse.data.intent ||
+      'desconhecida';
+
+    const confianca =
+      pythonResponse.data.confianca || 0;
 
     // Salvar interação no Firestore
     await dbFirestore.collection('interacoes').add({
@@ -67,11 +76,14 @@ exports.chat = async (req, res) => {
       pergunta_usuario: mensagem,
       resposta_bot: resposta,
       intent_detectada: intent,
-      fallback_usado: intent === 'fallback' ? 'sim' : 'nao',
+      fallback_usado:
+        intent === 'fallback' ? 'sim' : 'nao',
       confianca,
-      criado_em: admin.firestore.FieldValue.serverTimestamp()
+      criado_em:
+        admin.firestore.FieldValue.serverTimestamp()
     });
 
+    // Resposta final
     return res.json({ resposta });
 
   } catch (error) {
