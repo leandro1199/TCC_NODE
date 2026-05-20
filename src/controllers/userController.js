@@ -9,7 +9,7 @@ exports.criarUsuarioFirestore = async (req, res) => {
     const foto = req.usuarioFirebase.picture || "";
 
     /* ================= FIRESTORE ================= */
-    const userRef = db.collection("usuarios").doc(uid);
+    const userRef = dbFirestore.collection("usuarios").doc(uid);
     const doc = await userRef.get();
 
     if (!doc.exists) {

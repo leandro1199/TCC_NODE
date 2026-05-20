@@ -1,35 +1,39 @@
-const db = require('../config/db');
 const bcrypt = require('bcrypt');
-
-// 🔐 Firebase Admin
-const { admin } = require('../config/firebaseAdmin');
+const { admin, dbFirestore } = require('../config/firebaseAdmin');
 
 /* =========================
-   LOGIN TRADICIONAL (MYSQL)
+   LOGIN TRADICIONAL (FIRESTORE)
 ========================= */
 const login = async (req, res) => {
   const { email, senha } = req.body;
 
   try {
-    const [rows] = await db.execute(
-      'SELECT * FROM usuarios WHERE email = ?',
-      [email]
-    );
+    const snapshot = await dbFirestore
+      .collection('usuarios')
+      .where('email', '==', email)
+      .limit(1)
+      .get();
 
-    if (rows.length === 0) {
-      return res.send('Usuário não encontrado');
+    if (snapshot.empty) {
+      return res.send('Email ou senha inválidos');
     }
 
-    const usuario = rows[0];
+    const doc = snapshot.docs[0];
+    const usuario = doc.data();
+
+    if (!usuario.senha) {
+      return res.send('Esta conta foi criada com Google. Entre usando o Google.');
+    }
 
     const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
 
     if (!senhaCorreta) {
-      return res.send('Senha incorreta');
+      return res.send('Email ou senha inválidos');
     }
 
     req.session.usuario = {
-      id: usuario.id,
+      id: doc.id,
+      uid: doc.id,
       nome: usuario.nome,
       email: usuario.email
     };
@@ -37,39 +41,50 @@ const login = async (req, res) => {
     return res.redirect('/');
 
   } catch (err) {
-    console.error(err);
+    console.error('Erro ao fazer login:', err);
     return res.send('Erro ao fazer login');
   }
 };
 
 
 /* =========================
-   CADASTRO TRADICIONAL
+   CADASTRO TRADICIONAL (FIRESTORE)
 ========================= */
 const cadastro = async (req, res) => {
   const { nome, email, senha } = req.body;
-
-  console.log('DADOS RECEBIDOS NO CADASTRO:', req.body);
 
   if (!nome || !email || !senha) {
     return res.send('Erro: nome, email ou senha não chegaram do formulário.');
   }
 
   try {
+    const snapshot = await dbFirestore
+      .collection('usuarios')
+      .where('email', '==', email)
+      .limit(1)
+      .get();
+
+    if (!snapshot.empty) {
+      return res.send('Este email já está cadastrado.');
+    }
+
     const senhaHash = await bcrypt.hash(senha, 10);
 
-    const [resultado] = await db.execute(
-      'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)',
-      [nome, email, senhaHash]
-    );
+    const userRef = await dbFirestore.collection('usuarios').add({
+      nome,
+      email,
+      senha: senhaHash,
+      provedor: 'email',
+      criado_em: admin.firestore.FieldValue.serverTimestamp()
+    });
 
-    console.log('USUÁRIO CADASTRADO COM ID:', resultado.insertId);
+    console.log('Usuário cadastrado no Firestore:', userRef.id);
 
     return res.redirect('/login');
 
   } catch (err) {
-    console.error('ERRO AO CADASTRAR:', err);
-    return res.send('Erro ao cadastrar usuário: ' + err.message);
+    console.error('Erro ao cadastrar:', err);
+    return res.send('Erro ao cadastrar usuário.');
   }
 };
 
@@ -94,42 +109,45 @@ const firebaseLogin = async (req, res) => {
     if (!idToken) {
       return res.status(400).json({
         sucesso: false,
-        erro: "Token ausente"
+        erro: 'Token ausente'
       });
     }
 
-    // 🔐 valida token Firebase
     const decoded = await admin.auth().verifyIdToken(idToken);
 
     const uid = decoded.uid;
     const email = decoded.email;
-    const nome = decoded.name || "Usuário Google";
+    const nome = decoded.name || 'Usuário Google';
+    const foto = decoded.picture || '';
 
-    // 🧠 verifica se existe no MySQL
-    const [rows] = await db.execute(
-      'SELECT * FROM usuarios WHERE email = ?',
-      [email]
-    );
+    const userRef = dbFirestore.collection('usuarios').doc(uid);
+    const doc = await userRef.get();
 
-    let userId;
-
-    if (rows.length === 0) {
-      const [result] = await db.execute(
-        'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)',
-        [nome, email, 'GOOGLE_AUTH']
-      );
-
-      userId = result.insertId;
+    if (!doc.exists) {
+      await userRef.set({
+        uid,
+        nome,
+        email,
+        foto,
+        provedor: 'google',
+        criado_em: admin.firestore.FieldValue.serverTimestamp()
+      });
     } else {
-      userId = rows[0].id;
+      await userRef.set({
+        uid,
+        nome,
+        email,
+        foto,
+        atualizado_em: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
     }
 
-    // 🍪 sessão unificada
     req.session.usuario = {
-      id: userId,
+      id: uid,
+      uid,
       nome,
       email,
-      uidFirebase: uid
+      foto
     };
 
     return res.json({ sucesso: true });
@@ -139,7 +157,7 @@ const firebaseLogin = async (req, res) => {
 
     return res.status(401).json({
       sucesso: false,
-      erro: "Token inválido"
+      erro: 'Token inválido'
     });
   }
 };

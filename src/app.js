@@ -18,9 +18,17 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 // SESSION
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || 'segredo_dev',
+    secret: process.env.SESSION_SECRET,
+
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24
+    }
   })
 );
 

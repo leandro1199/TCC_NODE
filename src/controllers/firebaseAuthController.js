@@ -23,9 +23,30 @@ exports.firebaseLogin = async (req, res) => {
       console.log('Usuário criado no Firestore');
     }
 
-    // 3️⃣ CRIAR SESSÃO EXPRESS
+// busca usuário mysql
+    const [rows] = await db.execute(
+      'SELECT * FROM usuarios WHERE email = ?',
+      [email]
+    );
+
+    let userId;
+
+    if (rows.length === 0) {
+
+      const [result] = await db.execute(
+        'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)',
+        [nome, email, 'FIREBASE_AUTH']
+      );
+
+      userId = result.insertId;
+
+    } else {
+      userId = rows[0].id;
+    }
+
     req.session.usuario = {
-      uid,
+      id: userId,
+      uidFirebase: uid,
       nome,
       email
     };

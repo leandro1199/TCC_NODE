@@ -1,5 +1,5 @@
-const db = require('../config/db');
 const axios = require('axios');
+const { dbFirestore, admin } = require('../config/firebaseAdmin');
 
 exports.chat = async (req, res) => {
   const { mensagem } = req.body;
@@ -11,48 +11,74 @@ exports.chat = async (req, res) => {
     });
   }
 
+  if (!mensagem || !mensagem.trim()) {
+    return res.status(400).json({
+      resposta: 'Digite uma mensagem válida.'
+    });
+  }
+
   try {
-    // 🔥 BUSCAR CONTEXTO ANTERIOR
-    const [rows] = await db.execute(
-      `SELECT intent_detectada 
-       FROM interacoes 
-       WHERE usuario_id = ? 
-       ORDER BY criado_em DESC 
-       LIMIT 1`,
-      [usuario.id]
-    );
+    const usuarioId = usuario.uid || usuario.id;
 
-    const contexto_anterior = rows.length > 0 ? rows[0].intent_detectada : null;
+    // Buscar último contexto no Firestore
+    const snapshot = await dbFirestore
+      .collection('interacoes')
+      .where('usuario_id', '==', usuarioId)
+      .orderBy('criado_em', 'desc')
+      .limit(1)
+      .get();
 
-    // 🔥 CHAMAR PYTHON
-    const response = await axios.post('http://127.0.0.1:5001/chat', {
+    const contexto_anterior = snapshot.empty
+      ? null
+      : snapshot.docs[0].data().intent_detectada;
+
+    // Chamar API Python
+    const pythonUrl = process.env.PYTHON_API_URL?.replace(/\/$/, '');
+
+        if (!pythonUrl) {
+          return res.status(500).json({
+            resposta: 'API Python não configurada.'
+          });
+        }
+
+        const response = await axios.post(`${pythonUrl}/chat`, {
+          mensagem,
+          usuario_id: usuarioId,
+          contexto_anterior
+        }, {
+          timeout: 15000
+        });
+
+    const response = await axios.post(`${pythonUrl}/chat`, {
       mensagem,
-      usuario_id: usuario.id,
+      usuario_id: usuarioId,
       contexto_anterior
+    }, {
+      timeout: 15000
     });
 
-    const resposta = response.data.resposta;
-    const intent = response.data.contexto || 'desconhecida';
+    const resposta = response.data.resposta || 'Não consegui responder agora.';
+    const intent = response.data.contexto || response.data.intent || 'desconhecida';
+    const confianca = response.data.confianca || 0;
 
-    // 🔥 SALVAR NO BANCO
-    await db.execute(
-      `INSERT INTO interacoes 
-      (usuario_id, pergunta_usuario, resposta_bot, intent_detectada, fallback_usado, confianca)
-      VALUES (?, ?, ?, ?, ?, ?)`,
-      [
-        usuario.id,
-        mensagem,
-        resposta,
-        intent,
-        intent === 'fallback' ? 'sim' : 'nao',
-        1.0
-      ]
-    );
+    // Salvar interação no Firestore
+    await dbFirestore.collection('interacoes').add({
+      usuario_id: usuarioId,
+      pergunta_usuario: mensagem,
+      resposta_bot: resposta,
+      intent_detectada: intent,
+      fallback_usado: intent === 'fallback' ? 'sim' : 'nao',
+      confianca,
+      criado_em: admin.firestore.FieldValue.serverTimestamp()
+    });
 
     return res.json({ resposta });
 
   } catch (error) {
-    console.error(error);
-    return res.json({ resposta: 'Erro ao conectar com IA.' });
+    console.error('Erro no chatController:', error);
+
+    return res.status(500).json({
+      resposta: 'Erro ao conectar com IA.'
+    });
   }
 };
