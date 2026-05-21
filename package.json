@@ -1,11 +1,13 @@
 {
   "name": "tcc_dnv",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "api/index.js",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "build": "echo build"
   },
+
   "devDependencies": {
     "nodemon": "^3.1.14"
   },
