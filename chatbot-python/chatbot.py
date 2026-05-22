@@ -6,16 +6,14 @@ import logging
 import pickle
 import random
 import re
-import sys
 import unicodedata
+
 from pathlib import Path
 from typing import List, Optional, Tuple
 
-import mysql.connector
 import numpy as np
 import tf_keras as keras
 
-from mysql.connector import Error
 from sentence_transformers import SentenceTransformer
 
 
@@ -26,262 +24,33 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+
+# ================= BASE =================
+
+BASE_DIR = Path(__file__).resolve().parent
+
 
 CONFIG = {
-    "ERROR_THRESHOLD": float(os.getenv("ERROR_THRESHOLD", 0.35)),
-    "HIGH_CONFIDENCE_THRESHOLD": float(os.getenv("HIGH_CONFIDENCE_THRESHOLD", 0.70)),
+
+    "ERROR_THRESHOLD": float(
+        os.getenv("ERROR_THRESHOLD", 0.35)
+    ),
+
+    "HIGH_CONFIDENCE_THRESHOLD": float(
+        os.getenv("HIGH_CONFIDENCE_THRESHOLD", 0.70)
+    ),
 
     "MODEL_PATH": BASE_DIR / "model_chatbot.keras",
+
     "CLASSES_PATH": BASE_DIR / "classes.pkl",
+
     "INTENTS_PATH": BASE_DIR / "json" / "intents.json",
 
     "EMBEDDING_MODEL_NAME": os.getenv(
         "EMBEDDING_MODEL_NAME",
         "all-MiniLM-L6-v2"
-    ),
-
-    "MYSQL_CONFIG": {
-        "host": os.getenv("DB_HOST", "localhost"),
-        "user": os.getenv("DB_USER", "root"),
-        "password": os.getenv("DB_PASSWORD", "1011"),
-        "port": int(os.getenv("DB_PORT", 3308)),
-        "database": os.getenv("DB_NAME", "chatbot_db"),
-    }
+    )
 }
-
-
-class MySQLManager:
-
-    def __init__(self, config: dict):
-        self.config = config
-
-        self._validate_database_name()
-        self._create_database()
-        self._create_tables()
-
-    def _validate_database_name(self):
-
-        db_name = self.config["database"]
-
-        if not re.fullmatch(r"[A-Za-z0-9_]+", db_name):
-            raise ValueError("Nome do banco inválido.")
-
-    def _connect_no_db(self):
-
-        return mysql.connector.connect(
-            host=self.config["host"],
-            user=self.config["user"],
-            password=self.config["password"],
-            port=self.config["port"]
-        )
-
-    def _connect_with_db(self):
-
-        return mysql.connector.connect(
-            host=self.config["host"],
-            user=self.config["user"],
-            password=self.config["password"],
-            port=self.config["port"],
-            database=self.config["database"]
-        )
-
-    def _create_database(self):
-
-        conn = None
-        cursor = None
-
-        try:
-
-            conn = self._connect_no_db()
-            cursor = conn.cursor()
-
-            db_name = self.config["database"]
-
-            cursor.execute(
-                f"""
-                CREATE DATABASE IF NOT EXISTS `{db_name}`
-                CHARACTER SET utf8mb4
-                COLLATE utf8mb4_unicode_ci
-                """
-            )
-
-            conn.commit()
-
-            logger.info("Banco de dados pronto.")
-
-        except Error as e:
-
-            logger.error("Erro ao criar banco: %s", e)
-            raise
-
-        finally:
-
-            if cursor:
-                cursor.close()
-
-            if conn:
-                conn.close()
-
-    def _column_exists(
-        self,
-        cursor,
-        table_name: str,
-        column_name: str
-    ) -> bool:
-
-        cursor.execute(
-            f"SHOW COLUMNS FROM `{table_name}` LIKE %s",
-            (column_name,)
-        )
-
-        return cursor.fetchone() is not None
-
-    def _create_tables(self):
-
-        conn = None
-        cursor = None
-
-        try:
-
-            conn = self._connect_with_db()
-            cursor = conn.cursor()
-
-            # ================= USUÁRIOS =================
-
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS usuarios (
-
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-
-                    nome VARCHAR(100) NOT NULL,
-
-                    email VARCHAR(150) NOT NULL UNIQUE,
-
-                    senha VARCHAR(255) NOT NULL,
-
-                    criado_em TIMESTAMP
-                    DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-
-            # ================= INTERAÇÕES =================
-
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS interacoes (
-
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-
-                    usuario_id INT NULL,
-
-                    pergunta_usuario TEXT NOT NULL,
-
-                    resposta_bot TEXT NOT NULL,
-
-                    intent_detectada VARCHAR(100)
-                    DEFAULT 'desconhecida',
-
-                    fallback_usado VARCHAR(50)
-                    DEFAULT 'nenhum',
-
-                    confianca DECIMAL(7,6)
-                    DEFAULT 0.000000,
-
-                    criado_em TIMESTAMP
-                    DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-
-            # ================= MIGRAÇÕES =================
-
-            if not self._column_exists(
-                cursor,
-                "interacoes",
-                "usuario_id"
-            ):
-
-                cursor.execute("""
-                    ALTER TABLE interacoes
-                    ADD COLUMN usuario_id INT NULL
-                """)
-
-            if not self._column_exists(
-                cursor,
-                "usuarios",
-                "criado_em"
-            ):
-
-                cursor.execute("""
-                    ALTER TABLE usuarios
-                    ADD COLUMN criado_em TIMESTAMP
-                    DEFAULT CURRENT_TIMESTAMP
-                """)
-
-            if not self._column_exists(
-                cursor,
-                "interacoes",
-                "fallback_usado"
-            ):
-
-                cursor.execute("""
-                    ALTER TABLE interacoes
-                    ADD COLUMN fallback_usado VARCHAR(50)
-                    DEFAULT 'nenhum'
-                """)
-
-            if not self._column_exists(
-                cursor,
-                "interacoes",
-                "confianca"
-            ):
-
-                cursor.execute("""
-                    ALTER TABLE interacoes
-                    ADD COLUMN confianca DECIMAL(7,6)
-                    DEFAULT 0.000000
-                """)
-
-            if not self._column_exists(
-                cursor,
-                "interacoes",
-                "criado_em"
-            ):
-
-                cursor.execute("""
-                    ALTER TABLE interacoes
-                    ADD COLUMN criado_em TIMESTAMP
-                    DEFAULT CURRENT_TIMESTAMP
-                """)
-
-            conn.commit()
-
-            logger.info("Tabelas prontas.")
-
-        except Error as e:
-
-            logger.error("Erro ao criar tabelas: %s", e)
-            raise
-
-        finally:
-
-            if cursor:
-                cursor.close()
-
-            if conn:
-                conn.close()
-
-    # 🔥 DESATIVADO
-    # Quem salva agora é o Node.js
-    def save_interaction(
-        self,
-        user_msg: str,
-        bot_response: str,
-        intent: str = "desconhecida",
-        confidence: float = 0.0,
-        fallback_used: str = "nenhum"
-    ):
-
-        pass
 
 
 class ChatBot:
@@ -291,7 +60,6 @@ class ChatBot:
         self.model = None
         self.intents = None
         self.classes = None
-        self.mysql = None
         self.embedding_model = None
 
         self.allowed_intents = {
@@ -343,29 +111,37 @@ class ChatBot:
         }
 
         self._load_files()
-        self._init_mysql()
+
+    # ================= LOAD =================
 
     def _load_files(self):
 
         if not CONFIG["MODEL_PATH"].exists():
             raise FileNotFoundError(
-                f"Modelo não encontrado em: {CONFIG['MODEL_PATH']}"
+                f"Modelo não encontrado em: "
+                f"{CONFIG['MODEL_PATH']}"
             )
 
         if not CONFIG["INTENTS_PATH"].exists():
             raise FileNotFoundError(
-                f"Arquivo intents não encontrado: {CONFIG['INTENTS_PATH']}"
+                f"Arquivo intents não encontrado: "
+                f"{CONFIG['INTENTS_PATH']}"
             )
 
         if not CONFIG["CLASSES_PATH"].exists():
             raise FileNotFoundError(
-                f"Arquivo classes não encontrado: {CONFIG['CLASSES_PATH']}"
+                f"Arquivo classes não encontrado: "
+                f"{CONFIG['CLASSES_PATH']}"
             )
+
+        # ===== MODEL =====
 
         self.model = keras.models.load_model(
             str(CONFIG["MODEL_PATH"]),
             compile=False
         )
+
+        # ===== INTENTS =====
 
         with open(
             CONFIG["INTENTS_PATH"],
@@ -374,6 +150,8 @@ class ChatBot:
         ) as f:
 
             self.intents = json.load(f)
+
+        # ===== CLASSES =====
 
         with open(
             CONFIG["CLASSES_PATH"],
@@ -389,27 +167,166 @@ class ChatBot:
             else loaded
         )
 
+        # ===== EMBEDDINGS =====
+
         self.embedding_model = SentenceTransformer(
             CONFIG["EMBEDDING_MODEL_NAME"]
         )
 
-        logger.info("Chatbot carregado.")
+        logger.info("Chatbot carregado com sucesso.")
 
-    def _init_mysql(self):
+    # ================= TEXTO =================
 
-        try:
+    def normalize_text(self, text: str) -> str:
 
-            self.mysql = MySQLManager(
-                CONFIG["MYSQL_CONFIG"]
+        text = text.lower().strip()
+
+        text = unicodedata.normalize(
+            "NFKD",
+            text
+        ).encode(
+            "ascii",
+            "ignore"
+        ).decode(
+            "utf-8"
+        )
+
+        text = re.sub(
+            r"[^a-zA-Z0-9\s]",
+            "",
+            text
+        )
+
+        return text
+
+    # ================= BAG OF WORDS =================
+
+    def bag_of_words(
+        self,
+        sentence: str
+    ) -> np.ndarray:
+
+        words = self.normalize_text(sentence).split()
+
+        bag = [0] * len(self.classes)
+
+        for w in words:
+
+            for i, word in enumerate(self.classes):
+
+                if word == w:
+                    bag[i] = 1
+
+        return np.array(bag)
+
+    # ================= PREDIÇÃO =================
+
+    def predict_class(
+        self,
+        sentence: str
+    ) -> List[dict]:
+
+        bow = self.bag_of_words(sentence)
+
+        res = self.model.predict(
+            np.array([bow]),
+            verbose=0
+        )[0]
+
+        ERROR_THRESHOLD = CONFIG["ERROR_THRESHOLD"]
+
+        results = [
+            [i, r]
+            for i, r in enumerate(res)
+            if r > ERROR_THRESHOLD
+        ]
+
+        results.sort(
+            key=lambda x: x[1],
+            reverse=True
+        )
+
+        return_list = []
+
+        for r in results:
+
+            return_list.append({
+                "intent": self.classes[r[0]],
+                "probability": str(r[1])
+            })
+
+        return return_list
+
+    # ================= RESPOSTA =================
+
+    def get_response(
+        self,
+        intents_list: List[dict]
+    ) -> Tuple[str, str]:
+
+        if not intents_list:
+
+            return (
+                "Desculpe, não consegui entender sua pergunta.",
+                "fora_do_escopo"
             )
 
-            logger.info("MySQL conectado.")
+        tag = intents_list[0]["intent"]
 
-        except Exception as e:
+        if tag not in self.allowed_intents:
 
-            logger.warning(
-                "MySQL indisponível: %s",
-                e
+            return (
+                "Desculpe, não consigo responder isso.",
+                "fora_do_escopo"
             )
 
-            self.mysql = None
+        list_of_intents = self.intents["intents"]
+
+        for intent in list_of_intents:
+
+            if intent["tag"] == tag:
+
+                resposta = random.choice(
+                    intent["responses"]
+                )
+
+                return resposta, tag
+
+        return (
+            "Não encontrei uma resposta adequada.",
+            "fora_do_escopo"
+        )
+
+    # ================= CHAT =================
+
+    def responder(
+        self,
+        mensagem: str,
+        contexto_anterior: Optional[str] = None
+    ) -> Tuple[str, str]:
+
+        mensagem = self.normalize_text(mensagem)
+
+        intents = self.predict_class(mensagem)
+
+        resposta, contexto = self.get_response(intents)
+
+        return resposta, contexto
+
+
+# ================= INSTÂNCIA GLOBAL =================
+
+chatbot_instance = ChatBot()
+
+
+# ================= FUNÇÃO EXPORTADA =================
+
+def responder_chatbot(
+    mensagem: str,
+    contexto_anterior: Optional[str] = None
+):
+
+    return chatbot_instance.responder(
+        mensagem,
+        contexto_anterior
+    )
