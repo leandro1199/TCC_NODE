@@ -15,17 +15,20 @@ app.use(express.json());
 // STATIC
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+// IMPORTANTE PARA RENDER
+app.set('trust proxy', 1);
+
 // SESSION
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || 'aihealthsecret',
 
     resave: false,
     saveUninitialized: false,
 
     cookie: {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 1000 * 60 * 60 * 24
     }

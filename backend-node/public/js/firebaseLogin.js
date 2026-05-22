@@ -24,7 +24,7 @@ botoesGoogle.forEach((btnGoogle) => {
       const data = await response.json();
 
       if (data.sucesso) {
-        window.location.href = '/';
+        window.location.href = '/paginainicial';
       } else {
         alert('Erro ao criar sessão');
       }
