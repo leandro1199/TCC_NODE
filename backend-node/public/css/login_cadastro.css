@@ -73,9 +73,6 @@ body{
   min-height: 640px;
 
   background: rgba(255,255,255,.75);
-
-  backdrop-filter: blur(18px);
-
   border-radius: 36px;
 
   overflow: hidden;

@@ -68,8 +68,6 @@
 .card{
   background: rgba(255,255,255,.82);
 
-  backdrop-filter: blur(12px);
-
   border-radius: var(--radius-lg);
 
   padding: 28px;
@@ -198,8 +196,6 @@
 
 .glass{
   background: rgba(255,255,255,.72);
-
-  backdrop-filter: blur(18px);
 
   border: 1px solid rgba(255,255,255,.6);
 }

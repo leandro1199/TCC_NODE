@@ -37,8 +37,6 @@ body{
 
     background: rgba(255,255,255,.75);
 
-    backdrop-filter: blur(14px);
-
     border-bottom: 1px solid rgba(148,163,184,.15);
 
     box-shadow: 0 10px 30px rgba(15,23,42,.05);
@@ -121,8 +119,6 @@ body{
 .stat-card{
     background: rgba(255,255,255,.85);
 
-    backdrop-filter: blur(12px);
-
     padding: 30px;
 
     border-radius: 28px;
@@ -146,8 +142,6 @@ body{
 
 .form-section{
     background: rgba(255,255,255,.82);
-
-    backdrop-filter: blur(14px);
 
     padding: 32px;
 
@@ -333,8 +327,6 @@ body{
     gap: 10px;
 
     color: white;
-
-    backdrop-filter: blur(8px);
 }
 
 .online-bg{

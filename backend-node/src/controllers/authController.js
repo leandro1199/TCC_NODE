@@ -38,7 +38,7 @@ const login = async (req, res) => {
       email: usuario.email
     };
 
-    return res.redirect('/');
+    return res.redirect('/paginainicial');
 
   } catch (err) {
     console.error('Erro ao fazer login:', err);

@@ -27,8 +27,6 @@ body{
 
   background: rgba(255,255,255,.75);
 
-  backdrop-filter: blur(14px);
-
   border-bottom: 1px solid rgba(148,163,184,.15);
 
   padding: 24px 42px;
@@ -263,8 +261,6 @@ button:disabled{
 
 .card{
   background: rgba(255,255,255,.8);
-
-  backdrop-filter: blur(12px);
 
   border-radius: 28px;
 

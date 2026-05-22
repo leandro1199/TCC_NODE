@@ -24,7 +24,6 @@ section {
     top: 0;
     z-index: 1000;
     background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(10px);
 }
 
 .container {

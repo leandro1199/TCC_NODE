@@ -34,8 +34,6 @@ body{
 
   z-index: 999;
 
-  backdrop-filter: blur(14px);
-
   background: rgba(255,255,255,.72);
 
   border-bottom: 1px solid rgba(226,232,240,.7);
@@ -54,8 +52,9 @@ body{
   background:
   linear-gradient(135deg,#2563eb,#38bdf8);
 
-  background-clip: text;
   -webkit-background-clip: text;
+  background-clip: text;
+
 
   color: transparent;
   -webkit-text-fill-color: transparent;
@@ -188,8 +187,9 @@ body{
   background:
   linear-gradient(135deg,#2563eb,#38bdf8);
 
-  background-clip: text;
   -webkit-background-clip: text;
+  background-clip: text;
+
 
   color: transparent;
   -webkit-text-fill-color: transparent;
@@ -267,8 +267,6 @@ body{
 .stat-box{
   background: rgba(255,255,255,.75);
 
-  backdrop-filter: blur(10px);
-
   border: 1px solid rgba(255,255,255,.6);
 
   border-radius: 24px;
@@ -302,7 +300,6 @@ body{
 .hero-card{
   background: rgba(255,255,255,.72);
 
-  backdrop-filter: blur(18px);
 
   border-radius: 34px;
 
