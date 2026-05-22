@@ -1,25 +1,47 @@
-# Node
-node_modules
+# ======================
+# NODE
+# ======================
 
-# Python
-venv
-__pycache__
+node_modules/
+npm-debug.log
+
+# ======================
+# PYTHON
+# ======================
+
+venv/
+.env
+__pycache__/
 *.pyc
 
-# Ambiente
-.env
+# ======================
+# VS CODE
+# ======================
 
-# Firebase
-serviceAccountKey.json
-tccveio-firebase-adminsdk-*.json
-*firebase-adminsdk*.json
+.vscode/
 
-# Logs
-*.log
+# ======================
+# SISTEMA
+# ======================
 
-# VSCode
-.vscode
-
-# Sistema
 .DS_Store
 Thumbs.db
+
+# ======================
+# LOGS
+# ======================
+
+*.log
+
+# ======================
+# BUILD
+# ======================
+
+dist/
+build/
+
+# ======================
+# CACHE
+# ======================
+
+.cache/

@@ -1,0 +1,25 @@
+# Node
+node_modules
+
+# Python
+venv
+__pycache__
+*.pyc
+
+# Ambiente
+.env
+
+# Firebase
+serviceAccountKey.json
+tccveio-firebase-adminsdk-*.json
+*firebase-adminsdk*.json
+
+# Logs
+*.log
+
+# VSCode
+.vscode
+
+# Sistema
+.DS_Store
+Thumbs.db

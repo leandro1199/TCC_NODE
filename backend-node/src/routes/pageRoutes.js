@@ -4,11 +4,11 @@ const requireAuth = require('../middlewares/autoMiddleware');
 
 // ===== PÁGINAS PÚBLICAS =====
 router.get('/', (req, res) => {
-  res.render('paginainicial');
+  res.render('apresentpj');
 });
 
-router.get('/apresentpj', (req, res) => {
-  res.render('apresentpj');
+router.get('/paginainicial', (req, res) => {
+  res.render('paginainicial');
 });
 
 router.get('/login', (req, res) => {
