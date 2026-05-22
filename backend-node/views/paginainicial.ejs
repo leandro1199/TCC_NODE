@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
 
   <meta charset="UTF-8">
@@ -16,10 +17,16 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="/css/paginainicial.css">
+  <link
+    rel="stylesheet"
+    href="/css/paginainicial.css"
+  >
 
 </head>
+
 <body>
+
+<!-- ================= HEADER ================= -->
 
 <header class="header">
 
@@ -29,47 +36,35 @@
 
   <nav class="nav">
 
-    <a href="/">Início</a>
+    <a href="/paginainicial">
+      Início
+    </a>
 
-    <a href="/apresentpj">
+    <a href="/">
       Projeto
     </a>
 
-    <% if (usuario) { %>
+    <a href="/camerapc">
+      Câmeras
+    </a>
 
-      <a href="/cameras">
-        Câmeras
-      </a>
+    <a href="/cameraseg">
+      Segurança
+    </a>
 
-      <a href="/relatorios">
-        Relatórios
-      </a>
+    <span class="user-name">
+      👋 Olá, <%= usuario.nome %>
+    </span>
 
-      <a href="/cameraseg">
-        Segurança
-      </a>
-
-      <span class="user-name">
-        👋 Olá, <%= usuario.nome %>
-      </span>
-
-      <a href="/logout" class="btn-login">
-        Sair
-      </a>
-
-    <% } else { %>
-
-      <a href="/login" class="btn-login">
-        Entrar
-      </a>
-
-    <% } %>
+    <a href="/logout" class="btn-login">
+      Sair
+    </a>
 
   </nav>
 
 </header>
 
-<!-- HERO -->
+<!-- ================= HERO ================= -->
 
 <main class="hero">
 
@@ -81,21 +76,10 @@
       Plataforma inteligente para cuidados
     </span>
 
-    <% if (usuario) { %>
-
-      <h1>
-        Bem-vindo,<br>
-        <span><%= usuario.nome %></span>
-      </h1>
-
-    <% } else { %>
-
-      <h1>
-        Monitoramento inteligente
-        para idosos
-      </h1>
-
-    <% } %>
+    <h1>
+      Bem-vindo,<br>
+      <span><%= usuario.nome %></span>
+    </h1>
 
     <p>
       O AI Health utiliza tecnologia inteligente,
@@ -106,27 +90,13 @@
 
     <div class="hero-buttons">
 
-      <% if (usuario) { %>
+      <a href="/camerapc" class="btn-primary">
+        Acessar câmeras
+      </a>
 
-        <a href="/cameras" class="btn-primary">
-          Acessar câmeras
-        </a>
-
-        <a href="/relatorios" class="btn-secondary">
-          Ver relatórios
-        </a>
-
-      <% } else { %>
-
-        <a href="/login" class="btn-primary">
-          Começar agora
-        </a>
-
-        <a href="/apresentpj" class="btn-secondary">
-          Conhecer projeto
-        </a>
-
-      <% } %>
+      <a href="/cameraseg" class="btn-secondary">
+        Área de segurança
+      </a>
 
     </div>
 
@@ -150,6 +120,8 @@
     </div>
 
   </section>
+
+  <!-- ================= CARD ================= -->
 
   <section class="hero-card">
 
@@ -232,7 +204,7 @@
 
 </main>
 
-<!-- BENEFÍCIOS -->
+<!-- ================= BENEFÍCIOS ================= -->
 
 <section class="cards-section">
 
@@ -289,7 +261,7 @@
 
 </section>
 
-<!-- INFORMAÇÕES -->
+<!-- ================= INFO ================= -->
 
 <section class="info-section">
 
@@ -351,6 +323,8 @@
 
 </section>
 
+<!-- ================= FOOTER ================= -->
+
 <footer class="footer">
 
   <p>
@@ -359,7 +333,7 @@
 
 </footer>
 
-<% if (usuario) { %>
+<!-- ================= CHATBOT ================= -->
 
 <div class="chatbot-box" id="chatbotBox">
 
@@ -425,8 +399,6 @@
 </button>
 
 <script src="/js/chatbot.js"></script>
-
-<% } %>
 
 </body>
 </html>
