@@ -1,25 +1,42 @@
 const express = require('express');
 const router = express.Router();
+
 const requireAuth = require('../middlewares/autoMiddleware');
 
-// ===== PÁGINAS PÚBLICAS =====
+
+// ===== PÁGINA PRINCIPAL =====
+
 router.get('/', (req, res) => {
+
+  if (req.session.usuario) {
+    return res.redirect('/paginainicial');
+  }
+
   res.render('apresentpj');
 });
 
-router.get('/paginainicial', (req, res) => {
-  res.render('paginainicial');
-});
+
+// ===== LOGIN =====
 
 router.get('/login', (req, res) => {
+
   if (req.session.usuario) {
-    return res.redirect('/');
+    return res.redirect('/paginainicial');
   }
+
   res.render('login_cadastro');
 });
 
 
-// ===== PÁGINAS PRIVADAS (PROTEGIDAS) =====
+// ===== PÁGINA INICIAL =====
+
+router.get('/paginainicial', requireAuth, (req, res) => {
+  res.render('paginainicial');
+});
+
+
+// ===== PÁGINAS PRIVADAS =====
+
 router.get('/camerapc', requireAuth, (req, res) => {
   res.render('camerapc');
 });
@@ -27,5 +44,6 @@ router.get('/camerapc', requireAuth, (req, res) => {
 router.get('/cameraseg', requireAuth, (req, res) => {
   res.render('cameraseg');
 });
+
 
 module.exports = router;
