@@ -89,6 +89,14 @@ body{
 
 img{
   max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+video,
+canvas{
+  max-width: 100%;
+  height: auto;
   display: block;
 }
 
@@ -123,6 +131,15 @@ button{
 
 /* CONTAINER */
 
+.container{
+  width: 100%;
+  max-width: 1400px;
+
+  margin: 0 auto;
+
+  padding: 40px;
+}
+
 .page-container{
   width: 100%;
   max-width: 1400px;
@@ -150,8 +167,6 @@ button{
   gap: 20px;
 
   background: rgba(255,255,255,.75);
-
-
 
   border-bottom: var(--border);
 
@@ -302,6 +317,7 @@ button{
     justify-content: center;
   }
 
+  .container,
   .page-container{
     padding: 24px;
   }
