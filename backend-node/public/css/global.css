@@ -1,67 +1,15 @@
 :root{
-
-  /* CORES */
-
   --primary: #2563eb;
   --secondary: #38bdf8;
-
   --dark: #0f172a;
-  --dark-2: #1e293b;
-
   --gray: #64748b;
-  --gray-light: #94a3b8;
-
   --bg: #f8fafc;
   --white: #ffffff;
-
   --success: #16a34a;
   --danger: #dc2626;
-  --warning: #f59e0b;
-
-  /* GRADIENTES */
-
-  --gradient-primary:
-  linear-gradient(135deg,#2563eb,#38bdf8);
-
-  --gradient-success:
-  linear-gradient(135deg,#16a34a,#22c55e);
-
-  --gradient-danger:
-  linear-gradient(135deg,#dc2626,#ef4444);
-
-  --gradient-purple:
-  linear-gradient(135deg,#7c3aed,#a855f7);
-
-  /* SOMBRAS */
-
-  --shadow-sm:
-  0 10px 25px rgba(15,23,42,.05);
-
-  --shadow-md:
-  0 18px 35px rgba(15,23,42,.08);
-
-  --shadow-lg:
-  0 25px 50px rgba(15,23,42,.12);
-
-  /* BORDER */
-
-  --border:
-  1px solid rgba(148,163,184,.15);
-
-  /* RADIUS */
-
-  --radius-sm: 16px;
-  --radius-md: 24px;
-  --radius-lg: 32px;
-  --radius-xl: 40px;
-
-  /* TRANSITION */
-
+  --gradient-primary: linear-gradient(135deg,#2563eb,#38bdf8);
   --transition: .3s ease;
-
 }
-
-/* RESET */
 
 *{
   margin: 0;
@@ -75,45 +23,27 @@ html{
 
 body{
   min-height: 100vh;
-
   font-family: 'Inter', sans-serif;
-
   background: var(--bg);
-
   color: var(--dark);
-
   overflow-x: hidden;
 }
 
-/* IMAGENS */
-
-img{
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
+img,
 video,
 canvas{
   max-width: 100%;
-  height: auto;
   display: block;
 }
-
-/* LINKS */
 
 a{
   text-decoration: none;
   color: inherit;
 }
 
-/* LISTAS */
-
 ul{
   list-style: none;
 }
-
-/* INPUTS */
 
 input,
 textarea,
@@ -122,210 +52,7 @@ button{
   font-family: inherit;
 }
 
-/* BUTTON */
-
 button{
   cursor: pointer;
   border: none;
-}
-
-/* CONTAINER */
-
-.container{
-  width: 100%;
-  max-width: 1400px;
-
-  margin: 0 auto;
-
-  padding: 40px;
-}
-
-.page-container{
-  width: 100%;
-  max-width: 1400px;
-
-  margin: 0 auto;
-
-  padding: 40px;
-}
-
-/* HEADER */
-
-.header{
-  width: 100%;
-
-  position: sticky;
-  top: 0;
-
-  z-index: 999;
-
-  padding: 20px 40px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-
-  background: rgba(255,255,255,.75);
-
-  border-bottom: var(--border);
-
-  box-shadow: var(--shadow-sm);
-}
-
-/* LOGO */
-
-.logo{
-  font-size: 1.8rem;
-  font-weight: 800;
-
-  background: var(--gradient-primary);
-
-  -webkit-background-clip: text;
-  background-clip: text;
-
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-}
-
-/* NAV */
-
-.nav{
-  display: flex;
-  align-items: center;
-  gap: 18px;
-
-  flex-wrap: wrap;
-}
-
-.nav a{
-  color: #334155;
-
-  font-weight: 600;
-
-  transition: var(--transition);
-}
-
-.nav a:hover{
-  color: var(--primary);
-}
-
-/* TITLES */
-
-.section-title{
-  margin-bottom: 30px;
-}
-
-.section-title h2{
-  font-size: clamp(2rem,5vw,4rem);
-
-  margin-top: 10px;
-}
-
-.section-title p{
-  margin-top: 16px;
-
-  color: var(--gray);
-
-  line-height: 1.8;
-
-  max-width: 700px;
-}
-
-/* TAG */
-
-.section-tag{
-  display: inline-block;
-
-  padding: 10px 18px;
-
-  border-radius: 999px;
-
-  background: rgba(219,234,254,.8);
-
-  color: var(--primary);
-
-  border: 1px solid #bfdbfe;
-
-  font-size: .9rem;
-  font-weight: 700;
-
-  letter-spacing: 1px;
-}
-
-/* GRID */
-
-.grid-2{
-  display: grid;
-  grid-template-columns: repeat(2,1fr);
-  gap: 30px;
-}
-
-.grid-3{
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 24px;
-}
-
-.grid-4{
-  display: grid;
-  grid-template-columns: repeat(4,1fr);
-  gap: 24px;
-}
-
-/* TEXT */
-
-.text-center{
-  text-align: center;
-}
-
-.text-gray{
-  color: var(--gray);
-}
-
-/* SPACING */
-
-.mt-1{ margin-top: 10px; }
-.mt-2{ margin-top: 20px; }
-.mt-3{ margin-top: 30px; }
-
-.mb-1{ margin-bottom: 10px; }
-.mb-2{ margin-bottom: 20px; }
-.mb-3{ margin-bottom: 30px; }
-
-/* RESPONSIVO */
-
-@media(max-width: 1100px){
-
-  .grid-4{
-    grid-template-columns: repeat(2,1fr);
-  }
-
-}
-
-@media(max-width: 850px){
-
-  .header{
-    flex-direction: column;
-
-    padding: 20px 24px;
-
-    text-align: center;
-  }
-
-  .nav{
-    justify-content: center;
-  }
-
-  .container,
-  .page-container{
-    padding: 24px;
-  }
-
-  .grid-2,
-  .grid-3,
-  .grid-4{
-    grid-template-columns: 1fr;
-  }
-
 }
