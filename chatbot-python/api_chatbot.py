@@ -3,8 +3,6 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-from chatbot import responder_chatbot
-
 
 app = Flask(__name__)
 
@@ -28,6 +26,9 @@ def home():
 def chat_api():
 
     try:
+
+        # Importa só quando o chat for usado
+        from chatbot import responder_chatbot
 
         data = request.get_json(silent=True)
 
