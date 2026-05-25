@@ -336,3 +336,21 @@
   }
 
 }
+
+/* Evita components.css quebrar páginas específicas */
+
+.card {
+  max-width: 100%;
+}
+
+.hero {
+  max-width: 100%;
+}
+
+.btn-main,
+.btn-outline,
+.btn-danger,
+.btn-success,
+.btn-purple {
+  text-align: center;
+}

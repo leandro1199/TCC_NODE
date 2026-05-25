@@ -471,3 +471,35 @@ body{
     }
 
 }
+
+.hero {
+  width: 100%;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-info {
+  position: relative;
+  z-index: 2;
+}
+
+@media(max-width: 850px) {
+  .hero h1 {
+    font-size: 2.4rem;
+  }
+
+  .hero-info {
+    width: 100%;
+  }
+
+  .info-card {
+    width: 100%;
+  }
+
+  .lista-relatorios {
+    grid-template-columns: 1fr;
+  }
+}

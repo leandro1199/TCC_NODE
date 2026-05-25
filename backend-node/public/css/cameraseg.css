@@ -541,3 +541,32 @@ body{
   }
 
 }
+
+.camera-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-card {
+  min-height: 100%;
+}
+
+@media(max-width: 768px) {
+  .hero-content h2 {
+    font-size: 2.2rem;
+  }
+
+  .camera-header {
+    align-items: center;
+    text-align: center;
+  }
+
+  .status-online {
+    align-self: center;
+  }
+
+  .camera-frame {
+    height: 320px;
+  }
+}

@@ -774,3 +774,36 @@ body{
   }
 
 }
+
+.hero {
+  width: 100%;
+  overflow: hidden;
+}
+
+.hero-text {
+  max-width: 720px;
+}
+
+.hero-card {
+  width: 100%;
+  max-width: 480px;
+  justify-self: center;
+}
+
+@media(max-width: 850px) {
+  .hero {
+    min-height: auto;
+  }
+
+  .hero-text h1 {
+    font-size: 2.6rem;
+  }
+
+  .hero-card {
+    max-width: 100%;
+  }
+
+  .feature {
+    flex-direction: column;
+  }
+}

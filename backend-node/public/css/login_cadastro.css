@@ -13,7 +13,8 @@ body{
   align-items: center;
   justify-content: center;
 
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   background:
   radial-gradient(circle at top left,
@@ -461,4 +462,19 @@ button.ghost:hover{
     padding: 40px 30px;
   }
 
+}
+
+@media(max-width: 850px) {
+  .container {
+    width: 100%;
+    max-width: 430px;
+  }
+
+  form {
+    padding: 35px 24px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
 }
