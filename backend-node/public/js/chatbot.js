@@ -22,28 +22,17 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // ABRIR CHAT
-
   abrirChat.addEventListener('click', () => {
-
     chatbotBox.style.display = 'flex';
     abrirChat.style.display = 'none';
-
   });
-
-  // FECHAR CHAT
 
   fecharChat.addEventListener('click', () => {
-
     chatbotBox.style.display = 'none';
     abrirChat.style.display = 'block';
-
   });
 
-  // ENVIAR MENSAGEM
-
   chatForm.addEventListener('submit', async (e) => {
-
     e.preventDefault();
 
     const mensagem = mensagemInput.value.trim();
@@ -51,39 +40,31 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!mensagem) return;
 
     adicionarMensagem(mensagem, 'user-msg');
-
     mensagemInput.value = '';
 
     try {
-
-      const response = await fetch(
-        'https://tcc-node.onrender.com/chat',
-        {
-          method: 'POST',
-
-          headers: {
-            'Content-Type': 'application/json'
-          },
-
-          body: JSON.stringify({
-            mensagem: mensagem
-          })
-        }
-      );
-
-      // ERRO DA API
-
-      if (!response.ok) {
-
-        adicionarMensagem(
-          'Erro ao conectar com a IA.',
-          'bot-msg'
-        );
-
-        return;
-      }
+      const response = await fetch('https://tcc-node.onrender.com/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          mensagem: mensagem
+        })
+      });
 
       const data = await response.json();
+
+      console.log('STATUS:', response.status);
+      console.log('DATA:', data);
+
+      if (!response.ok) {
+        adicionarMensagem(
+          data.resposta || 'Erro na API.',
+          'bot-msg'
+        );
+        return;
+      }
 
       adicionarMensagem(
         data.resposta || 'Não consegui responder agora.',
@@ -91,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
     } catch (error) {
-
       console.error('Erro:', error);
 
       adicionarMensagem(
@@ -99,21 +79,15 @@ document.addEventListener('DOMContentLoaded', () => {
         'bot-msg'
       );
     }
-
   });
 
-  // ADICIONAR MENSAGEM
-
   function adicionarMensagem(texto, classe) {
-
     const div = document.createElement('div');
 
     div.className = classe;
-
     div.textContent = texto;
 
     chatMessages.appendChild(div);
-
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 

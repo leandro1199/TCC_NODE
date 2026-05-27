@@ -14,8 +14,6 @@ from typing import List, Optional, Tuple
 import numpy as np
 import tf_keras as keras
 
-from sentence_transformers import SentenceTransformer
-
 
 logging.basicConfig(
     level=logging.INFO,
@@ -44,12 +42,7 @@ CONFIG = {
 
     "CLASSES_PATH": BASE_DIR / "classes.pkl",
 
-    "INTENTS_PATH": BASE_DIR / "json" / "intents.json",
-
-    "EMBEDDING_MODEL_NAME": os.getenv(
-        "EMBEDDING_MODEL_NAME",
-        "all-MiniLM-L6-v2"
-    )
+    "INTENTS_PATH": BASE_DIR / "json" / "intents.json"
 }
 
 
@@ -60,7 +53,6 @@ class ChatBot:
         self.model = None
         self.intents = None
         self.classes = None
-        self.embedding_model = None
 
         self.allowed_intents = {
 
@@ -165,12 +157,6 @@ class ChatBot:
             if isinstance(loaded, dict)
             and "classes" in loaded
             else loaded
-        )
-
-        # ===== EMBEDDINGS =====
-
-        self.embedding_model = SentenceTransformer(
-            CONFIG["EMBEDDING_MODEL_NAME"]
         )
 
         logger.info("Chatbot carregado com sucesso.")
