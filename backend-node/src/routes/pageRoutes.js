@@ -45,9 +45,12 @@ router.get('/cameraseg', requireAuth, (req, res) => {
   res.render('cameraseg');
 });
 
-router.get('/cameras', requireAuth, (req, res) => {
-  res.render('cameras');
-});
+const {
+  listarCameras,
+  cadastrarCamera
+} = require('../controllers/cameraController');
 
+router.get('/cameras', requireAuth, listarCameras);
+router.post('/cameras', requireAuth, cadastrarCamera);
 
 module.exports = router;

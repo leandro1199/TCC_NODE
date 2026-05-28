@@ -45,3 +45,6 @@ build/
 # ======================
 
 .cache/
+
+
+firebase-key.json
