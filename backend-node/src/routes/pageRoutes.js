@@ -45,5 +45,9 @@ router.get('/cameraseg', requireAuth, (req, res) => {
   res.render('cameraseg');
 });
 
+router.get('/cameras', requireAuth, (req, res) => {
+  res.render('cameras');
+});
+
 
 module.exports = router;

@@ -1,0 +1,4 @@
+firebase-admin
+opencv-python
+flask
+flask-cors
