@@ -1,5 +1,5 @@
-import cv2
 import time
+import subprocess
 
 from flask import Flask, Response, jsonify
 from flask_cors import CORS
@@ -21,6 +21,11 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 
+# ================= FFMPEG =================
+
+FFMPEG_PATH = r"C:\Users\berna\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-full_build\bin\ffmpeg.exe"
+
+
 # ================= BUSCAR CÂMERA =================
 
 def buscar_camera(camera_id):
@@ -38,18 +43,6 @@ def buscar_camera(camera_id):
     return camera
 
 
-# ================= ABRIR CÂMERA =================
-
-def abrir_camera(rtsp_url):
-
-    cap = cv2.VideoCapture(rtsp_url)
-
-    if not cap.isOpened():
-        print("Não foi possível abrir a câmera:", rtsp_url)
-
-    return cap
-
-
 # ================= GERAR FRAMES =================
 
 def gerar_frames(camera_id):
@@ -65,37 +58,63 @@ def gerar_frames(camera_id):
     print("Abrindo câmera:", dados_camera.get("nome", "Sem nome"))
     print("RTSP:", rtsp_url)
 
-    cap = abrir_camera(rtsp_url)
-
     while True:
 
-        sucesso, frame = cap.read()
+        comando = [
+            FFMPEG_PATH,
+            "-rtsp_transport", "tcp",
+            "-i", rtsp_url,
+            "-vf", "scale=800:450",
+            "-f", "mjpeg",
+            "-q:v", "5",
+            "-"
+        ]
 
-        if not sucesso or frame is None:
-
-            print("Falha ao ler frame. Tentando reconectar...")
-
-            cap.release()
-
-            time.sleep(2)
-
-            cap = abrir_camera(rtsp_url)
-
-            continue
-
-        frame = cv2.resize(frame, (800, 450))
-
-        ok, buffer = cv2.imencode(".jpg", frame)
-
-        if not ok:
-            continue
-
-        yield (
-            b"--frame\r\n"
-            b"Content-Type: image/jpeg\r\n\r\n" +
-            buffer.tobytes() +
-            b"\r\n"
+        processo = subprocess.Popen(
+            comando,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            bufsize=10**8
         )
+
+        buffer = b""
+
+        try:
+
+            while True:
+
+                bloco = processo.stdout.read(4096)
+
+                if not bloco:
+                    break
+
+                buffer += bloco
+
+                inicio = buffer.find(b"\xff\xd8")
+                fim = buffer.find(b"\xff\xd9")
+
+                if inicio != -1 and fim != -1 and fim > inicio:
+
+                    jpg = buffer[inicio:fim + 2]
+                    buffer = buffer[fim + 2:]
+
+                    yield (
+                        b"--frame\r\n"
+                        b"Content-Type: image/jpeg\r\n\r\n" +
+                        jpg +
+                        b"\r\n"
+                    )
+
+        except Exception as erro:
+
+            print("Erro no streaming:", erro)
+
+        finally:
+
+            processo.kill()
+
+        print("Reconectando câmera em 2 segundos...")
+        time.sleep(2)
 
 
 # ================= ROTAS =================
@@ -105,8 +124,23 @@ def home():
 
     return jsonify({
         "status": "online",
-        "mensagem": "API da câmera funcionando com Firebase"
+        "mensagem": "API da câmera funcionando com Firebase e FFmpeg"
     })
+
+
+@app.route("/cameras")
+def listar_cameras():
+
+    docs = db.collection("cameras").stream()
+
+    cameras = []
+
+    for doc in docs:
+        camera = doc.to_dict()
+        camera["id"] = doc.id
+        cameras.append(camera)
+
+    return jsonify(cameras)
 
 
 @app.route("/video_feed/<camera_id>")
@@ -130,11 +164,24 @@ def status_camera(camera_id):
             "erro": "Câmera não encontrada"
         }), 404
 
-    cap = abrir_camera(dados_camera["rtsp_url"])
+    rtsp_url = dados_camera["rtsp_url"]
 
-    online = cap.isOpened()
+    comando = [
+        FFMPEG_PATH,
+        "-rtsp_transport", "tcp",
+        "-i", rtsp_url,
+        "-t", "3",
+        "-f", "null",
+        "-"
+    ]
 
-    cap.release()
+    processo = subprocess.run(
+        comando,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+
+    online = processo.returncode == 0
 
     return jsonify({
         "camera_id": dados_camera["id"],
