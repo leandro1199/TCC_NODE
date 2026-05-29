@@ -13,6 +13,25 @@ venv/
 .env
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# ======================
+# FIREBASE
+# ======================
+
+firebase-key.json
+serviceAccountKey.json
+
+# ======================
+# OPENCV / IA
+# ======================
+
+*.pt
+*.pth
+*.h5
+*.onnx
+*.pickle
 
 # ======================
 # VS CODE
@@ -45,6 +64,12 @@ build/
 # ======================
 
 .cache/
+.pytest_cache/
+.mypy_cache/
 
+# ======================
+# TESTES
+# ======================
 
-firebase-key.json
+coverage/
+htmlcov/
