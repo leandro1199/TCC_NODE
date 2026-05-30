@@ -73,3 +73,38 @@ build/
 
 coverage/
 htmlcov/
+
+# ======================
+# CACHE
+# ======================
+
+.cache/
+.pytest_cache/
+.mypy_cache/
+
+# ======================
+# YOLO
+# ======================
+
+runs/
+datasets/
+labels.cache
+
+# ======================
+# JUPYTER
+# ======================
+
+.ipynb_checkpoints/
+
+# ======================
+# TESTES
+# ======================
+
+coverage/
+htmlcov/
+
+# ======================
+# IMAGENS DE TESTE (opcional)
+# ======================
+
+camera/testes/imagens/

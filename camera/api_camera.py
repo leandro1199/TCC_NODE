@@ -2,13 +2,14 @@ import time
 import subprocess
 import cv2
 import numpy as np
-import mediapipe as mp
 
 from flask import Flask, Response, jsonify
 from flask_cors import CORS
 
 import firebase_admin
 from firebase_admin import credentials, firestore
+
+from detector_yolo_queda import DetectorYOLOQueda
 
 
 app = Flask(__name__)
@@ -22,10 +23,9 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 
-# ================= MEDIAPIPE =================
+# ================= YOLO =================
 
-mp_pose = mp.solutions.pose
-mp_draw = mp.solutions.drawing_utils
+detector_queda = DetectorYOLOQueda()
 
 
 # ================= FFMPEG =================
@@ -48,36 +48,34 @@ def buscar_camera(camera_id):
     return camera
 
 
-# ================= VERIFICAR QUEDA =================
+# ================= VERIFICAR QUEDA COM YOLO =================
 
-def verificar_queda(frame, pose, camera_id, ultimo_alerta):
-    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    resultado = pose.process(rgb)
+def verificar_queda(frame, camera_id, ultimo_alerta):
+    queda, confianca, caixas = detector_queda.detectar(frame)
 
-    queda = False
-
-    if resultado.pose_landmarks:
-        pontos = resultado.pose_landmarks.landmark
-
-        ombro = pontos[mp_pose.PoseLandmark.LEFT_SHOULDER]
-        quadril = pontos[mp_pose.PoseLandmark.LEFT_HIP]
-
-        diferenca_y = abs(ombro.y - quadril.y)
-        diferenca_x = abs(ombro.x - quadril.x)
-
-        if diferenca_x > diferenca_y:
-            queda = True
-
-        mp_draw.draw_landmarks(
+    for x1, y1, x2, y2, conf in caixas:
+        cv2.rectangle(
             frame,
-            resultado.pose_landmarks,
-            mp_pose.POSE_CONNECTIONS
+            (x1, y1),
+            (x2, y2),
+            (0, 0, 255),
+            3
+        )
+
+        cv2.putText(
+            frame,
+            f"Fall {conf:.2f}",
+            (x1, y1 - 10),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.8,
+            (0, 0, 255),
+            2
         )
 
     if queda:
         cv2.putText(
             frame,
-            "QUEDA DETECTADA!",
+            f"QUEDA DETECTADA! {confianca:.2f}",
             (40, 50),
             cv2.FONT_HERSHEY_SIMPLEX,
             1,
@@ -85,14 +83,26 @@ def verificar_queda(frame, pose, camera_id, ultimo_alerta):
             3
         )
 
-        if time.time() - ultimo_alerta > 10:
+        if time.time() - ultimo_alerta > 60:
             db.collection("cameras").document(str(camera_id)).update({
                 "queda": True,
-                "alerta": "Queda detectada",
+                "alerta": "Queda detectada pela IA",
+                "confianca_queda": confianca,
                 "ultima_queda": firestore.SERVER_TIMESTAMP
             })
 
             ultimo_alerta = time.time()
+
+    else:
+        cv2.putText(
+            frame,
+            "Sem queda",
+            (40, 50),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (0, 255, 0),
+            2
+        )
 
     return frame, ultimo_alerta
 
@@ -108,7 +118,6 @@ def gerar_frames(camera_id):
 
     rtsp_url = dados_camera["rtsp_url"]
 
-    pose = mp_pose.Pose()
     ultimo_alerta = 0
 
     print("Abrindo câmera:", dados_camera.get("nome", "Sem nome"))
@@ -156,7 +165,6 @@ def gerar_frames(camera_id):
                     if frame is not None:
                         frame, ultimo_alerta = verificar_queda(
                             frame,
-                            pose,
                             camera_id,
                             ultimo_alerta
                         )
@@ -187,7 +195,7 @@ def gerar_frames(camera_id):
 def home():
     return jsonify({
         "status": "online",
-        "mensagem": "API da câmera funcionando com Firebase, FFmpeg e detector de queda"
+        "mensagem": "API da câmera funcionando com Firebase, FFmpeg e YOLO"
     })
 
 
