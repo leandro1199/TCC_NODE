@@ -1,6 +1,4 @@
 import os
-os.environ["TF_USE_LEGACY_KERAS"] = "1"
-
 import json
 import logging
 import pickle
@@ -12,7 +10,7 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 import numpy as np
-import tf_keras as keras
+from tensorflow import keras
 
 
 logging.basicConfig(
@@ -29,7 +27,6 @@ BASE_DIR = Path(__file__).resolve().parent
 
 
 CONFIG = {
-
     "ERROR_THRESHOLD": float(
         os.getenv("ERROR_THRESHOLD", 0.35)
     ),
@@ -49,13 +46,11 @@ CONFIG = {
 class ChatBot:
 
     def __init__(self):
-
         self.model = None
         self.intents = None
         self.classes = None
 
         self.allowed_intents = {
-
             "saudacao",
             "despedida",
             "agradecimento",
@@ -107,49 +102,40 @@ class ChatBot:
     # ================= LOAD =================
 
     def _load_files(self):
-
         if not CONFIG["MODEL_PATH"].exists():
             raise FileNotFoundError(
-                f"Modelo não encontrado em: "
-                f"{CONFIG['MODEL_PATH']}"
+                f"Modelo não encontrado em: {CONFIG['MODEL_PATH']}"
             )
 
         if not CONFIG["INTENTS_PATH"].exists():
             raise FileNotFoundError(
-                f"Arquivo intents não encontrado: "
-                f"{CONFIG['INTENTS_PATH']}"
+                f"Arquivo intents não encontrado: {CONFIG['INTENTS_PATH']}"
             )
 
         if not CONFIG["CLASSES_PATH"].exists():
             raise FileNotFoundError(
-                f"Arquivo classes não encontrado: "
-                f"{CONFIG['CLASSES_PATH']}"
+                f"Arquivo classes não encontrado: {CONFIG['CLASSES_PATH']}"
             )
 
-        # ===== MODEL =====
+        logger.info(f"Carregando modelo: {CONFIG['MODEL_PATH']}")
 
         self.model = keras.models.load_model(
             str(CONFIG["MODEL_PATH"]),
-            compile=False
+            compile=False,
+            safe_mode=False
         )
-
-        # ===== INTENTS =====
 
         with open(
             CONFIG["INTENTS_PATH"],
             "r",
             encoding="utf-8"
         ) as f:
-
             self.intents = json.load(f)
-
-        # ===== CLASSES =====
 
         with open(
             CONFIG["CLASSES_PATH"],
             "rb"
         ) as f:
-
             loaded = pickle.load(f)
 
         self.classes = (
@@ -164,7 +150,6 @@ class ChatBot:
     # ================= TEXTO =================
 
     def normalize_text(self, text: str) -> str:
-
         text = text.lower().strip()
 
         text = unicodedata.normalize(
@@ -197,13 +182,11 @@ class ChatBot:
         bag = [0] * len(self.classes)
 
         for w in words:
-
             for i, word in enumerate(self.classes):
-
                 if word == w:
                     bag[i] = 1
 
-        return np.array(bag)
+        return np.array(bag, dtype=np.float32)
 
     # ================= PREDIÇÃO =================
 
@@ -219,12 +202,12 @@ class ChatBot:
             verbose=0
         )[0]
 
-        ERROR_THRESHOLD = CONFIG["ERROR_THRESHOLD"]
+        error_threshold = CONFIG["ERROR_THRESHOLD"]
 
         results = [
             [i, r]
             for i, r in enumerate(res)
-            if r > ERROR_THRESHOLD
+            if r > error_threshold
         ]
 
         results.sort(
@@ -235,10 +218,9 @@ class ChatBot:
         return_list = []
 
         for r in results:
-
             return_list.append({
                 "intent": self.classes[r[0]],
-                "probability": str(r[1])
+                "probability": str(float(r[1]))
             })
 
         return return_list
@@ -251,7 +233,6 @@ class ChatBot:
     ) -> Tuple[str, str]:
 
         if not intents_list:
-
             return (
                 "Desculpe, não consegui entender sua pergunta.",
                 "fora_do_escopo"
@@ -260,7 +241,6 @@ class ChatBot:
         tag = intents_list[0]["intent"]
 
         if tag not in self.allowed_intents:
-
             return (
                 "Desculpe, não consigo responder isso.",
                 "fora_do_escopo"
@@ -269,9 +249,7 @@ class ChatBot:
         list_of_intents = self.intents["intents"]
 
         for intent in list_of_intents:
-
             if intent["tag"] == tag:
-
                 resposta = random.choice(
                     intent["responses"]
                 )
@@ -306,20 +284,14 @@ chatbot_instance = None
 
 
 def get_chatbot():
-
     global chatbot_instance
 
     if chatbot_instance is None:
-
-        logger.info(
-            "Carregando modelo do chatbot..."
-        )
+        logger.info("Carregando modelo do chatbot...")
 
         chatbot_instance = ChatBot()
 
-        logger.info(
-            "Modelo carregado com sucesso."
-        )
+        logger.info("Modelo carregado com sucesso.")
 
     return chatbot_instance
 
@@ -330,7 +302,6 @@ def responder_chatbot(
     mensagem: str,
     contexto_anterior: Optional[str] = None
 ):
-
     chatbot = get_chatbot()
 
     return chatbot.responder(
