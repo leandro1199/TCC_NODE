@@ -3,9 +3,10 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+from chatbot import responder_chatbot
+
 
 app = Flask(__name__)
-
 CORS(app)
 
 
@@ -13,7 +14,6 @@ CORS(app)
 
 @app.route("/", methods=["GET"])
 def home():
-
     return jsonify({
         "status": "online",
         "mensagem": "API do chatbot funcionando"
@@ -24,29 +24,19 @@ def home():
 
 @app.route("/chat", methods=["POST"])
 def chat_api():
-
     try:
-
-        # Importa só quando o chat for usado
-        from chatbot import responder_chatbot
-
         data = request.get_json(silent=True)
 
         if not data:
-
             return jsonify({
                 "resposta": "JSON inválido.",
                 "contexto": "erro_json"
             }), 400
 
         mensagem = data.get("mensagem", "").strip()
-
-        contexto_anterior = data.get(
-            "contexto_anterior"
-        )
+        contexto_anterior = data.get("contexto_anterior")
 
         if not mensagem:
-
             return jsonify({
                 "resposta": "Digite uma mensagem válida.",
                 "contexto": "vazio"
@@ -63,7 +53,6 @@ def chat_api():
         })
 
     except Exception as erro:
-
         print(f"Erro na API chatbot: {erro}")
 
         return jsonify({
@@ -75,10 +64,7 @@ def chat_api():
 # ================= MAIN =================
 
 if __name__ == "__main__":
-
-    port = int(
-        os.environ.get("PORT", 10000)
-    )
+    port = int(os.environ.get("PORT", 10000))
 
     app.run(
         host="0.0.0.0",
