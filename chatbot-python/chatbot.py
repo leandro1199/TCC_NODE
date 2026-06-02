@@ -42,7 +42,7 @@ CONFIG = {
 
     "CLASSES_PATH": BASE_DIR / "classes.pkl",
 
-    "INTENTS_PATH": BASE_DIR / "json" / "intents.json"
+    "INTENTS_PATH": BASE_DIR.parent / "json" / "intents.json"
 }
 
 
