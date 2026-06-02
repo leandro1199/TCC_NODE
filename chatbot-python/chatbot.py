@@ -300,9 +300,28 @@ class ChatBot:
         return resposta, contexto
 
 
-# ================= INSTÂNCIA GLOBAL =================
+# ================= INSTÂNCIA SOB DEMANDA =================
 
-chatbot_instance = ChatBot()
+chatbot_instance = None
+
+
+def get_chatbot():
+
+    global chatbot_instance
+
+    if chatbot_instance is None:
+
+        logger.info(
+            "Carregando modelo do chatbot..."
+        )
+
+        chatbot_instance = ChatBot()
+
+        logger.info(
+            "Modelo carregado com sucesso."
+        )
+
+    return chatbot_instance
 
 
 # ================= FUNÇÃO EXPORTADA =================
@@ -312,7 +331,9 @@ def responder_chatbot(
     contexto_anterior: Optional[str] = None
 ):
 
-    return chatbot_instance.responder(
+    chatbot = get_chatbot()
+
+    return chatbot.responder(
         mensagem,
         contexto_anterior
     )
