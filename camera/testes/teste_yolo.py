@@ -12,7 +12,8 @@ from detector_yolo_queda import DetectorYOLOQueda
 
 detector = DetectorYOLOQueda()
 
-imagem = cv2.imread("imagens/queda1.jpg")
+#imagem = cv2.imread("imagens/queda1.jpg")
+imagem = cv2.imread("imagens/queda4.jpg")
 
 if imagem is None:
     print("Imagem não encontrada")

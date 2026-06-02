@@ -8,7 +8,7 @@ class DetectorYOLOQueda:
             r"D:\TCC_DNV\runs\detect\train\weights\best.pt"
         )
 
-        self.confianca_minima = 0.50
+        self.confianca_minima = 0.40
 
     def detectar(self, frame):
         resultados = self.modelo(frame, verbose=False)
