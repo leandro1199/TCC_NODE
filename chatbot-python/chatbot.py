@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 import numpy as np
+from sentence_transformers import SentenceTransformer
 from tensorflow import keras
 
 
@@ -21,24 +22,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# ================= BASE =================
-
 BASE_DIR = Path(__file__).resolve().parent
 
-
 CONFIG = {
-    "ERROR_THRESHOLD": float(
-        os.getenv("ERROR_THRESHOLD", 0.35)
-    ),
-
-    "HIGH_CONFIDENCE_THRESHOLD": float(
-        os.getenv("HIGH_CONFIDENCE_THRESHOLD", 0.70)
-    ),
-
+    "ERROR_THRESHOLD": float(os.getenv("ERROR_THRESHOLD", 0.35)),
+    "HIGH_CONFIDENCE_THRESHOLD": float(os.getenv("HIGH_CONFIDENCE_THRESHOLD", 0.70)),
     "MODEL_PATH": BASE_DIR / "model_chatbot.keras",
-
     "CLASSES_PATH": BASE_DIR / "classes.pkl",
-
     "INTENTS_PATH": BASE_DIR.parent / "json" / "intents.json"
 }
 
@@ -49,73 +39,52 @@ class ChatBot:
         self.model = None
         self.intents = None
         self.classes = None
+        self.embedding_model = None
 
         self.allowed_intents = {
             "saudacao",
             "despedida",
             "agradecimento",
-
             "capacidades",
-
             "medicamento_esquecido",
             "medicamento_horario",
             "efeito_colateral_remedio",
-
             "explicacao_hipertensao",
             "explicacao_diabetes",
             "explicacao_artrose",
             "explicacao_osteoporose",
-
             "dor_articulacao",
             "dor_coluna_costas",
             "dor_cabeca",
-
             "tontura_mal_estar",
             "pressao_alta_baixa",
             "glicose_diabetes_controle",
-
             "exercicio_dor_joelho",
             "exercicio_dor_coluna",
             "exercicio_equilibrio",
-
             "prevencao_quedas",
-
             "memoria_esquecimento",
-
             "sono_insonia",
-
             "hidratacao",
-
             "alimentacao_idoso",
-
             "ansiedade_emocional",
             "solidao",
             "luto_tristeza",
-
             "emergencia_sinais_graves",
-
             "fora_do_escopo"
         }
 
         self._load_files()
 
-    # ================= LOAD =================
-
     def _load_files(self):
         if not CONFIG["MODEL_PATH"].exists():
-            raise FileNotFoundError(
-                f"Modelo não encontrado em: {CONFIG['MODEL_PATH']}"
-            )
+            raise FileNotFoundError(f"Modelo não encontrado em: {CONFIG['MODEL_PATH']}")
 
         if not CONFIG["INTENTS_PATH"].exists():
-            raise FileNotFoundError(
-                f"Arquivo intents não encontrado: {CONFIG['INTENTS_PATH']}"
-            )
+            raise FileNotFoundError(f"Arquivo intents não encontrado: {CONFIG['INTENTS_PATH']}")
 
         if not CONFIG["CLASSES_PATH"].exists():
-            raise FileNotFoundError(
-                f"Arquivo classes não encontrado: {CONFIG['CLASSES_PATH']}"
-            )
+            raise FileNotFoundError(f"Arquivo classes não encontrado: {CONFIG['CLASSES_PATH']}")
 
         logger.info(f"Carregando modelo: {CONFIG['MODEL_PATH']}")
 
@@ -125,82 +94,55 @@ class ChatBot:
             safe_mode=False
         )
 
-        with open(
-            CONFIG["INTENTS_PATH"],
-            "r",
-            encoding="utf-8"
-        ) as f:
+        with open(CONFIG["INTENTS_PATH"], "r", encoding="utf-8") as f:
             self.intents = json.load(f)
 
-        with open(
-            CONFIG["CLASSES_PATH"],
-            "rb"
-        ) as f:
+        with open(CONFIG["CLASSES_PATH"], "rb") as f:
             loaded = pickle.load(f)
 
-        self.classes = (
-            loaded["classes"]
-            if isinstance(loaded, dict)
-            and "classes" in loaded
-            else loaded
-        )
+        if isinstance(loaded, dict):
+            self.classes = loaded.get("classes", [])
+            embedding_model_name = loaded.get(
+                "embedding_model_name",
+                "all-MiniLM-L6-v2"
+            )
+        else:
+            self.classes = loaded
+            embedding_model_name = "all-MiniLM-L6-v2"
+
+        if not self.classes:
+            raise ValueError("Nenhuma classe foi carregada do arquivo classes.pkl.")
+
+        logger.info(f"Carregando SentenceTransformer: {embedding_model_name}")
+
+        self.embedding_model = SentenceTransformer(embedding_model_name)
 
         logger.info("Chatbot carregado com sucesso.")
 
-    # ================= TEXTO =================
-
     def normalize_text(self, text: str) -> str:
-        text = text.lower().strip()
+        text = str(text).lower().strip()
 
-        text = unicodedata.normalize(
-            "NFKD",
-            text
-        ).encode(
-            "ascii",
-            "ignore"
-        ).decode(
-            "utf-8"
-        )
+        text = unicodedata.normalize("NFKD", text)
+        text = text.encode("ascii", "ignore").decode("utf-8")
 
-        text = re.sub(
-            r"[^a-zA-Z0-9\s]",
-            "",
-            text
-        )
+        text = re.sub(r"[^\w\s?/-]", "", text)
+        text = re.sub(r"\s+", " ", text)
 
-        return text
+        return text.strip()
 
-    # ================= BAG OF WORDS =================
+    def predict_class(self, sentence: str) -> List[dict]:
+        sentence = self.normalize_text(sentence)
 
-    def bag_of_words(
-        self,
-        sentence: str
-    ) -> np.ndarray:
+        if not sentence:
+            return []
 
-        words = self.normalize_text(sentence).split()
+        vec = self.embedding_model.encode(
+            [sentence],
+            convert_to_numpy=True,
+            normalize_embeddings=True
+        ).astype(np.float32)
 
-        bag = [0] * len(self.classes)
-
-        for w in words:
-            for i, word in enumerate(self.classes):
-                if word == w:
-                    bag[i] = 1
-
-        return np.array(bag, dtype=np.float32)
-
-    # ================= PREDIÇÃO =================
-
-    def predict_class(
-        self,
-        sentence: str
-    ) -> List[dict]:
-
-        bow = self.bag_of_words(sentence)
-
-        res = self.model.predict(
-            np.array([bow]),
-            verbose=0
-        )[0]
+        res = self.model.predict(vec, verbose=0)[0]
 
         error_threshold = CONFIG["ERROR_THRESHOLD"]
 
@@ -225,13 +167,7 @@ class ChatBot:
 
         return return_list
 
-    # ================= RESPOSTA =================
-
-    def get_response(
-        self,
-        intents_list: List[dict]
-    ) -> Tuple[str, str]:
-
+    def get_response(self, intents_list: List[dict]) -> Tuple[str, str]:
         if not intents_list:
             return (
                 "Desculpe, não consegui entender sua pergunta.",
@@ -246,22 +182,19 @@ class ChatBot:
                 "fora_do_escopo"
             )
 
-        list_of_intents = self.intents["intents"]
+        list_of_intents = self.intents.get("intents", [])
 
         for intent in list_of_intents:
-            if intent["tag"] == tag:
-                resposta = random.choice(
-                    intent["responses"]
-                )
+            if intent.get("tag") == tag:
+                respostas = intent.get("responses", [])
 
-                return resposta, tag
+                if respostas:
+                    return random.choice(respostas), tag
 
         return (
             "Não encontrei uma resposta adequada.",
             "fora_do_escopo"
         )
-
-    # ================= CHAT =================
 
     def responder(
         self,
@@ -269,16 +202,12 @@ class ChatBot:
         contexto_anterior: Optional[str] = None
     ) -> Tuple[str, str]:
 
-        mensagem = self.normalize_text(mensagem)
-
         intents = self.predict_class(mensagem)
 
         resposta, contexto = self.get_response(intents)
 
         return resposta, contexto
 
-
-# ================= INSTÂNCIA SOB DEMANDA =================
 
 chatbot_instance = None
 
@@ -288,15 +217,11 @@ def get_chatbot():
 
     if chatbot_instance is None:
         logger.info("Carregando modelo do chatbot...")
-
         chatbot_instance = ChatBot()
-
         logger.info("Modelo carregado com sucesso.")
 
     return chatbot_instance
 
-
-# ================= FUNÇÃO EXPORTADA =================
 
 def responder_chatbot(
     mensagem: str,
