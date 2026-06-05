@@ -105,3 +105,6 @@ camera/testes/videos/
 
 *.tmp
 *.bak
+
+camera/datasets/
+runs/
