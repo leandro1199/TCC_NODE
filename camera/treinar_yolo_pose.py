@@ -1,10 +1,13 @@
 from ultralytics import YOLO
 
-model = YOLO("yolov8n-pose.pt")
+model = YOLO("yolov8n-cls.pt")
 
 model.train(
-    data="datasets/falling/data.yaml",
+    data="dataset_video",
     epochs=50,
-    imgsz=640,
-    batch=8
+    imgsz=224,
+    batch=16,
+    project="runs/classify",
+    name="fall_classification",
+    exist_ok=True
 )

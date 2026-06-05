@@ -13,8 +13,15 @@ from detector_yolo_queda import DetectorYOLOQueda
 detector = DetectorYOLOQueda()
 
 #imagem = cv2.imread("imagens/queda1.jpg")
-imagem = cv2.imread("imagens/queda4.jpg")
+caminho_base = os.path.dirname(os.path.abspath(__file__))
 
+imagem_path = os.path.join(
+    caminho_base,
+    "imagens",
+    "queda1.jpg"
+)
+
+imagem = cv2.imread(imagem_path)
 if imagem is None:
     print("Imagem não encontrada")
     exit()

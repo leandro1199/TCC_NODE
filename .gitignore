@@ -10,6 +10,7 @@ npm-debug.log
 # ======================
 
 venv/
+.venv/
 .env
 __pycache__/
 *.pyc
@@ -24,14 +25,24 @@ firebase-key.json
 serviceAccountKey.json
 
 # ======================
-# OPENCV / IA
+# IA / MACHINE LEARNING
 # ======================
 
 *.pt
 *.pth
 *.h5
+*.keras
 *.onnx
 *.pickle
+*.pkl
+
+# ======================
+# YOLO
+# ======================
+
+runs/
+camera/runs/
+labels.cache
 
 # ======================
 # VS CODE
@@ -45,6 +56,7 @@ serviceAccountKey.json
 
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # ======================
 # LOGS
@@ -75,36 +87,21 @@ coverage/
 htmlcov/
 
 # ======================
-# CACHE
-# ======================
-
-.cache/
-.pytest_cache/
-.mypy_cache/
-
-# ======================
-# YOLO
-# ======================
-
-runs/
-datasets/
-labels.cache
-
-# ======================
 # JUPYTER
 # ======================
 
 .ipynb_checkpoints/
 
 # ======================
-# TESTES
-# ======================
-
-coverage/
-htmlcov/
-
-# ======================
-# IMAGENS DE TESTE (opcional)
+# TESTES LOCAIS
 # ======================
 
 camera/testes/imagens/
+camera/testes/videos/
+
+# ======================
+# ARQUIVOS TEMPORÁRIOS
+# ======================
+
+*.tmp
+*.bak
