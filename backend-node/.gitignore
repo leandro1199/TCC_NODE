@@ -13,6 +13,7 @@ __pycache__
 serviceAccountKey.json
 tccveio-firebase-adminsdk-*.json
 *firebase-adminsdk*.json
+firebase.json
 
 # Logs
 *.log
