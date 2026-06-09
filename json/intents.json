@@ -1,25 +1,50 @@
 {
   "intents": [
     {
-      "tag": "saudacao",
-      "patterns": [
-        "Oi",
-        "Olá",
-        "Bom dia",
-        "Boa tarde",
-        "Boa noite",
-        "Opa",
-        "Ei",
-        "Oi bot",
-        "Olá bot",
-        "Tudo bem",
-        "Oi tudo bem"
-      ],
-      "responses": [
-        "Olá. Sou um assistente voltado ao cuidado e bem-estar da pessoa idosa. Posso ajudar com medicamentos, sintomas, doenças, exercícios leves e orientações de saúde.",
-        "Olá. Estou aqui para ajudar com assuntos relacionados à saúde e rotina de idosos.",
-        "Oi. Posso ajudar com remédios, dores, memória, pressão, diabetes, mobilidade e cuidados no dia a dia."
-      ]
+  "tag": "saudacao",
+  "patterns": [
+    "Oi",
+    "Olá",
+    "Ola",
+    "Bom dia",
+    "Boa tarde",
+    "Boa noite",
+    "Opa",
+    "Eai",
+    "E aí",
+    "Ei",
+    "Oi bot",
+    "Olá bot",
+    "Oi assistente",
+    "Olá assistente",
+    "Tudo bem",
+    "Tudo bom",
+    "Como vai",
+    "Como você está",
+    "Preciso de ajuda",
+    "Pode me ajudar",
+    "Me ajuda",
+    "Quero ajuda",
+    "Tenho uma dúvida",
+    "Gostaria de orientação",
+    "Gostaria de ajuda",
+    "Alguém pode me ajudar",
+    "Tem alguém aí",
+    "Estou precisando de ajuda",
+    "Olá tudo bem",
+    "Oi tudo bem",
+    "Bom dia tudo bem",
+    "Boa tarde tudo bem",
+    "Boa noite tudo bem",
+    "Preciso conversar",
+    "Quero falar com o assistente",
+    "Iniciar conversa"
+  ],
+    "responses": [
+      "Olá. Sou um assistente voltado ao cuidado e bem-estar da pessoa idosa. Posso ajudar com medicamentos, sintomas, doenças, exercícios leves e orientações de saúde.",
+      "Olá. Estou aqui para ajudar com assuntos relacionados à saúde e rotina de idosos.",
+      "Oi. Posso ajudar com remédios, dores, memória, pressão, diabetes, mobilidade e cuidados no dia a dia."
+    ]
     },
     {
       "tag": "despedida",
@@ -217,11 +242,27 @@
     {
       "tag": "dor_cabeca",
       "patterns": [
-        "Dor de cabeça",
-        "Minha cabeça está doendo",
-        "Cefaleia",
-        "Estou com muita dor de cabeça"
-      ],
+            "dor de cabeça",
+            "estou com dor de cabeça",
+            "minha cabeça dói",
+            "cabeça doendo",
+            "estou com enxaqueca",
+            "tenho enxaqueca",
+            "forte dor de cabeça",
+            "muita dor na cabeça",
+            "minha cabeça está latejando",
+            "dor atrás dos olhos",
+            "dor na testa",
+            "dor na nuca",
+            "cabeça pesada",
+            "não aguento essa dor de cabeça",
+            "estou sentindo dor na cabeça",
+            "cefaleia",
+            "dor de cabeça forte",
+            "dor de cabeça constante",
+            "estou com a cabeça doendo",
+            "minha cabeça está doendo muito"
+          ],
       "responses": [
         "Dor de cabeça pode ter várias causas, como tensão, desidratação ou pressão alterada. Vale descansar, beber água e observar se há outros sintomas.",
         "Se a dor de cabeça for muito forte, repentina, ou vier com fraqueza, confusão, vômitos ou alteração na visão, procure atendimento rápido.",
@@ -483,6 +524,539 @@
         "Meu foco é apoio ao idoso. Se quiser, faça uma pergunta sobre saúde, rotina, mobilidade, medicamentos ou prevenção de quedas.",
         "Prefiro me limitar a assuntos de cuidado e bem-estar do idoso. Pode me perguntar sobre sintomas, doenças comuns, remédios ou exercícios leves."
       ]
-    }
+    },
+    {
+  "tag": "explicacao_alzheimer",
+  "patterns": [
+    "O que é Alzheimer",
+    "Explique Alzheimer",
+    "Alzheimer é o que",
+    "Me explique Alzheimer",
+    "Pessoa com Alzheimer",
+    "Esquecimento pode ser Alzheimer",
+    "Sintomas de Alzheimer",
+    "Idoso esquecendo muito",
+    "Perda de memória em idoso",
+    "Pessoa esquecendo nomes",
+    "Esquecimento frequente",
+    "Doença de Alzheimer",
+    "Problema de memória",
+    "Perda de memória",
+    "Idoso com perda de memória",
+    "Alzheimer tem cura",
+    "Como identificar Alzheimer",
+    "Primeiros sinais de Alzheimer",
+    "Meu pai está esquecendo tudo"
+  ],
+  "responses": [
+    "Alzheimer é uma doença que afeta a memória, o pensamento e o comportamento, sendo mais comum em idosos.",
+    "Esquecimentos frequentes, confusão, dificuldade para realizar tarefas e mudanças de comportamento podem merecer avaliação médica.",
+    "Nem todo esquecimento é Alzheimer, mas quando atrapalha a rotina, o ideal é procurar um médico."
+  ]
+},
+{
+  "tag": "explicacao_avc",
+  "patterns": [
+    "O que é AVC",
+    "Explique AVC",
+    "Derrame é o que",
+    "O que é derrame",
+    "Sintomas de AVC",
+    "Fala enrolada",
+    "Boca torta",
+    "Fraqueza de um lado",
+    "Perdi força de um lado do corpo",
+    "Suspeita de AVC",
+    "Estou com a boca torta",
+    "Não consigo mexer o braço",
+    "Perdi os movimentos",
+    "Dormência em um lado",
+    "Braço sem força",
+    "Perna sem força",
+    "Sinais de derrame",
+    "Pode ser AVC",
+    "Suspeito de derrame",
+    "Como saber se é AVC"
+  ],
+  "responses": [
+    "AVC, também chamado de derrame, acontece quando o fluxo de sangue para uma parte do cérebro é prejudicado.",
+    "Sinais como fala enrolada, boca torta, fraqueza de um lado do corpo, confusão ou alteração na visão são urgência médica.",
+    "Em suspeita de AVC, procure atendimento imediatamente. Quanto mais rápido o atendimento, maiores as chances de recuperação."
+  ]
+},
+{
+  "tag": "explicacao_infarto",
+  "patterns": [
+    "O que é infarto",
+    "Explique infarto",
+    "Infarto é o que",
+    "Sintomas de infarto",
+    "Dor no peito pode ser infarto",
+    "Aperto no peito",
+    "Dor no peito e falta de ar",
+    "Dor no braço esquerdo",
+    "Coração doendo",
+    "Suspeita de infarto",
+    "Estou sentindo aperto no peito",
+    "Dor no coração",
+    "Peito apertado",
+    "Dor forte no peito",
+    "Pode ser infarto",
+    "Sinais de infarto",
+    "Dor no braço esquerdo e peito",
+    "Falta de ar e dor no peito",
+    "Suor frio e dor no peito",
+    "Como identificar infarto"
+  ],
+  "responses": [
+    "Infarto acontece quando o sangue não chega corretamente a uma parte do coração.",
+    "Dor ou aperto no peito, falta de ar, suor frio, náusea e dor irradiando para braço, costas ou mandíbula podem ser sinais de urgência.",
+    "Em suspeita de infarto, procure atendimento médico imediatamente."
+  ]
+},
+{
+  "tag": "explicacao_colesterol",
+  "patterns": [
+    "O que é colesterol",
+    "Explique colesterol",
+    "Colesterol alto",
+    "Colesterol ruim",
+    "LDL alto",
+    "Triglicérides alto",
+    "Gordura no sangue",
+    "Como controlar colesterol"
+  ],
+  "responses": [
+    "Colesterol é uma gordura presente no sangue. Em excesso, pode aumentar o risco de problemas no coração e circulação.",
+    "O controle pode envolver alimentação equilibrada, atividade física, acompanhamento médico e, em alguns casos, medicamentos.",
+    "É importante acompanhar exames de sangue e seguir a orientação do profissional de saúde."
+  ]
+},
+{
+  "tag": "explicacao_artrite",
+  "patterns": [
+    "O que é artrite",
+    "Explique artrite",
+    "Artrite é o que",
+    "Dor e inchaço nas juntas",
+    "Juntas inflamadas",
+    "Mãos inchadas",
+    "Dor nas mãos",
+    "Articulação inflamada"
+  ],
+  "responses": [
+    "Artrite é uma inflamação nas articulações, podendo causar dor, inchaço, calor e rigidez.",
+    "Ela pode afetar mãos, joelhos, pés e outras articulações.",
+    "Se houver inchaço persistente, dor forte ou dificuldade para se movimentar, procure avaliação médica."
+  ]
+},
+{
+  "tag": "explicacao_catarata",
+  "patterns": [
+    "O que é catarata",
+    "Explique catarata",
+    "Catarata é o que",
+    "Visão embaçada",
+    "Idoso enxergando mal",
+    "Dificuldade para enxergar",
+    "Vista turva",
+    "Olho embaçado",
+    "Problema de visão em idoso"
+  ],
+  "responses": [
+    "Catarata é uma alteração no cristalino do olho que deixa a visão embaçada, sendo comum em idosos.",
+    "Pode causar dificuldade para ler, enxergar à noite ou perceber detalhes.",
+    "O ideal é procurar um oftalmologista para avaliação."
+  ]
+},
+{
+  "tag": "explicacao_pneumonia",
+  "patterns": [
+    "O que é pneumonia",
+    "Explique pneumonia",
+    "Pneumonia é o que",
+    "Tosse forte",
+    "Febre e tosse",
+    "Falta de ar e tosse",
+    "Catarro no peito",
+    "Idoso com pneumonia",
+    "Sintomas de pneumonia",
+    "Tosse com catarro",
+    "Peito carregado",
+    "Infecção no pulmão",
+    "Estou com catarro",
+    "Dificuldade para respirar",
+    "Tosse e febre",
+    "Estou sem ar",
+    "Pulmão inflamado",
+    "Chiado no peito",
+    "Falta de ar constante"
+  ],
+  "responses": [
+    "Pneumonia é uma infecção nos pulmões que pode causar tosse, febre, falta de ar, cansaço e catarro.",
+    "Em idosos, a pneumonia pode ser mais séria e às vezes aparece com confusão, fraqueza ou queda do estado geral.",
+    "Se houver falta de ar, febre persistente ou piora importante, procure atendimento médico."
+  ]
+},
+{
+  "tag": "explicacao_infeccao_urinaria",
+  "patterns": [
+    "O que é infecção urinária",
+    "Explique infecção urinária",
+    "Dor para urinar",
+    "Ardência ao urinar",
+    "Urina com cheiro forte",
+    "Vontade de urinar toda hora",
+    "Idoso com infecção urinária",
+    "Confusão pode ser infecção urinária",
+    "Sintomas de infecção urinária",
+    "Arde para fazer xixi",
+    "Queimação ao urinar",
+    "Urina escura",
+    "Xixi com cheiro forte",
+    "Dor para fazer xixi",
+    "Vontade frequente de urinar",
+    "Urinando toda hora",
+    "Desconforto urinário",
+    "Infecção na urina",
+    "Problema urinário"
+  ],
+  "responses": [
+    "Infecção urinária pode causar ardência ao urinar, vontade frequente de urinar, dor no baixo ventre e urina com cheiro forte.",
+    "Em idosos, também pode causar confusão, fraqueza ou sonolência.",
+    "É importante procurar avaliação médica, pois pode ser necessário tratamento com medicamento adequado."
+  ]
+},
+{
+  "tag": "explicacao_depressao",
+  "patterns": [
+    "O que é depressão",
+    "Explique depressão",
+    "Depressão em idoso",
+    "Estou muito triste",
+    "Não tenho vontade de fazer nada",
+    "Perdi a vontade de viver",
+    "Desânimo constante",
+    "Tristeza todos os dias",
+    "Idoso deprimido",
+    "Estou muito desanimado",
+    "Não sinto alegria",
+    "Perdi o interesse pelas coisas",
+    "Estou sem vontade de sair",
+    "Não tenho ânimo",
+    "Me sinto deprimido",
+    "Me sinto deprimida",
+    "Estou triste há muito tempo",
+    "Não sinto prazer em nada",
+    "Estou sem motivação"
+  ],
+  "responses": [
+    "Depressão é uma condição de saúde que pode causar tristeza persistente, desânimo, perda de interesse, alteração no sono e no apetite.",
+    "Em idosos, a depressão pode aparecer como isolamento, irritação, cansaço e falta de vontade de realizar atividades.",
+    "Se a tristeza for frequente ou houver pensamentos de desistir da vida, procure ajuda profissional imediatamente e avise alguém de confiança."
+  ]
+},
+{
+  "tag": "febre",
+  "patterns": [
+    "Estou com febre",
+    "Minha temperatura está alta",
+    "Estou quente",
+    "Estou com temperatura alta",
+    "Estou febril",
+    "Medi a temperatura",
+    "Estou com calafrios",
+    "Tenho febre",
+    "Estou queimando de febre",
+    "Temperatura alta",
+    "Corpo quente",
+    "Estou muito quente",
+    "Tenho febre alta",
+    "Estou com 38 graus",
+    "Estou com 39 graus",
+    "Estou com febre desde ontem",
+    "Estou febril",
+    "Calafrios e febre"
+  ],
+  "responses": [
+    "A febre pode ser sinal de infecção ou outra condição de saúde. É importante descansar, se hidratar e monitorar a temperatura.",
+    "Se a febre for alta, persistente ou vier acompanhada de falta de ar, confusão ou piora importante, procure atendimento médico.",
+    "Anotar a temperatura e os horários pode ajudar na avaliação médica."
+  ]
+},
+{
+  "tag": "tosse",
+  "patterns": [
+    "Estou tossindo",
+    "Tenho tosse",
+    "Tosse seca",
+    "Tosse com catarro",
+    "Não paro de tossir",
+    "Estou com muita tosse",
+    "Tosse forte",
+    "Estou tossindo muito",
+    "Tosse constante",
+    "Tosse o dia inteiro",
+    "Tosse durante a noite",
+    "Tosse sem parar",
+    "Tosse persistente",
+    "Tosse com catarro",
+    "Tosse seca",
+    "Crise de tosse",
+    "Estou com muita tosse"
+  ],
+  "responses": [
+    "A tosse pode ter diversas causas, como gripe, resfriado, alergias ou infecções respiratórias.",
+    "Mantenha-se hidratado e observe se há febre, falta de ar ou piora dos sintomas.",
+    "Se a tosse persistir ou causar dificuldade para respirar, procure atendimento médico."
+  ]
+},
+{
+  "tag": "gripe_resfriado",
+  "patterns": [
+    "Estou gripado",
+    "Estou resfriado",
+    "Peguei gripe",
+    "Estou com sintomas de gripe",
+    "Nariz escorrendo",
+    "Estou espirrando",
+    "Estou resfriada"
+  ],
+  "responses": [
+    "Gripe e resfriado costumam causar coriza, tosse, espirros, febre e mal-estar.",
+    "Descanso, hidratação e alimentação adequada ajudam na recuperação.",
+    "Se houver falta de ar ou piora importante dos sintomas, procure atendimento médico."
+  ]
+},
+{
+  "tag": "nausea",
+  "patterns": [
+    "Estou enjoado",
+    "Estou enjoada",
+    "Tenho náusea",
+    "Vontade de vomitar",
+    "Estou com enjoo",
+    "Mal-estar no estômago"
+  ],
+  "responses": [
+    "Náusea pode ocorrer por diversos motivos, incluindo alimentação inadequada ou efeitos de medicamentos.",
+    "Tente ingerir líquidos em pequenas quantidades e evite alimentos pesados.",
+    "Se houver vômitos persistentes ou sinais de desidratação, procure atendimento."
+  ]
+},
+{
+  "tag": "prisao_ventre",
+  "patterns": [
+    "Estou preso",
+    "Não consigo evacuar",
+    "Tenho prisão de ventre",
+    "Estou constipado",
+    "Faz dias que não evacuo",
+    "Intestino preso"
+  ],
+  "responses": [
+    "A prisão de ventre pode melhorar com hidratação, frutas, verduras e atividade física leve.",
+    "Manter horários regulares para alimentação também pode ajudar.",
+    "Se o problema persistir ou causar dor intensa, procure orientação médica."
+  ]
+},
+{
+  "tag": "diarreia",
+  "patterns": [
+    "Estou com diarreia",
+    "Estou evacuando muito",
+    "Fezes líquidas",
+    "Intestino solto",
+    "Estou com dor de barriga e diarreia"
+  ],
+  "responses": [
+    "A diarreia pode causar desidratação, especialmente em idosos.",
+    "Beba líquidos com frequência e observe sinais de fraqueza ou tontura.",
+    "Se houver sangue nas fezes, febre alta ou persistência dos sintomas, procure atendimento médico."
+  ]
+},
+{
+  "tag": "problema_visao",
+  "patterns": [
+    "Estou enxergando mal",
+    "Minha visão está ruim",
+    "Visão embaçada",
+    "Estou vendo tudo borrado",
+    "Não consigo enxergar direito",
+    "Minha vista piorou",
+    "Não enxergo bem",
+    "Estou vendo embaçado",
+    "Minha vista está ruim",
+    "Minha visão piorou",
+    "Vejo tudo borrado",
+    "Tenho dificuldade para ler",
+    "Não consigo enxergar de longe",
+    "Não consigo enxergar de perto",
+    "Vista cansada",
+    "Perda de visão"
+  ],
+  "responses": [
+    "Alterações na visão merecem atenção, principalmente em idosos.",
+    "É importante manter acompanhamento com oftalmologista.",
+    "Se a perda de visão for súbita ou vier acompanhada de outros sintomas, procure atendimento imediatamente."
+  ]
+},
+{
+  "tag": "problema_audicao",
+  "patterns": [
+    "Não estou ouvindo bem",
+    "Minha audição piorou",
+    "Estou surdo",
+    "Ouço muito baixo",
+    "Tenho dificuldade para ouvir",
+    "Não escuto direito"
+  ],
+  "responses": [
+    "A perda auditiva é relativamente comum com o envelhecimento.",
+    "Uma avaliação médica pode identificar causas tratáveis.",
+    "Aparelhos auditivos podem melhorar muito a qualidade de vida em alguns casos."
+  ]
+},
+{
+  "tag": "atividade_caminhada",
+  "patterns": [
+    "Posso caminhar",
+    "Caminhada faz bem",
+    "Quanto devo caminhar",
+    "É bom fazer caminhada",
+    "Quero começar a caminhar"
+  ],
+  "responses": [
+    "A caminhada costuma ser uma atividade física segura e benéfica para muitos idosos.",
+    "Ela pode ajudar no equilíbrio, circulação, humor e condicionamento físico.",
+    "Respeite seus limites e procure orientação médica se tiver problemas de saúde importantes."
+  ]
+},
+{
+  "tag": "vacinacao",
+  "patterns": [
+    "Preciso tomar vacina",
+    "Vacina da gripe",
+    "Vacina para idoso",
+    "Calendário de vacinação",
+    "Quais vacinas devo tomar",
+    "Vacinação"
+  ],
+  "responses": [
+    "A vacinação é muito importante para prevenir doenças e complicações em idosos.",
+    "Vacinas como gripe, COVID-19 e pneumocócica costumam ser recomendadas conforme orientação médica.",
+    "Procure uma unidade de saúde para verificar quais vacinas estão indicadas para você."
+  ]
+},
+{
+  "tag": "emergencia_sinais_graves",
+  "patterns": [
+    "Dor no peito",
+    "Falta de ar",
+    "Não consigo respirar",
+    "Fraqueza de um lado do corpo",
+    "Fala enrolada",
+    "Desmaiei",
+    "Caí e bati a cabeça",
+    "Estou muito confuso",
+
+    "Estou sem ar",
+    "Estou com dificuldade para respirar",
+    "Não consigo puxar o ar",
+    "Meu peito está doendo",
+    "Dor forte no peito",
+    "Aperto no peito",
+    "Dor no coração",
+    "Dor no peito e falta de ar",
+    "Estou suando frio",
+    "Estou com suor frio",
+
+    "Minha boca ficou torta",
+    "Meu rosto ficou torto",
+    "Não consigo mexer o braço",
+    "Não consigo mexer a perna",
+    "Perdi a força do braço",
+    "Perdi a força da perna",
+    "Meu braço está sem força",
+    "Minha perna está sem força",
+    "Dormência em um lado do corpo",
+    "Estou com um lado do corpo dormente",
+
+    "Estou confuso",
+    "Não sei onde estou",
+    "Estou desorientado",
+    "Estou muito sonolento",
+    "Estou apagando",
+    "Estou quase desmaiando",
+    "Perdi a consciência",
+    "Apaguei",
+
+    "Caí no chão",
+    "Levei uma queda",
+    "Caí da escada",
+    "Caí no banheiro",
+    "Bati a cabeça",
+    "Machuquei a cabeça",
+    "Estou sangrando",
+    "Sangramento forte",
+
+    "Minha pressão está muito alta",
+    "Minha pressão está muito baixa",
+    "Pressão muito alta",
+    "Pressão muito baixa",
+
+    "Minha glicose está muito baixa",
+    "Minha glicose está muito alta",
+    "Hipoglicemia grave",
+    "Hiperglicemia grave",
+
+    "Estou tendo um AVC",
+    "Acho que estou tendo um AVC",
+    "Suspeita de derrame",
+    "Estou tendo um infarto",
+    "Acho que estou infartando",
+
+    "Convulsão",
+    "Estou tendo uma convulsão",
+    "Tive uma convulsão",
+
+    "Socorro",
+    "Preciso de ajuda urgente",
+    "É uma emergência",
+    "Preciso de atendimento urgente",
+    "Chame uma ambulância"
+  ],
+  "responses": [
+    "Isso pode ser sinal de urgência. Procure atendimento médico imediatamente ou peça ajuda a alguém próximo agora.",
+    "Esses sintomas não devem ser ignorados. Chame um familiar, cuidador ou serviço de emergência o quanto antes.",
+    "Se você estiver sozinho, tente ligar para alguém de confiança imediatamente.",
+    "Procure ajuda médica urgente. Em casos graves, acione o SAMU pelo número 192 ou peça auxílio a uma pessoa próxima.",
+    "Os sintomas descritos podem indicar uma emergência médica. Não espere melhorar sozinho e procure atendimento imediatamente."
+  ]
+},
+{
+  "tag": "relatorio_queda",
+  "patterns": [
+    "Quero ver as quedas",
+    "Mostrar relatório de quedas",
+    "Relatório de quedas",
+    "Quantas quedas aconteceram",
+    "Histórico de quedas",
+    "Ver quedas detectadas",
+    "Mostrar eventos de queda",
+    "Ocorrências de queda",
+    "Última queda registrada",
+    "Quando foi a última queda",
+    "Listar quedas",
+    "Exibir quedas",
+    "Consultar quedas",
+    "Ver relatório"
+  ],
+  "responses": [
+    "Posso consultar os registros de quedas armazenados pelo sistema.",
+    "Vou verificar o histórico de quedas registradas.",
+    "Consultando os eventos de queda detectados pelo monitoramento."
+  ]
+}
   ]
 }

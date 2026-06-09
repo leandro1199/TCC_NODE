@@ -16,8 +16,8 @@ from detector_yolo_queda import DetectorYOLOQueda
 # CONFIGURAÇÃO
 # =====================================
 
-#VIDEO_PATH = r"C:\TCC_NODE\camera\testes\videos\Fall\Raw_Video\20240912_101331.mp4"
-VIDEO_PATH = r"C:\TCC_NODE\camera\testes\videos\No_Fall\Raw_Video\B_D_0002.mp4"
+VIDEO_PATH = r"C:\TCC_NODE\camera\testes\videos\Fall\Raw_Video\20240912_101331.mp4"
+#VIDEO_PATH = r"C:\TCC_NODE\camera\testes\videos\No_Fall\Raw_Video\B_D_0002.mp4"
 MAX_LARGURA = 1280
 MAX_ALTURA = 720
 

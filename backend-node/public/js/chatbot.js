@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-
   console.log('chatbot.js carregado');
 
   const chatbotBox = document.getElementById('chatbotBox');
@@ -25,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   abrirChat.addEventListener('click', () => {
     chatbotBox.style.display = 'flex';
     abrirChat.style.display = 'none';
+    mensagemInput.focus();
   });
 
   fecharChat.addEventListener('click', () => {
@@ -41,26 +41,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     adicionarMensagem(mensagem, 'user-msg');
     mensagemInput.value = '';
+    mensagemInput.disabled = true;
 
     try {
-      const response = await fetch('https://tcc-node.onrender.com/chat', {
+      const response = await fetch('/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          mensagem: mensagem
-        })
+        credentials: 'same-origin',
+        body: JSON.stringify({ mensagem })
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
       console.log('STATUS:', response.status);
       console.log('DATA:', data);
 
       if (!response.ok) {
         adicionarMensagem(
-          data.resposta || 'Erro na API.',
+          data.resposta || 'Erro ao conectar com o chatbot.',
           'bot-msg'
         );
         return;
@@ -72,23 +72,25 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('Erro no chatbot:', error);
 
       adicionarMensagem(
-        'Servidor offline ou indisponível.',
+        'Servidor local indisponível. Verifique se o Node está rodando.',
         'bot-msg'
       );
+
+    } finally {
+      mensagemInput.disabled = false;
+      mensagemInput.focus();
     }
   });
 
   function adicionarMensagem(texto, classe) {
     const div = document.createElement('div');
-
     div.className = classe;
     div.textContent = texto;
 
     chatMessages.appendChild(div);
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
-
 });

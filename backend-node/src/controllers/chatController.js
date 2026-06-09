@@ -53,7 +53,7 @@ exports.chat = async (req, res) => {
         contexto_anterior
       },
       {
-        timeout: 15000
+        timeout: 60000
       }
     );
 

@@ -34,7 +34,7 @@ class ChatBotTrainer:
     def __init__(
         self,
         intents_file=None,
-        embedding_model_name="all-MiniLM-L6-v2",
+        embedding_model_name="paraphrase-multilingual-mpnet-base-v2",
         model_path=None,
         classes_path=None
     ):

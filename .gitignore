@@ -23,6 +23,10 @@ __pycache__/
 
 firebase-key.json
 serviceAccountKey.json
+json/firebase.json
+firebase.json
+serviceAccountKey.json
+.env
 
 # ======================
 # IA / MACHINE LEARNING
