@@ -106,24 +106,25 @@
 
     <!-- LISTA -->
 
-    <% if (relatorios.length === 0) { %>
+    ```ejs
+<% if (relatorios.length === 0) { %>
 
-        <section class="vazio">
+    <section class="vazio">
 
-            <div class="empty-icon">
-                📄
-            </div>
+        <div class="empty-icon">
+            📄
+        </div>
 
-            <h2>
-                Nenhum relatório encontrado
-            </h2>
+        <h2>
+            Nenhum relatório encontrado
+        </h2>
 
-            <p>
-                Os eventos detectados pelo sistema
-                aparecerão aqui automaticamente.
-            </p>
+        <p>
+            Os eventos detectados pelo sistema
+            aparecerão aqui automaticamente.
+        </p>
 
-        </section>
+    </section>
 
     <% } else { %>
 
@@ -202,9 +203,9 @@
                             </div>
 
                             <div class="barra">
-                                <div 
-                                class="barra-fill"
-                                data-width="<%= relatorio.confianca %>">
+                                <div
+                                    class="barra-fill"
+                                    data-width="<%= relatorio.confianca %>">
                                 </div>
                             </div>
 
@@ -215,8 +216,7 @@
                             <span class="data">
 
                                 📅
-                                <%= new Date(relatorio.criado_em)
-                                    .toLocaleString("pt-BR") %>
+                                <%= relatorio.criado_em %>
 
                             </span>
 
@@ -230,7 +230,7 @@
 
         </section>
 
-    <% } %>
+<% } %>
 
 </main>
 
