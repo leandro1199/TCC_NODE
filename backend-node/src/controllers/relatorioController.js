@@ -41,4 +41,4 @@ exports.listarRelatorios = async (req, res) => {
         console.error("Erro ao listar relatórios:", erro);
         res.status(500).send("Erro ao listar relatórios.");
     }
-};s
+};
