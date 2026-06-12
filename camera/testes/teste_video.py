@@ -3,6 +3,12 @@ print("ARQUIVO TESTE_VIDEO ATUALIZADO RODANDO", flush=True)
 import cv2
 import os
 import sys
+import base64
+
+from datetime import datetime
+
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 sys.path.append(
     os.path.abspath(
@@ -12,14 +18,49 @@ sys.path.append(
 
 from detector_yolo_queda import DetectorYOLOQueda
 
+
 # =====================================
 # CONFIGURAÇÃO
 # =====================================
 
 VIDEO_PATH = r"C:\TCC_NODE\camera\testes\videos\Fall\Raw_Video\20240912_101331.mp4"
-#VIDEO_PATH = r"C:\TCC_NODE\camera\testes\videos\No_Fall\Raw_Video\B_D_0002.mp4"
+# VIDEO_PATH = r"C:\TCC_NODE\camera\testes\videos\No_Fall\Raw_Video\B_D_0002.mp4"
+
+FIREBASE_KEY = r"C:\TCC_NODE\json\firebase.json"
+
 MAX_LARGURA = 1280
 MAX_ALTURA = 720
+
+
+# =====================================
+# FIREBASE
+# =====================================
+
+cred = credentials.Certificate(FIREBASE_KEY)
+
+if not firebase_admin._apps:
+    firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+
+
+def salvar_relatorio_queda(frame, camera_id, camera_nome, confianca):
+    _, buffer = cv2.imencode(".jpg", frame)
+    imagem_base64 = base64.b64encode(buffer).decode("utf-8")
+
+    agora = datetime.now()
+
+    db.collection("relatorios_queda").add({
+        "cameraId": str(camera_id),
+        "cameraNome": camera_nome,
+        "confianca": round(float(confianca) * 100, 2),
+        "data": agora.strftime("%d/%m/%Y"),
+        "hora": agora.strftime("%H:%M:%S"),
+        "dataHora": agora.strftime("%d/%m/%Y %H:%M:%S"),
+        "imagem": imagem_base64,
+        "criadoEm": firestore.SERVER_TIMESTAMP
+    })
+
 
 # =====================================
 # CARREGAR MODELO
@@ -30,6 +71,7 @@ print("\nCarregando modelo...", flush=True)
 detector = DetectorYOLOQueda()
 
 print("Modelo carregado com sucesso!", flush=True)
+
 
 # =====================================
 # ABRIR VÍDEO
@@ -61,12 +103,14 @@ print(f"FPS: {fps:.2f}", flush=True)
 print(f"Delay: {delay} ms", flush=True)
 print(f"Total de Frames: {total_frames}", flush=True)
 
+
 # =====================================
 # JANELA
 # =====================================
 
 cv2.namedWindow("Teste YOLO - Video", cv2.WINDOW_NORMAL)
 cv2.resizeWindow("Teste YOLO - Video", 1280, 720)
+
 
 # =====================================
 # PROCESSAMENTO
@@ -76,6 +120,8 @@ frame_num = 0
 
 frames_queda = 0
 LIMITE_FRAMES_QUEDA = 3
+
+relatorio_salvo = False
 
 while True:
 
@@ -106,10 +152,6 @@ while True:
             interpolation=cv2.INTER_AREA
         )
 
-    # =========================
-    # DETECÇÃO
-    # =========================
-
     queda, confianca, caixas = detector.detectar(frame)
 
     if queda:
@@ -126,10 +168,6 @@ while True:
         f"Confiança: {confianca:.2f}",
         flush=True
     )
-
-    # =========================
-    # DESENHAR CAIXAS
-    # =========================
 
     for x1, y1, x2, y2, conf in caixas:
 
@@ -151,10 +189,6 @@ while True:
             2
         )
 
-    # =========================
-    # ALERTA DE QUEDA
-    # =========================
-
     if queda_confirmada:
 
         cv2.putText(
@@ -167,9 +201,16 @@ while True:
             3
         )
 
-    # =========================
-    # INFORMAÇÕES
-    # =========================
+        if not relatorio_salvo:
+            salvar_relatorio_queda(
+                frame,
+                camera_id="teste_video",
+                camera_nome="Teste com vídeo YOLO",
+                confianca=confianca
+            )
+
+            relatorio_salvo = True
+            print("Relatório criado no Firebase.", flush=True)
 
     cv2.putText(
         frame,
@@ -208,3 +249,6 @@ while True:
     if tecla == 27:
         print("\nVídeo interrompido pelo usuário.", flush=True)
         break
+
+cap.release()
+cv2.destroyAllWindows()
