@@ -33,7 +33,7 @@ def salvar_relatorio_queda(frame, camera_id, camera_nome, confianca):
     })
 
 
-imagem_teste = r"C:\TCC_NODE\camera\testes\imagens\queda1.jpg"
+imagem_teste = r"D:\TCC_NODE\camera\testes\imagens\queda1.jpg"
 
 frame = cv2.imread(imagem_teste)
 

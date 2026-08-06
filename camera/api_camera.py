@@ -1,5 +1,9 @@
-import time
+import os
+import shutil
 import subprocess
+import time
+from pathlib import Path
+
 import cv2
 import numpy as np
 
@@ -15,11 +19,24 @@ from detector_yolo_queda import DetectorYOLOQueda
 app = Flask(__name__)
 CORS(app)
 
+BASE_DIR = Path(__file__).resolve().parent
+PROJECT_DIR = BASE_DIR.parent
+
 
 # ================= FIREBASE =================
 
-cred = credentials.Certificate("firebase-key.json")
-firebase_admin.initialize_app(cred)
+firebase_key_path = Path(
+    os.getenv("FIREBASE_KEY_PATH", PROJECT_DIR / "json" / "firebase.json")
+)
+if not firebase_key_path.exists():
+    raise FileNotFoundError(
+        "Credencial do Firebase não encontrada. Defina FIREBASE_KEY_PATH ou "
+        f"adicione o arquivo em {firebase_key_path}."
+    )
+
+if not firebase_admin._apps:
+    cred = credentials.Certificate(str(firebase_key_path))
+    firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 
@@ -30,7 +47,37 @@ detector_queda = DetectorYOLOQueda()
 
 # ================= FFMPEG =================
 
-FFMPEG_PATH = r"C:\Users\berna\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-full_build\bin\ffmpeg.exe"
+def localizar_ffmpeg():
+    configured_path = os.getenv("FFMPEG_PATH")
+    if configured_path:
+        return configured_path
+
+    path_command = shutil.which("ffmpeg")
+    if path_command:
+        return path_command
+
+    local_app_data = os.getenv("LOCALAPPDATA")
+    if local_app_data:
+        packages_dir = Path(local_app_data) / "Microsoft" / "WinGet" / "Packages"
+        candidates = sorted(
+            packages_dir.glob("Gyan.FFmpeg*/ffmpeg-*/bin/ffmpeg.exe"),
+            reverse=True,
+        )
+        if candidates:
+            return str(candidates[0])
+
+    return None
+
+
+FFMPEG_PATH = localizar_ffmpeg()
+
+
+def obter_ffmpeg():
+    if not FFMPEG_PATH:
+        raise FileNotFoundError(
+            "FFmpeg não encontrado. Instale-o no PATH ou defina FFMPEG_PATH."
+        )
+    return FFMPEG_PATH
 
 
 # ================= BUSCAR CÂMERA =================
@@ -51,24 +98,28 @@ def buscar_camera(camera_id):
 # ================= VERIFICAR QUEDA COM YOLO =================
 
 def verificar_queda(frame, camera_id, ultimo_alerta):
-    queda, confianca, caixas = detector_queda.detectar(frame)
+    queda, confianca, caixas = detector_queda.detectar(
+        frame, stream_id=str(camera_id)
+    )
 
     for x1, y1, x2, y2, conf in caixas:
+        cor = (0, 0, 255) if queda else (0, 165, 255)
+        rotulo = "Queda" if queda else "Postura horizontal"
         cv2.rectangle(
             frame,
             (x1, y1),
             (x2, y2),
-            (0, 0, 255),
+            cor,
             3
         )
 
         cv2.putText(
             frame,
-            f"Fall {conf:.2f}",
-            (x1, y1 - 10),
+            f"{rotulo} {conf:.2f}",
+            (x1, max(25, y1 - 10)),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.8,
-            (0, 0, 255),
+            cor,
             2
         )
 
@@ -116,16 +167,27 @@ def gerar_frames(camera_id):
         print("Câmera não encontrada no Firebase.")
         return
 
-    rtsp_url = dados_camera["rtsp_url"]
+    rtsp_url = dados_camera.get("rtsp_url")
+    if not rtsp_url:
+        print("A câmera não possui uma URL RTSP configurada.")
+        return
 
     ultimo_alerta = 0
 
     print("Abrindo câmera:", dados_camera.get("nome", "Sem nome"))
     print("RTSP:", rtsp_url)
 
+    try:
+        ffmpeg_path = obter_ffmpeg()
+    except FileNotFoundError as erro:
+        print(erro)
+        return
+
     while True:
         comando = [
-            FFMPEG_PATH,
+            ffmpeg_path,
+            "-nostdin",
+            "-loglevel", "error",
             "-rtsp_transport", "tcp",
             "-i", rtsp_url,
             "-vf", "scale=800:450",
@@ -134,16 +196,19 @@ def gerar_frames(camera_id):
             "-"
         ]
 
-        processo = subprocess.Popen(
-            comando,
-            stdout=subprocess.PIPE,
-            stderr=None,
-            bufsize=10**8
-        )
-
+        processo = None
         buffer = b""
 
         try:
+            processo = subprocess.Popen(
+                comando,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                bufsize=10**6,
+            )
+            if processo.stdout is None:
+                raise RuntimeError("O FFmpeg não disponibilizou o fluxo de vídeo.")
+
             while True:
                 bloco = processo.stdout.read(4096)
 
@@ -152,8 +217,12 @@ def gerar_frames(camera_id):
 
                 buffer += bloco
 
+                if len(buffer) > 2 * 1024 * 1024:
+                    inicio_jpeg = buffer.rfind(b"\xff\xd8")
+                    buffer = buffer[inicio_jpeg:] if inicio_jpeg >= 0 else buffer[-2:]
+
                 inicio = buffer.find(b"\xff\xd8")
-                fim = buffer.find(b"\xff\xd9")
+                fim = buffer.find(b"\xff\xd9", inicio + 2)
 
                 if inicio != -1 and fim != -1 and fim > inicio:
                     jpg = buffer[inicio:fim + 2]
@@ -169,7 +238,9 @@ def gerar_frames(camera_id):
                             ultimo_alerta
                         )
 
-                        _, jpg_codificado = cv2.imencode(".jpg", frame)
+                        codificado, jpg_codificado = cv2.imencode(".jpg", frame)
+                        if not codificado:
+                            continue
                         jpg = jpg_codificado.tobytes()
 
                     yield (
@@ -183,7 +254,13 @@ def gerar_frames(camera_id):
             print("Erro no streaming:", erro)
 
         finally:
-            processo.kill()
+            if processo is not None and processo.poll() is None:
+                processo.terminate()
+                try:
+                    processo.wait(timeout=3)
+                except subprocess.TimeoutExpired:
+                    processo.kill()
+            detector_queda.reset_stream(camera_id)
 
         print("Reconectando câmera em 2 segundos...")
         time.sleep(2)
@@ -195,7 +272,12 @@ def gerar_frames(camera_id):
 def home():
     return jsonify({
         "status": "online",
-        "mensagem": "API da câmera funcionando com Firebase, FFmpeg e YOLO"
+        "mensagem": "API da câmera funcionando",
+        "componentes": {
+            "firebase": "online",
+            "yolo": "online",
+            "ffmpeg": "configurado" if FFMPEG_PATH else "não encontrado",
+        },
     })
 
 
@@ -231,10 +313,23 @@ def status_camera(camera_id):
             "erro": "Câmera não encontrada"
         }), 404
 
-    rtsp_url = dados_camera["rtsp_url"]
+    rtsp_url = dados_camera.get("rtsp_url")
+    if not rtsp_url:
+        return jsonify({
+            "camera_id": dados_camera["id"],
+            "online": False,
+            "erro": "URL RTSP não configurada",
+        }), 400
+
+    try:
+        ffmpeg_path = obter_ffmpeg()
+    except FileNotFoundError as erro:
+        return jsonify({"online": False, "erro": str(erro)}), 503
 
     comando = [
-        FFMPEG_PATH,
+        ffmpeg_path,
+        "-nostdin",
+        "-loglevel", "error",
         "-rtsp_transport", "tcp",
         "-i", rtsp_url,
         "-t", "3",
@@ -242,13 +337,17 @@ def status_camera(camera_id):
         "-"
     ]
 
-    processo = subprocess.run(
-        comando,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
-
-    online = processo.returncode == 0
+    try:
+        processo = subprocess.run(
+            comando,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=10,
+            check=False,
+        )
+        online = processo.returncode == 0
+    except subprocess.TimeoutExpired:
+        online = False
 
     return jsonify({
         "camera_id": dados_camera["id"],

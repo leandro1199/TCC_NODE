@@ -1,114 +1,45 @@
-# ======================
-# NODE
-# ======================
-
+# Node
 node_modules/
-npm-debug.log
 
-# ======================
-# PYTHON
-# ======================
-
+# Python
 venv/
 .venv/
-.env
+.venv-*/
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
 
-# ======================
-# FIREBASE
-# ======================
+# Variáveis de ambiente
+.env
 
+# Firebase
 firebase-key.json
 serviceAccountKey.json
 json/firebase.json
-firebase.json
-serviceAccountKey.json
-.env
 
-# ======================
-# IA / MACHINE LEARNING
-# ======================
-
-*.pt
-*.pth
-*.h5
-*.keras
-*.onnx
-*.pickle
-*.pkl
-
-# ======================
 # YOLO
-# ======================
-
 runs/
 camera/runs/
 labels.cache
 
-# ======================
-# VS CODE
-# ======================
-
-.vscode/
-
-# ======================
-# SISTEMA
-# ======================
-
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# ======================
-# LOGS
-# ======================
-
-*.log
-
-# ======================
-# BUILD
-# ======================
-
-dist/
-build/
-
-# ======================
-# CACHE
-# ======================
-
+# Cache
 .cache/
 .pytest_cache/
 .mypy_cache/
 
-# ======================
-# TESTES
-# ======================
+# Logs
+*.log
 
-coverage/
-htmlcov/
+# Build
+dist/
+build/
 
-# ======================
-# JUPYTER
-# ======================
+# Sistema
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
 
-.ipynb_checkpoints/
-
-# ======================
-# TESTES LOCAIS
-# ======================
-
+# Dados de teste
 camera/testes/imagens/
 camera/testes/videos/
-
-# ======================
-# ARQUIVOS TEMPORÁRIOS
-# ======================
-
-*.tmp
-*.bak
-
 camera/datasets/
-runs/

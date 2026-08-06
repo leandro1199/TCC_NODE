@@ -183,7 +183,18 @@
         "O que é artrose",
         "Explique artrose",
         "Artrose é o que",
-        "Me explique artrose"
+        "Me explique artrose",
+        "Quais são os sintomas da artrose",
+        "Artrose tem cura",
+        "Como tratar artrose",
+        "Por que a artrose causa dor",
+        "Tenho artrose no joelho",
+        "Tenho artrose nas mãos",
+        "Tenho desgaste nas articulações",
+        "O médico disse que tenho artrose",
+        "Como aliviar a artrose",
+        "Artrose piora com a idade",
+        "Quero entender o desgaste da articulação"
       ],
       "responses": [
         "Artrose é um desgaste das articulações, muito comum com o envelhecimento. Pode causar dor, rigidez e dificuldade para se movimentar.",
@@ -197,7 +208,18 @@
         "O que é osteoporose",
         "Explique osteoporose",
         "Osteoporose é o que",
-        "Me explique osteoporose"
+        "Me explique osteoporose",
+        "Quais são os sintomas da osteoporose",
+        "Osteoporose deixa os ossos fracos",
+        "Osteoporose aumenta o risco de fratura",
+        "Como prevenir a osteoporose",
+        "Osteoporose tem cura",
+        "Como tratar osteoporose",
+        "Qual exame detecta osteoporose",
+        "Osteoporose em idosos",
+        "Recebi diagnóstico de osteoporose",
+        "Como fortalecer os ossos",
+        "Qual a diferença entre artrose e osteoporose"
       ],
       "responses": [
         "Osteoporose é uma condição em que os ossos ficam mais frágeis, aumentando o risco de fraturas.",
@@ -215,7 +237,14 @@
         "Dor na articulação",
         "Articulação doendo",
         "Estou travado",
-        "Dói para levantar"
+        "Dói para levantar",
+        "Minhas articulações estão doloridas",
+        "Meu joelho está doendo para caminhar",
+        "Sinto dor quando movimento o ombro",
+        "Meu quadril dói quando levanto",
+        "Estou com dor nas mãos e nos dedos",
+        "Minha articulação está inchada",
+        "Tenho rigidez nas articulações"
       ],
       "responses": [
         "Dores nas articulações podem melhorar com repouso relativo, compressa morna e movimentos leves, sem forçar demais.",
@@ -468,7 +497,16 @@
         "Estou sozinha",
         "Queria companhia",
         "Não tenho ninguém para conversar",
-        "Me sinto abandonado"
+        "Me sinto abandonado",
+        "Sinto muita solidão",
+        "Passo o dia sem falar com ninguém",
+        "Estou me sentindo isolado",
+        "Minha família quase não me visita",
+        "Queria alguém para conversar comigo",
+        "Estou triste porque moro sozinho",
+        "Não tenho companhia em casa",
+        "Sinto falta de conversar com outras pessoas",
+        "Tenho me sentido muito só ultimamente"
       ],
       "responses": [
         "Sinto muito que você esteja se sentindo assim. Podemos conversar agora mesmo.",
@@ -517,7 +555,17 @@
         "Conte uma piada",
         "Quem ganhou o jogo",
         "Quero curiosidades",
-        "Vamos falar de novela"
+        "Vamos falar de novela",
+        "Qual é a previsão do tempo",
+        "Toque uma música para mim",
+        "Qual filme está no cinema",
+        "Quem é o presidente",
+        "Me ajude com matemática",
+        "Quero comprar um celular",
+        "Conte uma história de aventura",
+        "Qual é o melhor time",
+        "Me fale sobre carros",
+        "Quero notícias de celebridades"
       ],
       "responses": [
         "Eu fui configurado para focar em saúde, bem-estar e cuidados da pessoa idosa. Posso ajudar com remédios, dores, doenças, exercícios leves, memória, pressão e diabetes.",
@@ -852,7 +900,16 @@
     "Tenho prisão de ventre",
     "Estou constipado",
     "Faz dias que não evacuo",
-    "Intestino preso"
+    "Intestino preso",
+    "Estou com dificuldade para evacuar",
+    "Minhas fezes estão muito duras",
+    "Vou ao banheiro mas não consigo evacuar",
+    "Estou há vários dias sem fazer cocô",
+    "Meu intestino não está funcionando",
+    "Sinto esforço para evacuar",
+    "Estou com constipação intestinal",
+    "Tenho dificuldade para fazer cocô",
+    "Minha barriga está presa"
   ],
   "responses": [
     "A prisão de ventre pode melhorar com hidratação, frutas, verduras e atividade física leve.",
@@ -867,7 +924,17 @@
     "Estou evacuando muito",
     "Fezes líquidas",
     "Intestino solto",
-    "Estou com dor de barriga e diarreia"
+    "Estou com dor de barriga e diarreia",
+    "Estou indo ao banheiro muitas vezes",
+    "Minhas fezes estão aguadas",
+    "Comecei a ter diarreia hoje",
+    "Estou com o intestino muito solto",
+    "Tive várias evacuações líquidas",
+    "Diarreia há dois dias",
+    "Estou perdendo muito líquido pelas fezes",
+    "Estou com cólica e fezes líquidas",
+    "A diarreia não para",
+    "Estou fraco por causa da diarreia"
   ],
   "responses": [
     "A diarreia pode causar desidratação, especialmente em idosos.",

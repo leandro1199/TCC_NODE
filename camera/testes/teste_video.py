@@ -23,10 +23,10 @@ from detector_yolo_queda import DetectorYOLOQueda
 # CONFIGURAÇÃO
 # =====================================
 
-VIDEO_PATH = r"C:\TCC_NODE\camera\testes\videos\Fall\Raw_Video\20240912_101331.mp4"
-# VIDEO_PATH = r"C:\TCC_NODE\camera\testes\videos\No_Fall\Raw_Video\B_D_0002.mp4"
+VIDEO_PATH = r"D:\TCC_NODE\camera\testes\videos\Fall\Raw_Video\20240912_101331.mp4"
+# VIDEO_PATH = r"D:\TCC_NODE\camera\testes\videos\No_Fall\Raw_Video\B_D_0002.mp4"
 
-FIREBASE_KEY = r"C:\TCC_NODE\json\firebase.json"
+FIREBASE_KEY = r"D:\TCC_NODE\json\firebase.json"
 
 MAX_LARGURA = 1280
 MAX_ALTURA = 720
@@ -119,7 +119,6 @@ cv2.resizeWindow("Teste YOLO - Video", 1280, 720)
 frame_num = 0
 
 frames_queda = 0
-LIMITE_FRAMES_QUEDA = 3
 
 relatorio_salvo = False
 
@@ -152,18 +151,18 @@ while True:
             interpolation=cv2.INTER_AREA
         )
 
-    queda, confianca, caixas = detector.detectar(frame)
+    queda_confirmada, confianca, caixas = detector.detectar(
+        frame,
+        stream_id="teste_video",
+    )
 
-    if queda:
+    if queda_confirmada:
         frames_queda += 1
     else:
         frames_queda = 0
 
-    queda_confirmada = frames_queda >= LIMITE_FRAMES_QUEDA
-
     print(
         f"Frame {frame_num}/{total_frames} | "
-        f"Queda: {queda} | "
         f"Confirmada: {queda_confirmada} | "
         f"Confiança: {confianca:.2f}",
         flush=True
@@ -251,4 +250,5 @@ while True:
         break
 
 cap.release()
+detector.reset_stream("teste_video")
 cv2.destroyAllWindows()

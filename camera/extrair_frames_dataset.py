@@ -4,10 +4,10 @@ import glob
 import random
 import shutil
 
-ORIGEM_FALL = r"C:\TCC_NODE\camera\testes\videos\Fall\Raw_Video"
-ORIGEM_NO_FALL = r"C:\TCC_NODE\camera\testes\videos\No_Fall\Raw_Video"
+ORIGEM_FALL = r"D:\TCC_NODE\camera\testes\videos\Fall\Raw_Video"
+ORIGEM_NO_FALL = r"D:\TCC_NODE\camera\testes\videos\No_Fall\Raw_Video"
 
-SAIDA = r"C:\TCC_NODE\camera\dataset_video"
+SAIDA = r"D:\TCC_NODE\camera\dataset_video"
 
 INTERVALO_FRAMES = 5
 
