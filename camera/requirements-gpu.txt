@@ -1,0 +1,4 @@
+# PyTorch oficial com CUDA 13.2 para Windows e GPUs NVIDIA.
+--index-url https://download.pytorch.org/whl/cu132
+torch==2.13.0+cu132
+torchvision==0.28.0+cu132

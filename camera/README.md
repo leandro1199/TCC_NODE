@@ -49,6 +49,33 @@ Instale as dependências:
 pip install -r requirements.txt
 ```
 
+Para treinamento com uma GPU NVIDIA compatível, instale também o PyTorch
+com CUDA:
+
+```bash
+python -m pip install -r requirements-gpu.txt
+```
+
+O script `treinar_yolo_pose.py` seleciona automaticamente a primeira GPU
+CUDA disponível. O dispositivo também pode ser definido explicitamente:
+
+```powershell
+$env:YOLO_DEVICE = "0"
+python treinar_yolo_pose.py
+```
+
+Para retomar um treinamento interrompido pelo último checkpoint:
+
+```powershell
+$env:YOLO_DEVICE = "0"
+$env:YOLO_RESUME_CHECKPOINT = "..\runs\pose\fall_pose_v2\weights\last.pt"
+python treinar_yolo_pose.py
+```
+
+Ao migrar uma execução iniciada em CPU para CUDA, o script cria
+automaticamente uma cópia `last-gpu.pt` compatível com AMP e preserva o
+checkpoint original.
+
 Execute a aplicação:
 
 ```bash
