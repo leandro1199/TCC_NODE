@@ -105,7 +105,7 @@
           <input type="password" name="senha" placeholder="Senha" required>
         </div>
 
-        <a href="#" class="forgot">Esqueceu sua senha?</a>
+        <a href="#" class="forgot" id="abrirRecuperacao">Esqueceu sua senha?</a>
 
         <button type="submit">Entrar</button>
       </form>
@@ -140,8 +140,66 @@
 
   </div>
 
+  <div
+    class="modal-recuperacao<%= typeof recuperacao !== 'undefined' && recuperacao ? ' is-open' : '' %>"
+    id="modalRecuperacao"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="tituloRecuperacao"
+    aria-hidden="<%= typeof recuperacao !== 'undefined' && recuperacao ? 'false' : 'true' %>"
+  >
+    <div class="modal-recuperacao__fundo" data-fechar-recuperacao></div>
+
+    <div class="modal-recuperacao__conteudo">
+      <button
+        type="button"
+        class="modal-recuperacao__fechar"
+        data-fechar-recuperacao
+        aria-label="Fechar"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+
+      <span class="mini-title">AI HEALTH</span>
+      <h2 id="tituloRecuperacao">Redefinir senha</h2>
+      <p class="subtitle">
+        Digite o e-mail da sua conta. Enviaremos um link seguro para criar uma nova senha.
+      </p>
+
+      <% if (typeof recuperacao !== 'undefined' && recuperacao) { %>
+        <div class="mensagem-formulario mensagem-formulario--<%= recuperacao.tipo %>" role="status">
+          <%= recuperacao.mensagem %>
+
+          <% if (recuperacao.linkDesenvolvimento) { %>
+            <a href="<%= recuperacao.linkDesenvolvimento %>" class="link-desenvolvimento">
+              Abrir link de teste local
+            </a>
+          <% } %>
+        </div>
+      <% } %>
+
+      <form action="/esqueci-senha" method="POST" class="form-recuperacao">
+        <label for="emailRecuperacao" class="sr-only">E-mail</label>
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input
+            type="email"
+            id="emailRecuperacao"
+            name="email"
+            placeholder="Seu e-mail"
+            autocomplete="email"
+            required
+          >
+        </div>
+
+        <button type="submit">Enviar link</button>
+      </form>
+    </div>
+  </div>
+
   <script src="/js/login_cadastro.js"></script>
   <script type="module" src="/js/firebaseLogin.js"></script>
 
+  <%- include('partials/vercelAnalytics') %>
 </body>
 </html>

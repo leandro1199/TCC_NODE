@@ -7,11 +7,11 @@
     "start": "node src/server.js",
     "build": "echo build"
   },
-
   "devDependencies": {
     "nodemon": "^3.1.14"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "axios": "^1.15.2",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",

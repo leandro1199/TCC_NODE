@@ -2,6 +2,12 @@ const express = require('express');
 const path = require('path');
 const session = require('express-session');
 
+// Carrega sempre o .env do backend, mesmo quando o Node é iniciado pela raiz do projeto.
+require('dotenv').config({
+  path: path.join(__dirname, '..', '.env'),
+  quiet: true
+});
+
 const app = express();
 
 // TEMPLATE ENGINE

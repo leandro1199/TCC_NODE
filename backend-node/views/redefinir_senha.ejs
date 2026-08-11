@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redefinir senha | AI Health</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/login_cadastro.css">
+</head>
+
+<body class="reset-page">
+  <div class="background-glow glow1"></div>
+  <div class="background-glow glow2"></div>
+
+  <main class="reset-card">
+    <span class="mini-title">AI HEALTH</span>
+
+    <% if (typeof sucesso !== 'undefined' && sucesso) { %>
+      <div class="reset-card__icone reset-card__icone--sucesso">
+        <i class="fas fa-check"></i>
+      </div>
+      <h1>Senha atualizada</h1>
+      <p class="subtitle"><%= mensagem %></p>
+      <a href="/login" class="botao-link">Ir para o login</a>
+    <% } else if (tokenValido) { %>
+      <h1>Crie uma nova senha</h1>
+      <p class="subtitle">Use pelo menos 8 caracteres e confirme a senha antes de continuar.</p>
+
+      <% if (mensagem) { %>
+        <div class="mensagem-formulario mensagem-formulario--erro" role="alert">
+          <%= mensagem %>
+        </div>
+      <% } %>
+
+      <form action="/redefinir-senha" method="POST" class="form-nova-senha">
+        <input type="hidden" name="token" value="<%= token %>">
+
+        <label for="novaSenha" class="sr-only">Nova senha</label>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input
+            type="password"
+            id="novaSenha"
+            name="senha"
+            placeholder="Nova senha"
+            minlength="8"
+            maxlength="128"
+            autocomplete="new-password"
+            required
+          >
+        </div>
+
+        <label for="confirmarSenha" class="sr-only">Confirmar nova senha</label>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input
+            type="password"
+            id="confirmarSenha"
+            name="confirmarSenha"
+            placeholder="Confirme a nova senha"
+            minlength="8"
+            maxlength="128"
+            autocomplete="new-password"
+            required
+          >
+        </div>
+
+        <button type="submit">Salvar nova senha</button>
+      </form>
+    <% } else { %>
+      <div class="reset-card__icone reset-card__icone--erro">
+        <i class="fas fa-exclamation"></i>
+      </div>
+      <h1>Link indisponível</h1>
+      <p class="subtitle"><%= mensagem %></p>
+      <a href="/login" class="botao-link">Solicitar novo link</a>
+    <% } %>
+  </main>
+  <%- include('partials/vercelAnalytics') %>
+</body>
+</html>
