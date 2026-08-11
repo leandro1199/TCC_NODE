@@ -14,9 +14,9 @@ PROJECT_DIR = BASE_DIR.parent
 
 def _default_model_path() -> Path:
     candidates = (
-        BASE_DIR / "yolov8n-pose.pt",
         PROJECT_DIR / "runs" / "pose" / "fall_pose_v2" / "weights" / "best.pt",
         PROJECT_DIR / "runs" / "pose" / "train" / "weights" / "best.pt",
+        BASE_DIR / "yolov8n-pose.pt",
     )
     return next((path for path in candidates if path.exists()), candidates[-1])
 

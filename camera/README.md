@@ -82,6 +82,66 @@ Execute a aplicação:
 python api_camera.py
 ```
 
+## Teste com câmera real em modo offline
+
+Por padrão, a API usa a webcam local de índice `0`, processa os frames no
+próprio computador e não acessa o Firebase. Execute:
+
+```powershell
+cd camera
+..\.venv-camera\Scripts\python.exe api_camera.py
+```
+
+Abra `http://127.0.0.1:5002/video_feed/offline` ou a página `/cameraseg` da
+aplicação Node. Para escolher outra webcam:
+
+```powershell
+$env:CAMERA_OFFLINE_SOURCE = "1"
+..\.venv-camera\Scripts\python.exe api_camera.py
+```
+
+Uma câmera IP na mesma rede local também pode ser usada sem internet:
+
+```powershell
+$env:CAMERA_OFFLINE_SOURCE = "rtsp://192.168.1.50:554/stream1"
+$env:CAMERA_RTSP_USER = "usuario"
+$env:CAMERA_RTSP_PASSWORD = "senha"
+..\.venv-camera\Scripts\python.exe api_camera.py
+```
+
+Em fontes RTSP, a API usa automaticamente o VLC instalado no computador para
+compatibilidade com câmeras que não funcionam no FFmpeg/OpenCV. Defina
+`VLC_PATH` se o VLC estiver fora do diretório padrão. Para forçar o OpenCV,
+use `CAMERA_RTSP_BACKEND=opencv`.
+
+Para a câmera configurada atualmente em `192.168.1.5`, use o inicializador
+seguro. Ele abre o substream `/onvif2` e solicita a senha sem salvá-la:
+
+```powershell
+cd camera
+.\iniciar_camera_offline.ps1
+```
+
+Para usar o stream principal, execute
+`.\iniciar_camera_offline.ps1 -Perfil onvif1`.
+
+### Gravações de teste
+
+O gravador abre a prévia da câmera, aguarda o primeiro frame e mostra uma
+contagem regressiva de três segundos antes de gravar. A senha deve ser
+informada apenas pela variável de ambiente da sessão:
+
+```powershell
+$env:CAMERA_RTSP_USER = "admin"
+$env:CAMERA_RTSP_PASSWORD = "senha"
+python gravar_camera_vlc.py --numero 1 --duracao 10 --contagem 3
+```
+
+Os vídeos são salvos em `camera/gravacoes`. Se o nome já existir, o gravador
+adiciona data e hora ao novo arquivo sem sobrescrever a gravação anterior.
+
+Para voltar ao cadastro de câmeras pelo Firebase, defina `CAMERA_MODE=online`.
+
 ## Autor
 
 Leandro Bernardo de Souza

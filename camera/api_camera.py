@@ -3,6 +3,7 @@ import shutil
 import subprocess
 import time
 from pathlib import Path
+from urllib.parse import quote, urlsplit, urlunsplit
 
 import cv2
 import numpy as np
@@ -21,23 +22,29 @@ CORS(app)
 
 BASE_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = BASE_DIR.parent
+CAMERA_MODE = os.getenv("CAMERA_MODE", "offline").strip().lower()
+OFFLINE_MODE = CAMERA_MODE == "offline"
+OFFLINE_CAMERA_SOURCE = os.getenv("CAMERA_OFFLINE_SOURCE", "0").strip()
+RTSP_BACKEND = os.getenv("CAMERA_RTSP_BACKEND", "auto").strip().lower()
 
 
 # ================= FIREBASE =================
 
-firebase_key_path = Path(
-    os.getenv("FIREBASE_KEY_PATH", PROJECT_DIR / "json" / "firebase.json")
-)
-if not firebase_key_path.exists():
-    raise FileNotFoundError(
-        "Credencial do Firebase não encontrada. Defina FIREBASE_KEY_PATH ou "
-        f"adicione o arquivo em {firebase_key_path}."
+db = None
+if not OFFLINE_MODE:
+    firebase_key_path = Path(
+        os.getenv("FIREBASE_KEY_PATH", PROJECT_DIR / "json" / "firebase.json")
     )
+    if not firebase_key_path.exists():
+        raise FileNotFoundError(
+            "Credencial do Firebase não encontrada. Defina FIREBASE_KEY_PATH ou "
+            f"adicione o arquivo em {firebase_key_path}."
+        )
 
-if not firebase_admin._apps:
-    cred = credentials.Certificate(str(firebase_key_path))
-    firebase_admin.initialize_app(cred)
-db = firestore.client()
+    if not firebase_admin._apps:
+        cred = credentials.Certificate(str(firebase_key_path))
+        firebase_admin.initialize_app(cred)
+    db = firestore.client()
 
 
 # ================= YOLO =================
@@ -72,6 +79,27 @@ def localizar_ffmpeg():
 FFMPEG_PATH = localizar_ffmpeg()
 
 
+def localizar_vlc():
+    configured_path = os.getenv("VLC_PATH")
+    if configured_path:
+        return configured_path
+
+    path_command = shutil.which("vlc")
+    if path_command:
+        return path_command
+
+    candidates = (
+        Path(os.getenv("ProgramFiles", "C:/Program Files"))
+        / "VideoLAN" / "VLC" / "vlc.exe",
+        Path(os.getenv("ProgramFiles(x86)", "C:/Program Files (x86)"))
+        / "VideoLAN" / "VLC" / "vlc.exe",
+    )
+    return str(next((path for path in candidates if path.exists()), "")) or None
+
+
+VLC_PATH = localizar_vlc()
+
+
 def obter_ffmpeg():
     if not FFMPEG_PATH:
         raise FileNotFoundError(
@@ -80,9 +108,20 @@ def obter_ffmpeg():
     return FFMPEG_PATH
 
 
+def obter_vlc():
+    if not VLC_PATH:
+        raise FileNotFoundError(
+            "VLC não encontrado. Instale-o ou defina a variável VLC_PATH."
+        )
+    return VLC_PATH
+
+
 # ================= BUSCAR CÂMERA =================
 
 def buscar_camera(camera_id):
+    if db is None:
+        return None
+
     doc_ref = db.collection("cameras").document(str(camera_id))
     doc = doc_ref.get()
 
@@ -134,7 +173,7 @@ def verificar_queda(frame, camera_id, ultimo_alerta):
             3
         )
 
-        if time.time() - ultimo_alerta > 60:
+        if db is not None and time.time() - ultimo_alerta > 60:
             db.collection("cameras").document(str(camera_id)).update({
                 "queda": True,
                 "alerta": "Queda detectada pela IA",
@@ -156,6 +195,262 @@ def verificar_queda(frame, camera_id, ultimo_alerta):
         )
 
     return frame, ultimo_alerta
+
+
+# ================= CÂMERA OFFLINE =================
+
+def obter_fonte_offline():
+    """Converte "0" em webcam local e preserva URLs/caminhos como texto."""
+    return (
+        int(OFFLINE_CAMERA_SOURCE)
+        if OFFLINE_CAMERA_SOURCE.lstrip("-").isdigit()
+        else OFFLINE_CAMERA_SOURCE
+    )
+
+
+def fonte_rtsp(fonte):
+    return isinstance(fonte, str) and fonte.lower().startswith(
+        ("rtsp://", "rtsps://")
+    )
+
+
+def adicionar_credenciais_rtsp(fonte):
+    partes = urlsplit(fonte)
+    if partes.username:
+        return fonte
+
+    usuario = os.getenv("CAMERA_RTSP_USER", "").strip()
+    senha = os.getenv("CAMERA_RTSP_PASSWORD", "")
+    if not usuario:
+        return fonte
+
+    hostname = partes.hostname or ""
+    if ":" in hostname and not hostname.startswith("["):
+        hostname = f"[{hostname}]"
+    porta = f":{partes.port}" if partes.port else ""
+    autenticacao = quote(usuario, safe="")
+    if senha:
+        autenticacao += f":{quote(senha, safe='')}"
+    netloc = f"{autenticacao}@{hostname}{porta}"
+    return urlunsplit(
+        (partes.scheme, netloc, partes.path, partes.query, partes.fragment)
+    )
+
+
+def descrever_fonte_offline():
+    if OFFLINE_CAMERA_SOURCE.lstrip("-").isdigit():
+        return f"webcam {OFFLINE_CAMERA_SOURCE}"
+    if "://" in OFFLINE_CAMERA_SOURCE:
+        protocolo = OFFLINE_CAMERA_SOURCE.split("://", 1)[0]
+        return f"câmera {protocolo.upper()} configurada"
+    return "arquivo ou dispositivo local configurado"
+
+
+def abrir_captura_offline(fonte):
+    if isinstance(fonte, int) and os.name == "nt":
+        captura = cv2.VideoCapture(fonte, cv2.CAP_DSHOW)
+        if captura.isOpened():
+            return captura
+        captura.release()
+    return cv2.VideoCapture(fonte)
+
+
+def usar_vlc_para_fonte(fonte):
+    if not fonte_rtsp(fonte) or RTSP_BACKEND == "opencv":
+        return False
+    if RTSP_BACKEND == "vlc" and not VLC_PATH:
+        obter_vlc()
+    return bool(VLC_PATH)
+
+
+def comando_vlc(fonte, tempo_execucao=None):
+    comando = [
+        obter_vlc(),
+        "--no-one-instance",
+        "-I", "dummy",
+        "--dummy-quiet",
+        "--no-audio",
+        "--no-video-title-show",
+        "--rtsp-tcp",
+    ]
+    if tempo_execucao is not None:
+        comando.extend([
+            f"--run-time={tempo_execucao}",
+            "--play-and-exit",
+        ])
+    comando.extend([
+        adicionar_credenciais_rtsp(fonte),
+        "--sout=#transcode{vcodec=MJPG,vb=1200}:"
+        "std{access=file,mux=raw,dst=-}",
+    ])
+    return comando
+
+
+def testar_fonte_vlc(fonte):
+    try:
+        resultado = subprocess.run(
+            comando_vlc(fonte, tempo_execucao=4),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            timeout=12,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return b"\xff\xd8" in resultado.stdout and b"\xff\xd9" in resultado.stdout
+
+
+def resposta_mjpeg(frame):
+    codificado, jpg = cv2.imencode(".jpg", frame)
+    if not codificado:
+        return None
+    return (
+        b"--frame\r\n"
+        b"Content-Type: image/jpeg\r\n\r\n" +
+        jpg.tobytes() +
+        b"\r\n"
+    )
+
+
+def frame_indisponivel(mensagem):
+    frame = np.zeros((450, 800, 3), dtype=np.uint8)
+    cv2.putText(
+        frame,
+        mensagem,
+        (35, 225),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.8,
+        (255, 255, 255),
+        2,
+    )
+    return frame
+
+
+def gerar_frames_vlc(fonte, stream_id):
+    ultimo_alerta = 0
+
+    while True:
+        processo = None
+        try:
+            processo = subprocess.Popen(
+                comando_vlc(fonte),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                bufsize=10**6,
+            )
+            if processo.stdout is None:
+                raise RuntimeError("O VLC não disponibilizou o fluxo de vídeo.")
+
+            buffer = b""
+            while True:
+                bloco = processo.stdout.read(4096)
+                if not bloco:
+                    break
+                buffer += bloco
+
+                if len(buffer) > 2 * 1024 * 1024:
+                    inicio_jpeg = buffer.rfind(b"\xff\xd8")
+                    buffer = (
+                        buffer[inicio_jpeg:]
+                        if inicio_jpeg >= 0
+                        else buffer[-2:]
+                    )
+
+                while True:
+                    inicio = buffer.find(b"\xff\xd8")
+                    fim = buffer.find(b"\xff\xd9", inicio + 2)
+                    if inicio == -1 or fim == -1 or fim <= inicio:
+                        break
+
+                    jpg = buffer[inicio:fim + 2]
+                    buffer = buffer[fim + 2:]
+                    array = np.frombuffer(jpg, dtype=np.uint8)
+                    frame = cv2.imdecode(array, cv2.IMREAD_COLOR)
+                    if frame is None:
+                        continue
+
+                    frame, ultimo_alerta = verificar_queda(
+                        frame,
+                        stream_id,
+                        ultimo_alerta,
+                    )
+                    resposta = resposta_mjpeg(frame)
+                    if resposta:
+                        yield resposta
+        except GeneratorExit:
+            return
+        except Exception as erro:
+            print(f"Erro no fluxo VLC: {erro}", flush=True)
+        finally:
+            if processo is not None and processo.poll() is None:
+                processo.terminate()
+                try:
+                    processo.wait(timeout=3)
+                except subprocess.TimeoutExpired:
+                    processo.kill()
+            detector_queda.reset_stream(stream_id)
+
+        print("Reconectando câmera pelo VLC em 2 segundos...", flush=True)
+        time.sleep(2)
+
+
+def gerar_frames_offline():
+    fonte = obter_fonte_offline()
+    stream_id = f"offline:{OFFLINE_CAMERA_SOURCE}"
+    ultimo_alerta = 0
+
+    print(f"Abrindo {descrever_fonte_offline()}", flush=True)
+
+    if usar_vlc_para_fonte(fonte):
+        yield from gerar_frames_vlc(fonte, stream_id)
+        return
+
+    while True:
+        captura = abrir_captura_offline(fonte)
+
+        if not captura.isOpened():
+            resposta = resposta_mjpeg(
+                frame_indisponivel("Camera offline - tentando reconectar...")
+            )
+            if resposta:
+                yield resposta
+            captura.release()
+            time.sleep(2)
+            continue
+
+        try:
+            while True:
+                recebido, frame = captura.read()
+                if not recebido or frame is None:
+                    break
+
+                altura, largura = frame.shape[:2]
+                escala = min(800 / largura, 450 / altura, 1.0)
+                if escala < 1.0:
+                    frame = cv2.resize(
+                        frame,
+                        (int(largura * escala), int(altura * escala)),
+                        interpolation=cv2.INTER_AREA,
+                    )
+
+                frame, ultimo_alerta = verificar_queda(
+                    frame,
+                    stream_id,
+                    ultimo_alerta,
+                )
+                resposta = resposta_mjpeg(frame)
+                if resposta:
+                    yield resposta
+        except GeneratorExit:
+            return
+        except Exception as erro:
+            print(f"Erro na câmera offline: {erro}", flush=True)
+        finally:
+            captura.release()
+            detector_queda.reset_stream(stream_id)
+
+        print("Reconectando câmera offline em 2 segundos...", flush=True)
+        time.sleep(2)
 
 
 # ================= GERAR FRAMES =================
@@ -273,16 +568,25 @@ def home():
     return jsonify({
         "status": "online",
         "mensagem": "API da câmera funcionando",
+        "modo": CAMERA_MODE,
         "componentes": {
-            "firebase": "online",
+            "firebase": "desativado" if OFFLINE_MODE else "online",
             "yolo": "online",
             "ffmpeg": "configurado" if FFMPEG_PATH else "não encontrado",
+            "vlc": "configurado" if VLC_PATH else "não encontrado",
+            "camera_offline": descrever_fonte_offline(),
         },
     })
 
 
 @app.route("/cameras")
 def listar_cameras():
+    if db is None:
+        return jsonify({
+            "erro": "Firebase desativado no modo offline",
+            "camera_offline": descrever_fonte_offline(),
+        }), 503
+
     docs = db.collection("cameras").stream()
 
     cameras = []
@@ -293,6 +597,39 @@ def listar_cameras():
         cameras.append(camera)
 
     return jsonify(cameras)
+
+
+@app.route("/video_feed/offline")
+def video_feed_offline():
+    return Response(
+        gerar_frames_offline(),
+        mimetype="multipart/x-mixed-replace; boundary=frame",
+    )
+
+
+@app.route("/status_camera/offline")
+def status_camera_offline():
+    fonte = obter_fonte_offline()
+    if usar_vlc_para_fonte(fonte):
+        online = testar_fonte_vlc(fonte)
+        backend = "vlc"
+    else:
+        captura = abrir_captura_offline(fonte)
+        try:
+            online, frame = (
+                captura.read() if captura.isOpened() else (False, None)
+            )
+            online = bool(online and frame is not None)
+        finally:
+            captura.release()
+        backend = "opencv"
+
+    return jsonify({
+        "fonte": descrever_fonte_offline(),
+        "online": bool(online),
+        "modo": "offline",
+        "backend": backend,
+    })
 
 
 @app.route("/video_feed/<camera_id>")
