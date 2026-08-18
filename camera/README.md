@@ -14,7 +14,7 @@ Desenvolver um sistema capaz de monitorar idosos em tempo real utilizando câmer
 - OpenCV
 - MediaPipe
 - FFmpeg
-- HTML/CSS/JavaScript
+- EJS/CSS/JavaScript
 - MySQL
 
 ## Estrutura do Projeto
