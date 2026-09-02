@@ -1,0 +1,25 @@
+{
+  "_instrucoes": "Defina queda como true ou false. Use null enquanto o vídeo não estiver revisado. O início deve marcar o começo real da queda, em segundos.",
+  "videos": {
+    "video_1.mp4": {
+      "queda": null,
+      "inicio_queda_segundos": null,
+      "observacao": ""
+    },
+    "video_2.mp4": {
+      "queda": null,
+      "inicio_queda_segundos": null,
+      "observacao": ""
+    },
+    "video_3.mp4": {
+      "queda": null,
+      "inicio_queda_segundos": null,
+      "observacao": ""
+    },
+    "video_4.mp4": {
+      "queda": null,
+      "inicio_queda_segundos": null,
+      "observacao": ""
+    }
+  }
+}

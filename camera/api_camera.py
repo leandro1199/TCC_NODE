@@ -2,6 +2,7 @@ import os
 import shutil
 import subprocess
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from urllib.parse import quote, urlsplit, urlunsplit
 
@@ -10,11 +11,13 @@ import numpy as np
 
 from flask import Flask, Response, jsonify
 from flask_cors import CORS
+from dotenv import load_dotenv
 
 import firebase_admin
 from firebase_admin import credentials, firestore
 
 from detector_yolo_queda import DetectorYOLOQueda
+from alerta_queda import EventoQueda, ServicoAlertaQueda
 
 
 app = Flask(__name__)
@@ -22,10 +25,20 @@ CORS(app)
 
 BASE_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = BASE_DIR.parent
+
+# Reaproveita as configurações do backend no teste local. Variáveis definidas
+# no sistema operacional continuam tendo prioridade.
+load_dotenv(PROJECT_DIR / "backend-node" / ".env", override=False)
+load_dotenv(BASE_DIR / ".env", override=False)
+
 CAMERA_MODE = os.getenv("CAMERA_MODE", "offline").strip().lower()
 OFFLINE_MODE = CAMERA_MODE == "offline"
 OFFLINE_CAMERA_SOURCE = os.getenv("CAMERA_OFFLINE_SOURCE", "0").strip()
 RTSP_BACKEND = os.getenv("CAMERA_RTSP_BACKEND", "auto").strip().lower()
+ALERT_COOLDOWN_SECONDS = max(
+    10,
+    int(os.getenv("ALERT_COOLDOWN_SECONDS", "60")),
+)
 
 
 # ================= FIREBASE =================
@@ -50,6 +63,8 @@ if not OFFLINE_MODE:
 # ================= YOLO =================
 
 detector_queda = DetectorYOLOQueda()
+servico_alerta = ServicoAlertaQueda()
+executor_alertas = ThreadPoolExecutor(max_workers=2, thread_name_prefix="alerta-queda")
 
 
 # ================= FFMPEG =================
@@ -134,6 +149,61 @@ def buscar_camera(camera_id):
     return camera
 
 
+# ================= RELATÓRIO E NOTIFICAÇÕES =================
+
+def nome_da_camera(camera_id):
+    if db is not None:
+        try:
+            camera = buscar_camera(camera_id)
+            if camera:
+                return camera.get("nome") or f"Câmera {camera_id}"
+        except Exception as erro:
+            print(f"Não foi possível obter o nome da câmera: {erro}", flush=True)
+    return os.getenv("CAMERA_OFFLINE_NAME", "Câmera local").strip() or "Câmera local"
+
+
+def registrar_e_notificar_queda(evento):
+    documento = None
+
+    if db is not None:
+        try:
+            dados = evento.para_firestore()
+            dados["criadoEm"] = firestore.SERVER_TIMESTAMP
+            _, documento = db.collection("relatorios_queda").add(dados)
+        except Exception as erro:
+            print(f"Falha ao salvar o relatório da queda: {erro}", flush=True)
+
+    resultados = servico_alerta.enviar(evento)
+
+    if documento is not None:
+        try:
+            documento.update({
+                "notificacoes": resultados,
+                "notificadoEm": firestore.SERVER_TIMESTAMP,
+            })
+        except Exception as erro:
+            print(f"Falha ao atualizar o status das notificações: {erro}", flush=True)
+
+    resumo = ", ".join(
+        f"{canal}={resultado.get('status', 'desconhecido')}"
+        for canal, resultado in resultados.items()
+    )
+    print(f"Alerta de queda processado: {resumo}", flush=True)
+
+
+def agendar_alerta_queda(frame, camera_id, confianca):
+    try:
+        evento = EventoQueda.criar(
+            frame.copy(),
+            camera_id=str(camera_id),
+            camera_nome=nome_da_camera(camera_id),
+            confianca=confianca,
+        )
+        executor_alertas.submit(registrar_e_notificar_queda, evento)
+    except Exception as erro:
+        print(f"Falha ao preparar o alerta de queda: {erro}", flush=True)
+
+
 # ================= VERIFICAR QUEDA COM YOLO =================
 
 def verificar_queda(frame, camera_id, ultimo_alerta):
@@ -173,14 +243,19 @@ def verificar_queda(frame, camera_id, ultimo_alerta):
             3
         )
 
-        if db is not None and time.time() - ultimo_alerta > 60:
-            db.collection("cameras").document(str(camera_id)).update({
-                "queda": True,
-                "alerta": "Queda detectada pela IA",
-                "confianca_queda": confianca,
-                "ultima_queda": firestore.SERVER_TIMESTAMP
-            })
+        if time.time() - ultimo_alerta > ALERT_COOLDOWN_SECONDS:
+            if db is not None:
+                try:
+                    db.collection("cameras").document(str(camera_id)).update({
+                        "queda": True,
+                        "alerta": "Queda detectada pela IA",
+                        "confianca_queda": confianca,
+                        "ultima_queda": firestore.SERVER_TIMESTAMP
+                    })
+                except Exception as erro:
+                    print(f"Falha ao atualizar o estado da câmera: {erro}", flush=True)
 
+            agendar_alerta_queda(frame, camera_id, confianca)
             ultimo_alerta = time.time()
 
     else:
@@ -575,6 +650,13 @@ def home():
             "ffmpeg": "configurado" if FFMPEG_PATH else "não encontrado",
             "vlc": "configurado" if VLC_PATH else "não encontrado",
             "camera_offline": descrever_fonte_offline(),
+            "alertas": (
+                "simulacao"
+                if servico_alerta.habilitado and servico_alerta.simulacao
+                else "online"
+                if servico_alerta.habilitado
+                else "desativado"
+            ),
         },
     })
 
@@ -597,6 +679,12 @@ def listar_cameras():
         cameras.append(camera)
 
     return jsonify(cameras)
+
+
+@app.route("/status_alertas")
+def status_alertas():
+    """Informa a prontidão dos canais sem expor destinatários ou segredos."""
+    return jsonify(servico_alerta.status_configuracao())
 
 
 @app.route("/video_feed/offline")

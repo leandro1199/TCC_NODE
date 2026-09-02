@@ -18,7 +18,7 @@ exports.listarRelatorios = async (req, res) => {
                 id: doc.id,
 
                 tipo_evento: "Queda detectada",
-                descricao: "Queda detectada automaticamente pela inteligência artificial.",
+                descricao: dados.descricao || "Queda detectada automaticamente pela inteligência artificial.",
 
                 confianca: dados.confianca || 0,
 
@@ -28,7 +28,9 @@ exports.listarRelatorios = async (req, res) => {
 
                 criado_em: dados.dataHora || "Data não registrada",
 
-                nome_camera: dados.cameraNome || "Câmera removida"
+                nome_camera: dados.cameraNome || "Câmera removida",
+
+                notificacoes: dados.notificacoes || null
             });
         });
 

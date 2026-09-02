@@ -11,6 +11,94 @@ from detector_yolo_queda import DetectorYOLOQueda
 BASE_DIR = Path(__file__).resolve().parent
 DEFAULT_INPUT_DIR = BASE_DIR / "gravacoes"
 DEFAULT_OUTPUT_DIR = BASE_DIR / "resultado"
+DEFAULT_LABELS_PATH = BASE_DIR / "rotulos_videos.json"
+
+
+def carregar_rotulos(path):
+    if path is None or not path.exists():
+        return {}
+
+    dados = json.loads(path.read_text(encoding="utf-8"))
+    videos = dados.get("videos", dados) if isinstance(dados, dict) else {}
+    if not isinstance(videos, dict):
+        raise ValueError("O arquivo de rótulos precisa conter um objeto 'videos'.")
+    return videos
+
+
+def _divisao_segura(numerador, denominador):
+    return round(numerador / denominador, 4) if denominador else None
+
+
+def avaliar_resultados(resultados, rotulos):
+    avaliados = []
+    for resultado in resultados:
+        rotulo = rotulos.get(resultado["video"], {})
+        esperado = rotulo.get("queda") if isinstance(rotulo, dict) else None
+        if not isinstance(esperado, bool):
+            resultado["rotulo_esperado"] = None
+            resultado["classificacao"] = "nao_rotulado"
+            continue
+
+        previsto = bool(resultado["queda_identificada"])
+        if esperado and previsto:
+            classificacao = "verdadeiro_positivo"
+        elif esperado:
+            classificacao = "falso_negativo"
+        elif previsto:
+            classificacao = "falso_positivo"
+        else:
+            classificacao = "verdadeiro_negativo"
+
+        inicio_esperado = rotulo.get("inicio_queda_segundos")
+        atraso = None
+        if (
+            esperado
+            and previsto
+            and isinstance(inicio_esperado, (int, float))
+        ):
+            atraso = round(
+                resultado["primeiro_tempo_queda_segundos"] - inicio_esperado,
+                4,
+            )
+
+        resultado.update({
+            "rotulo_esperado": esperado,
+            "inicio_queda_esperado_segundos": inicio_esperado,
+            "classificacao": classificacao,
+            "atraso_deteccao_segundos": atraso,
+        })
+        avaliados.append(resultado)
+
+    contagens = {
+        nome: sum(item["classificacao"] == nome for item in avaliados)
+        for nome in (
+            "verdadeiro_positivo",
+            "verdadeiro_negativo",
+            "falso_positivo",
+            "falso_negativo",
+        )
+    }
+    vp = contagens["verdadeiro_positivo"]
+    vn = contagens["verdadeiro_negativo"]
+    fp = contagens["falso_positivo"]
+    fn = contagens["falso_negativo"]
+    atrasos = [
+        item["atraso_deteccao_segundos"]
+        for item in avaliados
+        if item.get("atraso_deteccao_segundos") is not None
+    ]
+    return {
+        "videos_rotulados": len(avaliados),
+        "videos_sem_rotulo": len(resultados) - len(avaliados),
+        **contagens,
+        "acuracia": _divisao_segura(vp + vn, vp + vn + fp + fn),
+        "precisao": _divisao_segura(vp, vp + fp),
+        "sensibilidade_recall": _divisao_segura(vp, vp + fn),
+        "especificidade": _divisao_segura(vn, vn + fp),
+        "atraso_medio_segundos": (
+            round(sum(atrasos) / len(atrasos), 4) if atrasos else None
+        ),
+    }
 
 
 def intervalos_contiguos(frames):
@@ -92,7 +180,13 @@ def desenhar_resultado(
     return frame
 
 
-def analisar_video(detector, video_path, output_dir, csv_writer):
+def analisar_video(
+    detector,
+    video_path,
+    output_dir,
+    csv_writer,
+    view_csv_writer,
+):
     captura = cv2.VideoCapture(str(video_path))
     if not captura.isOpened():
         raise RuntimeError(f"Não foi possível abrir {video_path}.")
@@ -124,6 +218,8 @@ def analisar_video(detector, video_path, output_dir, csv_writer):
     maior_confianca_confirmada = 0.0
     frame_maior_confianca_confirmada = None
     candidatos_total = 0
+    layouts_detectados = set()
+    transicoes = []
     numero_frame = 0
 
     try:
@@ -138,6 +234,7 @@ def analisar_video(detector, video_path, output_dir, csv_writer):
                 frame,
                 stream_id=stream_id,
             )
+            diagnosticos = detector.obter_diagnostico(stream_id)
             maior_instantanea = max(
                 (caixa[4] for caixa in caixas),
                 default=0.0,
@@ -175,6 +272,60 @@ def analisar_video(detector, video_path, output_dir, csv_writer):
                 "maior_confianca_instantanea": f"{maior_instantanea:.6f}",
             })
 
+            for diagnostico in diagnosticos:
+                layouts_detectados.add(diagnostico["layout"])
+                if diagnostico["transition"]:
+                    transicoes.append({
+                        "frame": numero_frame,
+                        "tempo_segundos": round(tempo_segundos, 4),
+                        "view": diagnostico["view"],
+                    })
+                view_csv_writer.writerow({
+                    "video": video_path.name,
+                    "frame": numero_frame,
+                    "tempo_segundos": f"{tempo_segundos:.4f}",
+                    "view": diagnostico["view"],
+                    "layout": diagnostico["layout"],
+                    "deteccoes_pessoa": diagnostico["detections"],
+                    "queda_instantanea": int(
+                        diagnostico["instantaneous_fall"]
+                    ),
+                    "confianca_instantanea": (
+                        f"{diagnostico['instantaneous_confidence']:.6f}"
+                    ),
+                    "queda_confirmada": int(diagnostico["confirmed_fall"]),
+                    "confianca_confirmada": (
+                        f"{diagnostico['confirmed_confidence']:.6f}"
+                    ),
+                    "confianca_modelo": (
+                        f"{diagnostico['model_confidence']:.6f}"
+                    ),
+                    "postura_score": (
+                        "" if diagnostico["posture_score"] is None
+                        else f"{diagnostico['posture_score']:.6f}"
+                    ),
+                    "angulo_tronco": (
+                        "" if diagnostico["torso_angle"] is None
+                        else f"{diagnostico['torso_angle']:.4f}"
+                    ),
+                    "centro_y": (
+                        "" if diagnostico["center_y"] is None
+                        else f"{diagnostico['center_y']:.6f}"
+                    ),
+                    "track_iou": f"{diagnostico['track_iou']:.6f}",
+                    "track_distance": (
+                        f"{diagnostico['track_distance']:.6f}"
+                    ),
+                    "transicao": int(diagnostico["transition"]),
+                    "variacao_angulo": f"{diagnostico['angle_change']:.4f}",
+                    "deslocamento_vertical": (
+                        f"{diagnostico['downward_change']:.6f}"
+                    ),
+                    "hits": diagnostico["hits"],
+                    "misses": diagnostico["misses"],
+                    "event_frames": diagnostico["event_frames"],
+                })
+
             anotado = desenhar_resultado(
                 frame.copy(),
                 numero_frame,
@@ -203,6 +354,8 @@ def analisar_video(detector, video_path, output_dir, csv_writer):
         "fps": round(fps, 4),
         "total_frames": numero_frame,
         "duracao_segundos": round(numero_frame / fps, 4),
+        "layouts_detectados": sorted(layouts_detectados),
+        "transicoes_detectadas": transicoes,
         "queda_identificada": bool(frames_confirmados),
         "primeiro_frame_queda": (
             frames_confirmados[0] if frames_confirmados else None
@@ -254,7 +407,7 @@ def analisar_video(detector, video_path, output_dir, csv_writer):
     }
 
 
-def escrever_resumo_texto(resultados, detector, output_dir):
+def escrever_resumo_texto(resultados, detector, output_dir, avaliacao):
     linhas = [
         "RESULTADOS DA DETECÇÃO DE QUEDAS",
         f"Modelo: {detector.model_path}",
@@ -262,6 +415,16 @@ def escrever_resumo_texto(resultados, detector, output_dir):
     ]
     for resultado in resultados:
         linhas.append(resultado["video"])
+        linhas.append(
+            "  Layout detectado: "
+            + ", ".join(resultado["layouts_detectados"] or ["desconhecido"])
+        )
+        if resultado["transicoes_detectadas"]:
+            transicoes = ", ".join(
+                f"{item['view']}@{item['tempo_segundos']:.2f}s"
+                for item in resultado["transicoes_detectadas"]
+            )
+            linhas.append(f"  Transições temporais: {transicoes}")
         if resultado["queda_identificada"]:
             linhas.extend([
                 "  Queda identificada: SIM",
@@ -298,7 +461,34 @@ def escrever_resumo_texto(resultados, detector, output_dir):
                     f"(frame {resultado['frame_maior_confianca_instantanea']})"
                 ),
             ])
+        if resultado.get("rotulo_esperado") is not None:
+            esperado = "QUEDA" if resultado["rotulo_esperado"] else "SEM QUEDA"
+            linhas.append(f"  Rótulo esperado: {esperado}")
+            linhas.append(f"  Classificação: {resultado['classificacao']}")
+            if resultado.get("atraso_deteccao_segundos") is not None:
+                linhas.append(
+                    "  Atraso da detecção: "
+                    f"{resultado['atraso_deteccao_segundos']:.2f}s"
+                )
         linhas.append("")
+
+    linhas.extend([
+        "AVALIAÇÃO COM RÓTULOS",
+        f"  Vídeos rotulados: {avaliacao['videos_rotulados']}",
+        f"  Vídeos sem rótulo: {avaliacao['videos_sem_rotulo']}",
+    ])
+    if avaliacao["videos_rotulados"]:
+        linhas.extend([
+            f"  Verdadeiros positivos: {avaliacao['verdadeiro_positivo']}",
+            f"  Verdadeiros negativos: {avaliacao['verdadeiro_negativo']}",
+            f"  Falsos positivos: {avaliacao['falso_positivo']}",
+            f"  Falsos negativos: {avaliacao['falso_negativo']}",
+            f"  Precisão: {avaliacao['precisao']}",
+            f"  Sensibilidade/recall: {avaliacao['sensibilidade_recall']}",
+            f"  Especificidade: {avaliacao['especificidade']}",
+            f"  Acurácia: {avaliacao['acuracia']}",
+            f"  Atraso médio (s): {avaliacao['atraso_medio_segundos']}",
+        ])
 
     (output_dir / "resumo_resultados.txt").write_text(
         "\n".join(linhas),
@@ -316,6 +506,15 @@ def main():
         type=Path,
         default=DEFAULT_OUTPUT_DIR,
     )
+    parser.add_argument(
+        "--rotulos",
+        type=Path,
+        default=DEFAULT_LABELS_PATH,
+        help=(
+            "JSON com o resultado esperado de cada vídeo. Entradas com queda=null "
+            "são ignoradas nas métricas de acerto."
+        ),
+    )
     args = parser.parse_args()
 
     videos = [video.resolve() for video in args.videos]
@@ -327,10 +526,15 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     detector = DetectorYOLOQueda()
     print(f"Modelo: {detector.model_path}", flush=True)
+    rotulos = carregar_rotulos(args.rotulos.resolve() if args.rotulos else None)
 
     csv_path = output_dir / "metricas_por_frame.csv"
+    view_csv_path = output_dir / "metricas_por_view.csv"
     resultados = []
-    with csv_path.open("w", newline="", encoding="utf-8") as arquivo_csv:
+    with (
+        csv_path.open("w", newline="", encoding="utf-8") as arquivo_csv,
+        view_csv_path.open("w", newline="", encoding="utf-8") as arquivo_view_csv,
+    ):
         campos = [
             "video",
             "frame",
@@ -342,21 +546,58 @@ def main():
         ]
         escritor_csv = csv.DictWriter(arquivo_csv, fieldnames=campos)
         escritor_csv.writeheader()
+        campos_view = [
+            "video",
+            "frame",
+            "tempo_segundos",
+            "view",
+            "layout",
+            "deteccoes_pessoa",
+            "queda_instantanea",
+            "confianca_instantanea",
+            "queda_confirmada",
+            "confianca_confirmada",
+            "confianca_modelo",
+            "postura_score",
+            "angulo_tronco",
+            "centro_y",
+            "track_iou",
+            "track_distance",
+            "transicao",
+            "variacao_angulo",
+            "deslocamento_vertical",
+            "hits",
+            "misses",
+            "event_frames",
+        ]
+        escritor_view_csv = csv.DictWriter(
+            arquivo_view_csv, fieldnames=campos_view
+        )
+        escritor_view_csv.writeheader()
         for video in videos:
             resultados.append(
-                analisar_video(detector, video, output_dir, escritor_csv)
+                analisar_video(
+                    detector,
+                    video,
+                    output_dir,
+                    escritor_csv,
+                    escritor_view_csv,
+                )
             )
 
+    avaliacao = avaliar_resultados(resultados, rotulos)
     resumo = {
         "modelo": str(detector.model_path),
         "quantidade_videos": len(resultados),
+        "arquivo_rotulos": str(args.rotulos.resolve()) if args.rotulos else None,
+        "avaliacao": avaliacao,
         "resultados": resultados,
     }
     (output_dir / "resumo_resultados.json").write_text(
         json.dumps(resumo, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    escrever_resumo_texto(resultados, detector, output_dir)
+    escrever_resumo_texto(resultados, detector, output_dir, avaliacao)
     print(f"Resultados salvos em: {output_dir}", flush=True)
 
 
