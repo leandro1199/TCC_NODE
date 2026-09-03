@@ -1,0 +1,62 @@
+COMO INICIAR O PROJETO PARA A APRESENTACAO
+============================================
+
+Antes de comecar:
+
+- Ligue a camera Yoosee.
+- Conecte o computador e a camera na mesma rede.
+- Confirme que NVR/ONVIF esta habilitado no aplicativo Yoosee.
+- Verifique se o computador possui acesso a internet para o login no Firebase.
+
+
+TERMINAL 1 - CAMERA YOOSEE
+--------------------------
+
+Abra um terminal PowerShell no VS Code e execute:
+
+cd D:\TCC_NODE\camera
+.\iniciar_camera_offline.ps1 -CameraIp 192.168.1.5 -Perfil onvif1
+
+Quando aparecer "Senha RTSP da camera", digite a senha da Yoosee e pressione Enter.
+A senha nao aparecera enquanto voce digita. Deixe este terminal aberto.
+
+
+TERMINAL 2 - SITE NODE
+----------------------
+
+Clique no botao + do painel Terminal do VS Code para abrir outro PowerShell.
+Execute:
+
+cd D:\TCC_NODE\backend-node
+npm.cmd run dev
+
+Deixe este terminal aberto.
+
+
+ABRIR O SITE
+------------
+
+Abra no navegador:
+
+http://localhost:3000
+
+Faca login e acesse a pagina Camera de Seguranca:
+
+http://localhost:3000/cameraseg
+
+
+SE A IMAGEM NAO APARECER
+------------------------
+
+1. Pressione Ctrl + F5 no navegador.
+2. Confirme que os dois terminais continuam abertos e sem erros.
+3. Confirme que a camera ainda esta no endereco 192.168.1.5.
+4. Confirme que NVR/ONVIF permanece habilitado no aplicativo Yoosee.
+
+
+COMO ENCERRAR
+-------------
+
+Em cada terminal, pressione Ctrl + C.
+
+IMPORTANTE: a senha da camera nao esta salva neste arquivo.

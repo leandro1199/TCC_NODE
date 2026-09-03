@@ -52,12 +52,14 @@ const authRoutes = require('./routes/authRoutes');
 const pageRoutes = require('./routes/pageRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const cameraRoutes = require('./routes/cameraRoutes');
+const cameraStreamRoutes = require('./routes/cameraStreamRoutes');
 const relatorioRoutes = require('./routes/relatorioRoutes');
 
 app.use(authRoutes);
 app.use(pageRoutes);
 app.use(chatRoutes);
 app.use(cameraRoutes);
+app.use(cameraStreamRoutes);
 app.use(relatorioRoutes);
 
 // ROTA 404
